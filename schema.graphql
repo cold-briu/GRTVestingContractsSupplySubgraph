@@ -1,0 +1,34 @@
+type ReleasePeriod @entity {
+  "Auxiliary entity to represent amounts that will be released once releaseDate reached"
+  id: ID!
+  "date when the period will be released"
+  releaseDate: BigInt!
+  "amount that will be released once release Date was reach"
+  amount: BigInt!
+  "Indicates if period was released or not"
+  processed: Boolean!
+}
+
+type GraphCirculatingSupply @entity {
+  "ID is set to 1"
+  id: ID!
+
+  "Graph Token supply"
+  totalSupply: BigInt!
+
+  "Graph Circulating Supply should be totalSupply minus periodsToProcessTotalAmount plus periodsProcessedTotalAmount" 
+  circulatingSupply: BigInt!
+
+  "Array containing periods not processed yet"
+  periodsToProcess: [ReleasePeriod!]
+  "Amount to release"
+  periodsToProcessTotalAmount: BigInt!
+
+  "Periods already released"
+  periodsProcessed: [ReleasePeriod!]
+  "Amount already released"
+  periodsProcessedTotalAmount: BigInt!
+
+  "This min date saves min release date from periodsToProcess"
+  minPeriodToProcessDate: BigInt!
+}

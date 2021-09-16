@@ -1,0 +1,20 @@
+{
+  "name": "grt-vesting-contracts-supply",
+  "license": "MIT",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ gabrielcamba/grt-vesting-contracts-supply",
+    "deploy-studio": "graph deploy --node https://api.studio.thegraph.com/deploy/ grt-vesting-contracts-supply --ipfs https://api.thegraph.com/ipfs/",
+    "create-local": "graph create --node http://localhost:8020/ gabrielcamba/grt-vesting-contracts-supply",
+    "remove-local": "graph remove --node http://localhost:8020/ gabrielcamba/grt-vesting-contracts-supply",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 gabrielcamba/grt-vesting-contracts-supply"
+  },
+  "devDependencies": {
+    "@graphprotocol/contracts": "^1.1.0"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.20.1",
+    "@graphprotocol/graph-ts": "0.20.0"
+  }
+}
