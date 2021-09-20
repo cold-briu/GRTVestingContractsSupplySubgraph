@@ -48,9 +48,4 @@ export function handleBlock(block: ethereum.Block): void {
   }
 }
 
-export function handleTokensReleased(event: TokensReleased): void {
-  let graphCirculatingSupply = createOrLoadGraphCirculatingSupply()
-  let prevTokensReleased = graphCirculatingSupply.lockWalletsTotalReleasedAmount
-  graphCirculatingSupply.lockWalletsTotalReleasedAmount = prevTokensReleased.plus(event.params.amount)
-  graphCirculatingSupply.save()
-}
+export function handleTokensReleased(event: TokensReleased): void {}

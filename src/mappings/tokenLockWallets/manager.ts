@@ -36,11 +36,8 @@ export function handleTokenLockCreated(event: TokenLockCreated): void {
     graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(periodAmount)
   }
 
-
-  let prevManagedAmount = graphCirculatingSupply.lockWalletsTotalManagedAmount
   let prevCirculatingSupply = graphCirculatingSupply.circulatingSupply
 
-  graphCirculatingSupply.lockWalletsTotalManagedAmount = prevManagedAmount.plus(event.params.managedAmount)
   graphCirculatingSupply.circulatingSupply = prevCirculatingSupply.minus(event.params.managedAmount)
   graphCirculatingSupply.save()
 

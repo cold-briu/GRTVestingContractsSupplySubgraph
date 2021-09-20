@@ -7,8 +7,6 @@ export function createOrLoadGraphCirculatingSupply(): GraphCirculatingSupply {
     graphCirculatingSupply = new GraphCirculatingSupply('1')
     graphCirculatingSupply.totalSupply = BigInt.fromI32(0) 
     graphCirculatingSupply.circulatingSupply = BigInt.fromI32(0)
-    graphCirculatingSupply.lockWalletsTotalManagedAmount = BigInt.fromI32(0)
-    graphCirculatingSupply.lockWalletsTotalReleasedAmount = BigInt.fromI32(0)
     graphCirculatingSupply.periodsToProcess = []
     graphCirculatingSupply.periodsToProcessTotalAmount = BigInt.fromI32(0) 
     graphCirculatingSupply.periodsProcessed = []
