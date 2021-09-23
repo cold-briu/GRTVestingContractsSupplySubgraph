@@ -1,0 +1,108 @@
+specVersion: 0.0.2
+description: The Graph Network Smart Contracts on Ethereum
+repository: https://github.com/graphprotocol/contracts/graph-network-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: GraphToken
+    network: mainnet
+    source:
+      address: '0xc944E90C64B2c07662A292be6244BDf05Cda44a7'
+      abi: GraphToken
+      startBlock: 11440000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/graphToken.ts
+      entities:
+        - GraphAccount
+        - GraphNetwork
+      abis:
+        - name: GraphToken
+          file: ./node_modules/@graphprotocol/contracts/dist/abis/GraphToken.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: GraphTokenLockManager
+    network: mainnet
+    source:
+      address: '0xFCf78AC094288D7200cfdB367A8CD07108dFa128'
+      abi: GraphTokenLockManager
+      startBlock: 11440000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenLockWallets/manager.ts
+      entities:
+        - TODO
+      abis:
+        - name: GraphTokenLockManager
+          file: ./abis/GraphTokenLockManager.json
+      eventHandlers:
+        - event: TokenLockCreated(indexed address,indexed bytes32,indexed address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
+          handler: handleTokenLockCreated
+  - kind: ethereum/contract
+    name: GraphTokenLockSimpleEAN
+    network: mainnet
+    source:
+      address: '0x5785176048BEB00DcB6eC84A604d76E30E0666db'
+      abi: GraphTokenLockWallet
+      startBlock: 11440000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
+      entities:
+        - TokenLockWallet
+      abis:
+        - name: GraphTokenLockWallet
+          file: ./abis/GraphTokenLockWallet.json
+      eventHandlers:
+        - event: TokensReleased(indexed address,uint256)
+          handler: handleTokensReleased
+  - kind: ethereum/contract
+    name: GraphTokenLockSimpleGRT
+    network: mainnet
+    source:
+      address: '0x32Ec7A59549b9F114c9D7d8b21891d91Ae7F2ca1'
+      abi: GraphTokenLockWallet
+      startBlock: 11440000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
+      entities:
+        - TokenLockWallet
+      abis:
+        - name: GraphTokenLockWallet
+          file: ./abis/GraphTokenLockWallet.json
+      eventHandlers:
+        - event: TokensReleased(indexed address,uint256)
+          handler: handleTokensReleased
+      blockHandlers:
+        - handler: handleBlock
+templates:
+  - kind: ethereum/contract
+    name: GraphTokenLockWallet
+    network: mainnet
+    source:
+      abi: GraphTokenLockWallet
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
+      entities:
+        - TokenLockWallet
+      abis:
+        - name: GraphTokenLockWallet
+          file: ./abis/GraphTokenLockWallet.json
+      eventHandlers:
+        - event: TokensReleased(indexed address,uint256)
+          handler: handleTokensReleased
