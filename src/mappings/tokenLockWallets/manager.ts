@@ -19,15 +19,16 @@ export function handleTokenLockCreated(event: TokenLockCreated): void {
     let releasePeriod = new ReleasePeriod(periodId);
     let periodsToProcess = graphCirculatingSupply.periodsToProcess
     periodReleaseDate = periodReleaseDate.plus(periodsDuration)
-    releasePeriod.releaseDate = periodReleaseDate;
-    releasePeriod.amount = periodAmount;
-    releasePeriod.processed = false;
-    releasePeriod.save();
+    releasePeriod.releaseDate = periodReleaseDate
+    releasePeriod.amount = periodAmount
+    releasePeriod.contract = id
+    releasePeriod.processed = false
+    releasePeriod.save()
 
     if (i == 0){
       if(graphCirculatingSupply.minPeriodToProcessDate.isZero() || 
       graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate) {
-        graphCirculatingSupply.minPeriodToProcessDate = periodReleaseDate;
+        graphCirculatingSupply.minPeriodToProcessDate = periodReleaseDate
       }
     }
 

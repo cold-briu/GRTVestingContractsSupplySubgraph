@@ -1,1 +1,3 @@
-# GRTVestingContractsSupplySubgraph
+# GRT Vesting Contracts Supply Subgraph
+
+This subgraph aims to inform GRT circulating supply based on mint and burn, and vested addresses and it relase dates. To do that it uses vesting contracts addresses and once they are created a ReleasePeriod entities are being created containing the date where it'll be released and the ammount to be released on that specific timestamp. Then it's processing block by block to fetch current timestamp and once date is reached period not processed amount will be released and the ammount will be added to the circulating supply.

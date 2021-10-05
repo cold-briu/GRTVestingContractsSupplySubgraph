@@ -1,6 +1,8 @@
 type ReleasePeriod @entity {
   "Auxiliary entity to represent amounts that will be released once releaseDate reached"
   id: ID!
+  "This period contract"
+  contract: String!
   "date when the period will be released"
   releaseDate: BigInt!
   "amount that will be released once release Date was reach"

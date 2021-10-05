@@ -1,6 +1,6 @@
 specVersion: 0.0.2
-description: The Graph Network Smart Contracts on Ethereum
-repository: https://github.com/graphprotocol/contracts/graph-network-subgraph
+description: The Graph Network Vesting Contracts Circulating Supply on Ethereum
+repository: https://github.com/protofire/GRTVestingContractsSupplySubgraph
 schema:
   file: ./schema.graphql
 dataSources:
