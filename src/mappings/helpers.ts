@@ -13,6 +13,8 @@ export function createOrLoadGraphCirculatingSupply(): GraphCirculatingSupply {
     graphCirculatingSupply.periodsProcessed = []
     graphCirculatingSupply.periodsProcessedTotalAmount = BigInt.fromI32(0) 
     graphCirculatingSupply.minPeriodToProcessDate = BigInt.fromI32(0) 
+    graphCirculatingSupply.gtlwProcessed = false
+    graphCirculatingSupply.gtlw2Processed = false
 
     graphCirculatingSupply.save()
   }

@@ -31,6 +31,11 @@ type GraphCirculatingSupply @entity {
   "Amount already released"
   periodsProcessedTotalAmount: BigInt!
 
+  "gtlw contract was processed and periods were added"
+  gtlwProcessed: Boolean! 
+  "gtlw2 contract was processed and periods were added"
+  gtlw2Processed: Boolean!
+
   "This min date saves min release date from periodsToProcess"
   minPeriodToProcessDate: BigInt!
 }
