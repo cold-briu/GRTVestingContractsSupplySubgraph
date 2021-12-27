@@ -15,14 +15,18 @@ export function handleBlock(block: ethereum.Block): void {
   let blockHeight = block.number
 
   // Pushing manual contracts that not were added by the manager.
-  if (!circulatingSupply.gtlwProcessed && blockHeight.gt(BigInt.fromI32(11481574))) {
+  if (!circulatingSupply.gtlwProcessed && blockHeight.gt(BigInt.fromI32(11481575))) {
     let gtlwContract = GraphTokenLockWallet.bind(GTLW)
     let startTimeTry = gtlwContract.try_startTime()
     let endTimeTry = gtlwContract.try_endTime()
     let periodsTry = gtlwContract.try_periods()
     let managedAmountTry = gtlwContract.try_managedAmount()
 
-    if (!endTimeTry.reverted && !startTimeTry.reverted && !periodsTry.reverted && !managedAmountTry.reverted) {
+    if (!endTimeTry.reverted 
+      && !startTimeTry.reverted 
+      && !periodsTry.reverted 
+      && !periodsTry.value.isZero() 
+      && !managedAmountTry.reverted) {
       let endTime = endTimeTry.value
       let startTime = startTimeTry.value
       let periods = periodsTry.value
@@ -34,14 +38,18 @@ export function handleBlock(block: ethereum.Block): void {
     }
   }
 
-  if (!circulatingSupply.gtlw2Processed && blockHeight.gt(BigInt.fromI32(11481571))) {
+  if (!circulatingSupply.gtlw2Processed && blockHeight.gt(BigInt.fromI32(11481572))) {
     let gtlwContract = GraphTokenLockWallet.bind(GTLW)
     let startTimeTry = gtlwContract.try_startTime()
     let endTimeTry = gtlwContract.try_endTime()
     let periodsTry = gtlwContract.try_periods()
     let managedAmountTry = gtlwContract.try_managedAmount()
 
-    if (!endTimeTry.reverted && !startTimeTry.reverted && !periodsTry.reverted && !managedAmountTry.reverted) {
+    if (!endTimeTry.reverted 
+      && !startTimeTry.reverted 
+      && !periodsTry.reverted 
+      && !periodsTry.value.isZero() 
+      && !managedAmountTry.reverted) {
       let endTime = endTimeTry.value
       let startTime = startTimeTry.value
       let periods = periodsTry.value
