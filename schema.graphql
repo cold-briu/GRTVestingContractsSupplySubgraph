@@ -11,6 +11,21 @@ type ReleasePeriod @entity {
   processed: Boolean!
 }
 
+type ContractData @entity {
+  "Entity created for debugging to know the params to call function to create periods"
+  id: ID!
+  "contract address"
+  contract: String!
+  "Periods to be created"
+  periods: BigInt!
+  "start time for releasing"
+  startTime: BigInt!
+  "end Time for releasing"
+  endTime: BigInt!
+  "total amount managed by it's contract"
+  managedAmount: BigInt!
+}
+
 type GraphCirculatingSupply @entity {
   "ID is set to 1"
   id: ID!

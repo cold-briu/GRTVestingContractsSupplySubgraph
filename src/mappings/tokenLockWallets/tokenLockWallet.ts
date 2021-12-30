@@ -1,6 +1,6 @@
-import { BigInt, log, ethereum } from '@graphprotocol/graph-ts'
-import { TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
-import { createOrLoadGraphCirculatingSupply } from '../helpers'
+import { BigInt, log, ethereum, Address } from '@graphprotocol/graph-ts'
+import { InitializeCall } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
+import { createOrLoadGraphCirculatingSupply, createPeriodsForContract } from '../helpers'
 import { ReleasePeriod } from '../../../generated/schema'
 
 export function handleBlock(block: ethereum.Block): void {
@@ -48,4 +48,15 @@ export function handleBlock(block: ethereum.Block): void {
   }
 }
 
-export function handleTokensReleased(event: TokensReleased): void {}
+export function handleInitialize(call: InitializeCall): void {
+
+  let periods = call.inputs._periods
+  let startTime = call.inputs._startTime
+  let endTime = call.inputs._endTime
+  let managedAmount = call.inputs._managedAmount
+
+  // After researching noticed couldn't get contract addresses that's why using transaction's hash
+  let contract = call.transaction.hash as Address
+
+  createPeriodsForContract(contract, endTime, startTime, periods, managedAmount)
+}

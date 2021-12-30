@@ -10,7 +10,7 @@ dataSources:
     source:
       address: '0xc944E90C64B2c07662A292be6244BDf05Cda44a7'
       abi: GraphToken
-      startBlock: 11440000
+      startBlock: 11446769
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -31,7 +31,7 @@ dataSources:
     source:
       address: '0xFCf78AC094288D7200cfdB367A8CD07108dFa128'
       abi: GraphTokenLockManager
-      startBlock: 11440000
+      startBlock: 11466643	
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -46,47 +46,47 @@ dataSources:
         - event: TokenLockCreated(indexed address,indexed bytes32,indexed address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
           handler: handleTokenLockCreated
   - kind: ethereum/contract
-    name: GraphTokenLockSimpleEAN
+    name: GTLSEAN
     network: mainnet
     source:
       address: '0x5785176048BEB00DcB6eC84A604d76E30E0666db'
       abi: GraphTokenLockWallet
-      startBlock: 11440000
+      startBlock: 11481575
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
       entities:
         - TokenLockWallet
       abis:
         - name: GraphTokenLockWallet
           file: ./abis/GraphTokenLockWallet.json
-      eventHandlers:
-        - event: TokensReleased(indexed address,uint256)
-          handler: handleTokensReleased
+      callHandlers:
+        - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
+          handler: handleIntitialize
+      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
   - kind: ethereum/contract
-    name: GraphTokenLockSimpleGRT
+    name: GTLSGRT
     network: mainnet
     source:
       address: '0x32Ec7A59549b9F114c9D7d8b21891d91Ae7F2ca1'
       abi: GraphTokenLockWallet
-      startBlock: 11440000
+      startBlock: 11481572
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
       entities:
         - TokenLockWallet
       abis:
         - name: GraphTokenLockWallet
           file: ./abis/GraphTokenLockWallet.json
-      eventHandlers:
-        - event: TokensReleased(indexed address,uint256)
-          handler: handleTokensReleased
       blockHandlers:
         - handler: handleBlock
+      callHandlers:
+        - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
+          handler: handleInitialize
+      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
 templates:
   - kind: ethereum/contract
     name: GraphTokenLockWallet

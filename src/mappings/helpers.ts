@@ -1,5 +1,5 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { GraphCirculatingSupply, ReleasePeriod } from '../../generated/schema'
+import { ContractData, GraphCirculatingSupply, ReleasePeriod } from '../../generated/schema'
 import { GraphTokenLockWallet } from '../../generated/templates'
 
 export function createOrLoadGraphCirculatingSupply(): GraphCirculatingSupply {
@@ -27,6 +27,15 @@ export function createPeriodsForContract(contractAddress: Address, endTime: BigI
   let periodReleaseDate = startTime
   let periodAmount = managedAmount.div(periods)
   let periodsI32 = periods.toI32()
+
+  // Creating contract data for debugging purposes
+  let contract  = new ContractData(id)
+  contract.contract = id
+  contract.periods = periods
+  contract.startTime = startTime
+  contract.endTime = endTime
+  contract.managedAmount = managedAmount
+  contract.save()
 
   log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [id])
   for(let i = 0; i < periodsI32; i++) {
