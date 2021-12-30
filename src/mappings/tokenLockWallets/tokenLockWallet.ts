@@ -1,5 +1,5 @@
 import { BigInt, log, ethereum, Address } from '@graphprotocol/graph-ts'
-import { InitializeCall } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
+import { InitializeCall, TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { createOrLoadGraphCirculatingSupply, createPeriodsForContract } from '../helpers'
 import { ReleasePeriod } from '../../../generated/schema'
 
@@ -60,3 +60,5 @@ export function handleInitialize(call: InitializeCall): void {
 
   createPeriodsForContract(contract, endTime, startTime, periods, managedAmount)
 }
+
+export function handleTokensReleased(event: TokensReleased): void{}
