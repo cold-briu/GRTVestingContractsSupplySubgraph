@@ -1,28 +1,14 @@
 import { Address, Bytes, BigInt, ethereum, TypedMap } from "@graphprotocol/graph-ts"
 import { newMockEvent, assert } from "matchstick-as"
 import {
-	handleTransfer as joyWorldHandleTransfer,
-	handleApproval as joyWorldHandleApproval,
-	handleApprovalForAll as joyWorldHandleApprovalForAll
-} from "../../mappings/joyWorld"
-import {
-	handleTransfer as joyToysHandleTransfer,
-	handleApproval as joyToysHandleApproval,
-	handleApprovalForAll as joyToysHandleApprovalForAll
-} from "../../mappings/joyToys"
+	handleInitialize as _handleInitialize,
+} from "../../mappings/tokenLockWallets/tokenLockWallet"
 
 export namespace tests {
 
 	export namespace mappingsWrapper {
-		export namespace joyWorld {
-			export let handleTransfer = joyWorldHandleTransfer
-			export let handleApproval = joyWorldHandleApproval
-			export let handleApprovalForAll = joyWorldHandleApprovalForAll
-		}
-		export namespace joyToys {
-			export let handleTransfer = joyToysHandleTransfer
-			export let handleApproval = joyToysHandleApproval
-			export let handleApprovalForAll = joyToysHandleApprovalForAll
+		export namespace graphTokenLockWallet {
+			export let handleInitialize = _handleInitialize
 		}
 	}
 	export namespace helpers {
