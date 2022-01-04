@@ -14,10 +14,10 @@ export function handleBlock(block: ethereum.Block): void {
 
     if (!periodsToProcess) {
       log.warning("PeriodsToProcess must be declared", [])
-      return 
+      return
     }
 
-    for(let i = 0; i < periodsToProcess.length; i++) {
+    for (let i = 0; i < periodsToProcess.length; i++) {
 
       let currentArray = periodsToProcess as Array<string>;
 
@@ -28,7 +28,7 @@ export function handleBlock(block: ethereum.Block): void {
         currentPeriod = new ReleasePeriod(currentId)
         return
       }
-      
+
       if (currentPeriod && currentPeriod.releaseDate < block.timestamp) {
         let prevToProcessAmount = circulatingSupply.periodsToProcessTotalAmount;
         let prevProcessedAmount = circulatingSupply.periodsProcessedTotalAmount;
@@ -71,9 +71,9 @@ export function handleInitialize(call: InitializeCall): void {
   let managedAmount = call.inputs._managedAmount
 
   // After researching noticed couldn't get contract addresses that's why using transaction's hash
-  let contract = call.transaction.hash as Address
+  let contract = call.to
 
   createPeriodsForContract(contract, endTime, startTime, periods, managedAmount)
 }
 
-export function handleTokensReleased(event: TokensReleased): void{}
+export function handleTokensReleased(event: TokensReleased): void { }
