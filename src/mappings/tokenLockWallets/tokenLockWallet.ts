@@ -12,6 +12,11 @@ export function handleBlock(block: ethereum.Block): void {
     let periodsToProcess = circulatingSupply.periodsToProcess;
     let filteredPeriodsToProcess = new Array<string>();
 
+    if (!periodsToProcess) {
+      log.warning("PeriodsToProcess must be declared", [])
+      return 
+    }
+
     for(let i = 0; i < periodsToProcess.length; i++) {
 
       let currentArray = periodsToProcess as Array<string>;
@@ -19,14 +24,24 @@ export function handleBlock(block: ethereum.Block): void {
       let currentId = currentArray[i] as string;
       let currentPeriod = ReleasePeriod.load(currentId);
 
-      if (currentPeriod.releaseDate < block.timestamp) {
+      if (!currentPeriod) {
+        currentPeriod = new ReleasePeriod(currentId)
+        return
+      }
+      
+      if (currentPeriod && currentPeriod.releaseDate < block.timestamp) {
         let prevToProcessAmount = circulatingSupply.periodsToProcessTotalAmount;
         let prevProcessedAmount = circulatingSupply.periodsProcessedTotalAmount;
 
         circulatingSupply.periodsToProcessTotalAmount = prevToProcessAmount.minus(currentPeriod.amount);
         circulatingSupply.periodsProcessedTotalAmount = prevProcessedAmount.plus(currentPeriod.amount);
         circulatingSupply.circulatingSupply = circulatingSupply.circulatingSupply.plus(currentPeriod.amount);
-        circulatingSupply.periodsProcessed.push(currentPeriod.id);
+        let pp = circulatingSupply.periodsProcessed
+
+        if (pp && Array.isArray(pp)) {
+          pp.push(currentPeriod.id)
+        }
+        circulatingSupply.periodsProcessed = pp
 
         currentPeriod.processed = true;
       } else {
