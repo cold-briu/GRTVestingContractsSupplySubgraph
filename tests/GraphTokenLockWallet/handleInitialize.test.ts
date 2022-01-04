@@ -1,20 +1,20 @@
-// import { Address, BigInt, TypedMap } from "@graphprotocol/graph-ts"
+import { Address, BigInt, TypedMap } from "@graphprotocol/graph-ts"
 // import { clearStore, assert } from "matchstick-as/assembly/index"
 // import { Approval } from "../../generated/joyToys/joyToys"
-// import { events, metadata, tests, tokens } from "../../src/modules"
+import { tests } from "../../src/modules"
 
 export function testHandleInitialize(): void {
-	// let owner = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
-	// let approved = Address.fromString("0x9b9cc10852f215bcea3e684ef584eb2b7c24abc9")
-	// let tokenId = BigInt.fromI32(666)
+	let owner = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
+	let approved = Address.fromString("0x9b9cc10852f215bcea3e684ef584eb2b7c24abc9")
+	let tokenId = BigInt.fromI32(666)
 
-	// let event = changetype<Approval>(tests.helpers.events.getNewEvent(
-	// 	[
-	// 		tests.helpers.params.getAddress("owner", owner),
-	// 		tests.helpers.params.getAddress("approved", approved),
-	// 		tests.helpers.params.getBigInt("tokenId", tokenId)
-	// 	]
-	// ))
+	let call = changetype<Approval>(tests.helpers.calls.getNewCall(
+		[
+			tests.helpers.params.getAddress("owner", owner),
+			tests.helpers.params.getAddress("approved", approved),
+			tests.helpers.params.getBigInt("tokenId", tokenId)
+		]
+	))
 
 	// tests.mappingsWrapper.joyToys.handleApproval(event)
 

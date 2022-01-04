@@ -1,5 +1,5 @@
 import { Address, Bytes, BigInt, ethereum, TypedMap } from "@graphprotocol/graph-ts"
-import { newMockEvent, assert } from "matchstick-as"
+import { newMockEvent, newMockCall, assert } from "matchstick-as"
 import {
 	handleInitialize as _handleInitialize,
 } from "../../mappings/tokenLockWallets/tokenLockWallet"
@@ -87,6 +87,19 @@ export namespace tests {
 				return event
 			}
 		}
+
+		export namespace calls {
+			export function getNewCall(inputs: ethereum.EventParam[]): ethereum.Call {
+				let call = newMockCall()
+				call.inputValues = new Array()
+				for (let index = 0; index < inputs.length; index++) {
+					call.inputValues.push(inputs[index])
+				}
+				return call
+			}
+		}
+
+		export namespace
 
 		export namespace params {
 
