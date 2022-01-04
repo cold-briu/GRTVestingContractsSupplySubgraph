@@ -99,7 +99,7 @@ export namespace tests {
 			}
 		}
 
-		export namespace
+
 
 		export namespace params {
 

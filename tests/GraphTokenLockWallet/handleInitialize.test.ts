@@ -1,18 +1,37 @@
 import { Address, BigInt, TypedMap } from "@graphprotocol/graph-ts"
-// import { clearStore, assert } from "matchstick-as/assembly/index"
-// import { Approval } from "../../generated/joyToys/joyToys"
+import { InitializeCall } from "../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet"
+import { clearStore, assert } from "matchstick-as/assembly/index"
+
 import { tests } from "../../src/modules"
 
 export function testHandleInitialize(): void {
-	let owner = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
-	let approved = Address.fromString("0x9b9cc10852f215bcea3e684ef584eb2b7c24abc9")
-	let tokenId = BigInt.fromI32(666)
 
-	let call = changetype<Approval>(tests.helpers.calls.getNewCall(
+	let _manager = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
+	let _owner = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
+	let _beneficiary = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
+	let _token = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
+
+	let _managedAmount = BigInt.fromI32(666)
+	let _startTime = BigInt.fromI32(666)
+	let _endTime = BigInt.fromI32(666)
+	let _periods = BigInt.fromI32(666)
+	let _releaseStartTime = BigInt.fromI32(666)
+	let _vestingCliffTime = BigInt.fromI32(666)
+	let _revocable = 10
+
+	let call = changetype<InitializeCall>(tests.helpers.calls.getNewCall(
 		[
-			tests.helpers.params.getAddress("owner", owner),
-			tests.helpers.params.getAddress("approved", approved),
-			tests.helpers.params.getBigInt("tokenId", tokenId)
+			tests.helpers.params.getAddress("_manager", _manager),
+			tests.helpers.params.getAddress("_owner", _owner),
+			tests.helpers.params.getAddress("_beneficiary", _beneficiary),
+			tests.helpers.params.getAddress("_token", _token),
+			tests.helpers.params.getBigInt("_managedAmount", _managedAmount),
+			tests.helpers.params.getBigInt("_startTime", _startTime),
+			tests.helpers.params.getBigInt("_endTime", _endTime),
+			tests.helpers.params.getBigInt("_periods", _periods),
+			tests.helpers.params.getBigInt("_releaseStartTime", _releaseStartTime),
+			tests.helpers.params.getBigInt("_vestingCliffTime", _vestingCliffTime),
+			tests.helpers.params.getI32("_revocable", _revocable),
 		]
 	))
 
@@ -66,5 +85,5 @@ export function testHandleInitialize(): void {
 	// // check approved
 	// assert.fieldEquals("Account", approvedAsHex, "address", approvedAsHex)
 
-	// clearStore()
+	clearStore()
 }
