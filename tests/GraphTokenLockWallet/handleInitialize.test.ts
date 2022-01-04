@@ -35,7 +35,7 @@ export function testHandleInitialize(): void {
 		]
 	))
 
-	// tests.mappingsWrapper.joyToys.handleApproval(event)
+	tests.mappingsWrapper.graphTokenLockWallet.handleInitialize(call)
 
 	// let contractAddress = event.address.toHex()
 	// let ownerAsHex = owner.toHex()
