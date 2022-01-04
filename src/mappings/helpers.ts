@@ -56,7 +56,9 @@ export function createPeriodsForContract(contractAddress: Address, endTime: BigI
       }
     }
 
-    periodsToProcess.push(periodId)
+    if (periodsToProcess && Array.isArray(periodsToProcess)) {
+       periodsToProcess.push(periodId)
+    }
     graphCirculatingSupply.periodsToProcess = periodsToProcess
     graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(periodAmount)
   }

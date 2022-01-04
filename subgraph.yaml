@@ -13,7 +13,7 @@ dataSources:
       startBlock: 11446769
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/graphToken.ts
       entities:
@@ -34,7 +34,7 @@ dataSources:
       startBlock: 11466643	
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/tokenLockWallets/manager.ts
       entities:
@@ -54,7 +54,7 @@ dataSources:
       startBlock: 11481575
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - TokenLockWallet
@@ -74,7 +74,7 @@ dataSources:
       startBlock: 11481572
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - TokenLockWallet
@@ -95,7 +95,7 @@ templates:
       abi: GraphTokenLockWallet
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
       entities:
