@@ -2,8 +2,9 @@
   "name": "grt-vesting-contracts-supply",
   "license": "MIT",
   "scripts": {
-    "codegen": "graph codegen",
-    "build": "graph build",
+    "test": "rm -rf ./tests/.bin  && npx graph test index",
+    "codegen": "npx graph codegen",
+    "build": "npx graph build",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ gabrielcamba/grt-vesting-contracts-supply",
     "deploy:dev": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ gabrielcamba/subgraphito",
     "deploy-studio": "graph deploy --node https://api.studio.thegraph.com/deploy/ grt-vesting-contracts-supply --ipfs https://api.thegraph.com/ipfs/",
