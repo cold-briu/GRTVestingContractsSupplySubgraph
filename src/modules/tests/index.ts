@@ -11,6 +11,7 @@ export namespace tests {
 			export let handleInitialize = _handleInitialize
 		}
 	}
+
 	export namespace helpers {
 		export namespace runtime {
 
@@ -93,8 +94,6 @@ export namespace tests {
 				return call
 			}
 		}
-
-
 
 		export namespace params {
 

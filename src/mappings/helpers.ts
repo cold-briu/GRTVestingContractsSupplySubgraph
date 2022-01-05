@@ -1,18 +1,19 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { ContractData, GraphCirculatingSupply, ReleasePeriod } from '../../generated/schema'
 import { GraphTokenLockWallet } from '../../generated/templates'
+import { contracts } from '../modules'
 
 export function createOrLoadGraphCirculatingSupply(): GraphCirculatingSupply {
   let graphCirculatingSupply = GraphCirculatingSupply.load('1')
   if (graphCirculatingSupply == null) {
     graphCirculatingSupply = new GraphCirculatingSupply('1')
-    graphCirculatingSupply.totalSupply = BigInt.fromI32(0) 
+    graphCirculatingSupply.totalSupply = BigInt.fromI32(0)
     graphCirculatingSupply.circulatingSupply = BigInt.fromI32(0)
     graphCirculatingSupply.periodsToProcess = []
-    graphCirculatingSupply.periodsToProcessTotalAmount = BigInt.fromI32(0) 
+    graphCirculatingSupply.periodsToProcessTotalAmount = BigInt.fromI32(0)
     graphCirculatingSupply.periodsProcessed = []
-    graphCirculatingSupply.periodsProcessedTotalAmount = BigInt.fromI32(0) 
-    graphCirculatingSupply.minPeriodToProcessDate = BigInt.fromI32(0) 
+    graphCirculatingSupply.periodsProcessedTotalAmount = BigInt.fromI32(0)
+    graphCirculatingSupply.minPeriodToProcessDate = BigInt.fromI32(0)
 
     graphCirculatingSupply.save()
   }
@@ -29,16 +30,13 @@ export function createPeriodsForContract(contractAddress: Address, endTime: BigI
   let periodsI32 = periods.toI32()
 
   // Creating contract data for debugging purposes
-  let contract  = new ContractData(id)
-  contract.contract = id
-  contract.periods = periods
-  contract.startTime = startTime
-  contract.endTime = endTime
-  contract.managedAmount = managedAmount
+  let contract = contracts.createContractData(
+    id, periods, managedAmount, startTime, endTime
+  )
   contract.save()
 
   log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [id])
-  for(let i = 0; i < periodsI32; i++) {
+  for (let i = 0; i < periodsI32; i++) {
     let periodId = id + "-" + i.toString();
     let releasePeriod = new ReleasePeriod(periodId);
     let periodsToProcess = graphCirculatingSupply.periodsToProcess
@@ -49,15 +47,15 @@ export function createPeriodsForContract(contractAddress: Address, endTime: BigI
     releasePeriod.processed = false
     releasePeriod.save()
 
-    if (i == 0){
-      if(graphCirculatingSupply.minPeriodToProcessDate.isZero() || 
-      graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate) {
+    if (i == 0) {
+      if (graphCirculatingSupply.minPeriodToProcessDate.isZero() ||
+        graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate) {
         graphCirculatingSupply.minPeriodToProcessDate = periodReleaseDate
       }
     }
 
     if (periodsToProcess && Array.isArray(periodsToProcess)) {
-       periodsToProcess.push(periodId)
+      periodsToProcess.push(periodId)
     }
     graphCirculatingSupply.periodsToProcess = periodsToProcess
     graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(periodAmount)
