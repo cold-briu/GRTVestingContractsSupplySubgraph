@@ -64,7 +64,7 @@ export function testHandleInitialize(): void {
 		_periods,
 		_startTime,
 		periodsDuration,
-		managedAmount
+		_managedAmount.div(_periods).toString()
 	)
 
 
