@@ -1,3 +1,4 @@
+import { integer } from "@protofire/subgraph-toolkit";
 import { BigInt } from "@graphprotocol/graph-ts"
 import { GraphCirculatingSupply } from "../../../generated/schema"
 
@@ -7,13 +8,13 @@ export namespace circulatingSupply {
 		let graphCirculatingSupply = GraphCirculatingSupply.load('1')
 		if (graphCirculatingSupply == null) {
 			graphCirculatingSupply = new GraphCirculatingSupply('1')
-			graphCirculatingSupply.totalSupply = BigInt.fromI32(0)
-			graphCirculatingSupply.circulatingSupply = BigInt.fromI32(0)
+			graphCirculatingSupply.totalSupply = integer.ZERO
+			graphCirculatingSupply.circulatingSupply = integer.ZERO
 			graphCirculatingSupply.periodsToProcess = []
-			graphCirculatingSupply.periodsToProcessTotalAmount = BigInt.fromI32(0)
+			graphCirculatingSupply.periodsToProcessTotalAmount = integer.ZERO
 			graphCirculatingSupply.periodsProcessed = []
-			graphCirculatingSupply.periodsProcessedTotalAmount = BigInt.fromI32(0)
-			graphCirculatingSupply.minPeriodToProcessDate = BigInt.fromI32(0)
+			graphCirculatingSupply.periodsProcessedTotalAmount = integer.ZERO
+			graphCirculatingSupply.minPeriodToProcessDate = integer.ZERO
 		}
 		return graphCirculatingSupply as GraphCirculatingSupply
 	}

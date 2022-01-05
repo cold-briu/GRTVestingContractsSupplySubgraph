@@ -67,31 +67,11 @@ export function testHandleInitialize(): void {
 		_managedAmount.div(_periods).toString()
 	)
 
-
-	// let approvalEventParams = new TypedMap<string, string>()
-	// approvalEventParams.set("token", entityTokenId)
-	// approvalEventParams.set("transaction", txId)
-	// approvalEventParams.set("block", blockId)
-
-	// tests.helpers.runtime.assertMany(
-	// 	"Approval",
-	// 	events.helpers.getNewEventId(
-	// 		contractAddress, approvedAsHex, ownerAsHex,
-	// 		event.block.timestamp.toString()
-	// 	),
-	// 	approvalEventParams
-	// )
-
-	// // check token
-	// assert.fieldEquals("JoyToy", entityTokenId, "owner", ownerAsHex)
-	// assert.fieldEquals("JoyToy", entityTokenId, "approval", approvedAsHex)
-
-
-	// // check owner
-	// assert.fieldEquals("Account", ownerAsHex, "address", ownerAsHex)
-
-	// // check approved
-	// assert.fieldEquals("Account", approvedAsHex, "address", approvedAsHex)
+	testHelpers.circulatingSupplyPeriodsCreation(
+		contractDataId,
+		_periods.toI32(),
+		_managedAmount
+	)
 
 	clearStore()
 }

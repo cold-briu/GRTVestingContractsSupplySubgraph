@@ -37,14 +37,39 @@ export function createPeriodsForContract(contractAddress: Address, endTime: BigI
 
     periodsToProcess.push(releasePeriod.id)
     graphCirculatingSupply.periodsToProcess = periodsToProcess
-    graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(periodAmount)
   }
 
-  let prevCirculatingSupply = graphCirculatingSupply.circulatingSupply
+  /*
+    for period in periods {
+      let periodMount = managedAmount.div(periods)
+      graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(periodAmount)
+    }
+  
+    divide in same amounts and then sum up pieces
+    is same as not divide at all
+  
+    for period in periods {
+      // ...
+    }
+    graphCirculatingSupply.periodsToProcessTotalAmount.plus(managedAmount)
+  }
+  */
 
-  graphCirculatingSupply.circulatingSupply = prevCirculatingSupply.minus(managedAmount)
+  graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(managedAmount)
+
+  /*
+  {
+    let prevCirculatingSupply = graphCirculatingSupply.circulatingSupply
+    graphCirculatingSupply.circulatingSupply = prevCirculatingSupply.minus(managedAmount)
+  }
+   is the same as
+  {
+    graphCirculatingSupply.circulatingSupply.minus(managedAmount)
+  }
+  */
+
+  graphCirculatingSupply.circulatingSupply = graphCirculatingSupply.circulatingSupply.minus(managedAmount)
+
   graphCirculatingSupply.save()
-
   GraphTokenLockWallet.create(contractAddress)
-
 }
