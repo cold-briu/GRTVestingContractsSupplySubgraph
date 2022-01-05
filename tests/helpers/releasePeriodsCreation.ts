@@ -14,11 +14,12 @@ export function releasePeriodsCreation(
 	)
 
 	let periodReleaseDate = startTime
-	for (let index = 0; index < periodsI32; index++) {
+	let periodsToProcess = releasePeriods.createPeriodsIdList(contractId, periodsI32)
+	for (let index = 0; index < periodsToProcess.length; index++) {
 		periodReleaseDate = periodReleaseDate.plus(periodsDuration)
 
 		let indexStr = index.toString()
-		let periodId = releasePeriods.getPeriodId(contractId, indexStr)
+		let periodId = periodsToProcess[index]
 		let releaseDateStr = periodReleaseDate.toString()
 
 		log.info("\n· · · testing period ={}\n· · · date ={}\n",
