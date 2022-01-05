@@ -3,20 +3,25 @@ import { InitializeCall } from "../../generated/templates/GraphTokenLockWallet/G
 import { clearStore, assert } from "matchstick-as/assembly/index"
 
 import { tests } from "../../src/modules"
+import { helpers } from "../helpers"
 
 export function testHandleInitialize(): void {
+
+	// default contract address is 0xA16081F360e3847006dB660bae1c6d1b2e17eC2A
+	// defined by matchstick
 
 	let _manager = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
 	let _owner = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
 	let _beneficiary = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
 	let _token = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
 
-	let _managedAmount = BigInt.fromI32(666)
-	let _startTime = BigInt.fromI32(666)
-	let _endTime = BigInt.fromI32(666)
-	let _periods = BigInt.fromI32(666)
-	let _releaseStartTime = BigInt.fromI32(666)
-	let _vestingCliffTime = BigInt.fromI32(666)
+	let _managedAmount = BigInt.fromI32(25000)
+	let _startTime = BigInt.fromI32(9000)
+	let _endTime = BigInt.fromI32(90000)
+	let _periods = BigInt.fromI32(10)
+
+	let _releaseStartTime = BigInt.fromI32(0)
+	let _vestingCliffTime = BigInt.fromI32(0)
 	let _revocable = 10
 
 	let call = changetype<InitializeCall>(tests.helpers.calls.getNewCall(
@@ -37,28 +42,20 @@ export function testHandleInitialize(): void {
 
 	tests.mappingsWrapper.graphTokenLockWallet.handleInitialize(call)
 
-	// let contractAddress = event.address.toHex()
-	// let ownerAsHex = owner.toHex()
-	// let approvedAsHex = approved.toHex()
+	let contractDataId = Address.fromString("0xA16081F360e3847006dB660bae1c6d1b2e17eC2A").toHexString()
+	let periods = _periods.toString()
+	let managedAmount = _managedAmount.toString()
+	let startTime = _startTime.toString()
+	let endTime = _endTime.toString()
 
-	// // check block
-	// let blockId = metadata.helpers.getNewMetadataId(contractAddress, event.block.number.toString())
+	helpers.contractDataCreation(
+		contractDataId,
+		periods,
+		managedAmount,
+		startTime,
+		endTime
+	)
 
-	// tests.helpers.runtime.testBlock(
-	// 	blockId, event.block.timestamp.toString(), event.block.number.toString()
-	// )
-
-	// // check evm transaction
-	// let txHash = event.transaction.hash.toHexString()
-	// let txId = metadata.helpers.getNewMetadataId(contractAddress, txHash)
-
-	// tests.helpers.runtime.testTransaction(
-	// 	txId, blockId, txHash, event.transaction.from.toHexString(),
-	// 	event.transaction.gasLimit.toString(), event.transaction.gasPrice.toString()
-	// )
-
-	// // check approval event
-	// let entityTokenId = tokens.helpers.getTokenId(contractAddress, tokenId.toHex())
 
 	// let approvalEventParams = new TypedMap<string, string>()
 	// approvalEventParams.set("token", entityTokenId)
