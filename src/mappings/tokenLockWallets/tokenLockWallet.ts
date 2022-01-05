@@ -2,14 +2,14 @@ import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 
 import { InitializeCall, TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { createPeriodsForContract } from '../helpers'
-import { ReleasePeriod } from '../../../generated/schema'
-import { circulatingSupply as circulatingSupplyModule } from '../../modules'
+import { circulatingSupply as circulatingSupplyModule, releasePeriods } from '../../modules'
 import { GraphTokenLockWallet } from '../../../generated/templates'
 
 export function handleBlock(block: ethereum.Block): void {
   let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
 
-  if (circulatingSupply.minPeriodToProcessDate < block.timestamp) { // something to process
+  // is there something to process?
+  if (circulatingSupply.minPeriodToProcessDate < block.timestamp) {
     let newMin = BigInt.fromI32(0);
     let periodsToProcess = circulatingSupply.periodsToProcess as Array<string>
     // periodsToProcess Array<Tuples<periodId: string, releaseDate:BigInt>>
@@ -19,15 +19,12 @@ export function handleBlock(block: ethereum.Block): void {
 
       let currentId = periodsToProcess[i]
 
-      let currentPeriod = ReleasePeriod.load(currentId); // time cost
-      if (!currentPeriod) {
-        currentPeriod = new ReleasePeriod(currentId)
-        return
-      }
+      let currentPeriod = releasePeriods.safeLoadPeriod(currentId)
 
       // TODO: analyze following logic
 
-      if (currentPeriod && currentPeriod.releaseDate < block.timestamp) { // find which one to process
+      // find which one to process
+      if (currentPeriod && currentPeriod.releaseDate < block.timestamp) {
         let prevToProcessAmount = circulatingSupply.periodsToProcessTotalAmount;
         let prevProcessedAmount = circulatingSupply.periodsProcessedTotalAmount;
 
@@ -43,7 +40,9 @@ export function handleBlock(block: ethereum.Block): void {
 
         currentPeriod.processed = true;
       } else {
+        // if wasn't found 
         filteredPeriodsToProcess.push(currentPeriod.id);
+
         if (newMin.isZero()) {
           newMin = currentPeriod.releaseDate;
         } else {
