@@ -1,9 +1,9 @@
 import { Transfer } from '../../generated/GraphToken/GraphToken'
-import { createOrLoadGraphCirculatingSupply } from './helpers'
+import { circulatingSupply } from '../modules'
 
 
 export function handleTransfer(event: Transfer): void {
-  let graphCirculatingSupply = createOrLoadGraphCirculatingSupply()
+  let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
 
   let to = event.params.to
   let from = event.params.from
@@ -13,13 +13,10 @@ export function handleTransfer(event: Transfer): void {
   if (from.toHexString() == '0x0000000000000000000000000000000000000000') {
     graphCirculatingSupply.totalSupply = graphCirculatingSupply.totalSupply.plus(value)
     graphCirculatingSupply.circulatingSupply = graphCirculatingSupply.circulatingSupply.plus(value)
-    graphCirculatingSupply.save()
-
-  // Burn Transfer
+    // Burn Transfer
   } else if (to.toHexString() == '0x0000000000000000000000000000000000000000') {
     graphCirculatingSupply.totalSupply = graphCirculatingSupply.totalSupply.minus(value)
     graphCirculatingSupply.circulatingSupply = graphCirculatingSupply.circulatingSupply.minus(value)
-    graphCirculatingSupply.save()
-    
-  } 
+  }
+  graphCirculatingSupply.save()
 }

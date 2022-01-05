@@ -1,27 +1,12 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { ContractData, GraphCirculatingSupply, ReleasePeriod } from '../../generated/schema'
+import { ReleasePeriod } from '../../generated/schema'
 import { GraphTokenLockWallet } from '../../generated/templates'
-import { contracts } from '../modules'
-
-export function createOrLoadGraphCirculatingSupply(): GraphCirculatingSupply {
-  let graphCirculatingSupply = GraphCirculatingSupply.load('1')
-  if (graphCirculatingSupply == null) {
-    graphCirculatingSupply = new GraphCirculatingSupply('1')
-    graphCirculatingSupply.totalSupply = BigInt.fromI32(0)
-    graphCirculatingSupply.circulatingSupply = BigInt.fromI32(0)
-    graphCirculatingSupply.periodsToProcess = []
-    graphCirculatingSupply.periodsToProcessTotalAmount = BigInt.fromI32(0)
-    graphCirculatingSupply.periodsProcessed = []
-    graphCirculatingSupply.periodsProcessedTotalAmount = BigInt.fromI32(0)
-    graphCirculatingSupply.minPeriodToProcessDate = BigInt.fromI32(0)
-
-    graphCirculatingSupply.save()
-  }
-  return graphCirculatingSupply as GraphCirculatingSupply
-}
+import { contracts, circulatingSupply } from '../modules'
 
 export function createPeriodsForContract(contractAddress: Address, endTime: BigInt, startTime: BigInt, periods: BigInt, managedAmount: BigInt): void {
-  let graphCirculatingSupply = createOrLoadGraphCirculatingSupply()
+  let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
+  graphCirculatingSupply.save()
+
   let id = contractAddress.toHexString()
   let releaseDuration = endTime.minus(startTime)
   let periodsDuration = releaseDuration.div(periods)

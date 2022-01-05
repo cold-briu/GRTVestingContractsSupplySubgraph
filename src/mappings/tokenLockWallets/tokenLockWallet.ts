@@ -1,11 +1,11 @@
-import { BigInt, log, ethereum, Address } from '@graphprotocol/graph-ts'
+import { BigInt, log, ethereum } from '@graphprotocol/graph-ts'
 import { InitializeCall, TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
-import { createOrLoadGraphCirculatingSupply, createPeriodsForContract } from '../helpers'
+import { createPeriodsForContract } from '../helpers'
 import { ReleasePeriod } from '../../../generated/schema'
+import { circulatingSupply as circulatingSupplyModule } from '../../modules'
 
 export function handleBlock(block: ethereum.Block): void {
-
-  let circulatingSupply = createOrLoadGraphCirculatingSupply();
+  let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
 
   if (circulatingSupply.minPeriodToProcessDate < block.timestamp) {
     let newMin = BigInt.fromI32(0);
