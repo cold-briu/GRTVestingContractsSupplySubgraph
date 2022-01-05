@@ -9,13 +9,9 @@ export function handleBlock(block: ethereum.Block): void {
 
   if (circulatingSupply.minPeriodToProcessDate < block.timestamp) {
     let newMin = BigInt.fromI32(0);
-    let periodsToProcess = circulatingSupply.periodsToProcess;
+    let periodsToProcess = circulatingSupply.periodsToProcess || [] as string[];
     let filteredPeriodsToProcess = new Array<string>();
 
-    if (!periodsToProcess) {
-      log.warning("PeriodsToProcess must be declared", [])
-      return
-    }
 
     for (let i = 0; i < periodsToProcess.length; i++) {
 
@@ -28,6 +24,8 @@ export function handleBlock(block: ethereum.Block): void {
         currentPeriod = new ReleasePeriod(currentId)
         return
       }
+
+      // TODO: analyze following logic
 
       if (currentPeriod && currentPeriod.releaseDate < block.timestamp) {
         let prevToProcessAmount = circulatingSupply.periodsToProcessTotalAmount;
