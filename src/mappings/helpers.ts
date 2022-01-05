@@ -12,7 +12,6 @@ export function createPeriodsForContract(contractAddress: Address, endTime: BigI
   let periodsDuration = releaseDuration.div(periods)
   let periodReleaseDate = startTime
   let periodAmount = managedAmount.div(periods)
-  let periodsI32 = periods.toI32()
 
   // Creating contract data for debugging purposes
   let contract = contracts.createContractData(
@@ -21,26 +20,22 @@ export function createPeriodsForContract(contractAddress: Address, endTime: BigI
   contract.save()
 
   log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [contractId])
-  for (let i = 0; i < periodsI32; i++) {
-
-    let periodsToProcess = graphCirculatingSupply.periodsToProcess
+  for (let i = 0; i < periods.toI32(); i++) {
     periodReleaseDate = periodReleaseDate.plus(periodsDuration)
 
-    let releasePeriod = releasePeriods.createReleasePeriod(
-      contractId, i, periodReleaseDate, periodAmount
-    )
+    let releasePeriod = releasePeriods.createReleasePeriod(contractId, i, periodReleaseDate, periodAmount)
     releasePeriod.save()
+
+    let periodsToProcess = graphCirculatingSupply.periodsToProcess as string[]
 
     if (i == 0) {
       if (graphCirculatingSupply.minPeriodToProcessDate.isZero() ||
-        graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate) {
+        graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate) { // FIXME: may use < instead?
         graphCirculatingSupply.minPeriodToProcessDate = periodReleaseDate
       }
     }
 
-    if (periodsToProcess && Array.isArray(periodsToProcess)) {
-      periodsToProcess.push(releasePeriod.id)
-    }
+    periodsToProcess.push(releasePeriod.id)
     graphCirculatingSupply.periodsToProcess = periodsToProcess
     graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(periodAmount)
   }
