@@ -6,18 +6,12 @@ export function circulatingSupplyPeriodsCreation(
 	contractId: string, periods: i32, managedAmount: BigInt
 ): void {
 
-	let periodsToProcess: string[] = []
-	for (let index = 0; index < periods; index++) {
-		let periodId = releasePeriods.getPeriodId(contractId, index.toString())
-		periodsToProcess.push(periodId)
-	}
+	let periodsToProcess = releasePeriods.createPeriodsIdList(contractId, periods)
 
 	let params = new TypedMap<string, string>()
-
 	params.set("circulatingSupply", integer.ZERO.minus(managedAmount).toString())
 	params.set("periodsToProcessTotalAmount", integer.ZERO.plus(managedAmount).toString())
-
-	// how to test periodsToProcess arr?
+	params.set("periodsToProcess", periodsToProcess.toString())
 
 	tests.helpers.runtime.assertMany(
 		"GraphCirculatingSupply", "1", params

@@ -26,4 +26,13 @@ export namespace releasePeriods {
 	export function getPeriodId(contractId: string, index: string): string {
 		return contractId + "-" + index
 	}
+
+	export function createPeriodsIdList(contractId: string, amount: i32): Array<string> {
+		let list: string[] = []
+		for (let index = 0; index < amount; index++) {
+			let id = getPeriodId(contractId, index.toString())
+			list.push(id)
+		}
+		return list
+	}
 }

@@ -54,7 +54,12 @@ export function testHandleBlock(): void {
 	call.block.timestamp = periodReleaseDate.plus(integer.ONE) // FIXME: this wont work with same number
 
 	tests.mappingsWrapper.graphTokenLockWallet.handleInitialize(call)
+
+	// check circ supply prevstate
+
 	tests.mappingsWrapper.graphTokenLockWallet.handleBlock(call.block)
+
+	// check circ supply result
 
 	// assert circulatingSupply.minPeriodToProcessDate < block.timestamp-1
 
