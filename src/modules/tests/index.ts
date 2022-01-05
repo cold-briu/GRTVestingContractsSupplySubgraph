@@ -2,6 +2,7 @@ import { Address, Bytes, BigInt, ethereum, TypedMap } from "@graphprotocol/graph
 import { newMockEvent, newMockCall, assert } from "matchstick-as"
 import {
 	handleInitialize as _handleInitialize,
+	handleBlock as _handleBlock
 } from "../../mappings/tokenLockWallets/tokenLockWallet"
 
 export namespace tests {
@@ -9,6 +10,7 @@ export namespace tests {
 	export namespace mappingsWrapper {
 		export namespace graphTokenLockWallet {
 			export let handleInitialize = _handleInitialize
+			export let handleBlock = _handleBlock
 		}
 	}
 

@@ -1,4 +1,4 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 
 import { InitializeCall, TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { createPeriodsForContract } from '../helpers'
@@ -7,9 +7,16 @@ import { GraphTokenLockWallet } from '../../../generated/templates'
 
 export function handleBlock(block: ethereum.Block): void {
   let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
-
+  log.info(
+    "\nhandleBlock: processing:\n· · · minPeriodToProcessDate ={}\n· · · block.timestamp ={}",
+    [circulatingSupply.minPeriodToProcessDate.toString(), block.timestamp.toString()]
+  )
   // is there something to process?
   if (circulatingSupply.minPeriodToProcessDate < block.timestamp) {
+    log.warning(
+      "\nhandleBlock: Found something to process:\n· · · minPeriodToProcessDate ={}\n· · · block.timestamp ={}",
+      [circulatingSupply.minPeriodToProcessDate.toString(), block.timestamp.toString()]
+    )
     let newMin = BigInt.fromI32(0);
     let periodsToProcess = circulatingSupply.periodsToProcess as Array<string>
     // periodsToProcess Array<Tuples<periodId: string, releaseDate:BigInt>>
