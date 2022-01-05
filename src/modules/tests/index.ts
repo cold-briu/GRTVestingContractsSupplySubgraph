@@ -72,11 +72,6 @@ export namespace tests {
 			}
 		}
 
-
-		function getNewParam(name: string, value: ethereum.Value): ethereum.EventParam {
-			return new ethereum.EventParam(name, value)
-		}
-
 		export namespace events {
 			export function getNewEvent(params: ethereum.EventParam[]): ethereum.Event {
 				let event = newMockEvent()
@@ -102,6 +97,10 @@ export namespace tests {
 
 
 		export namespace params {
+
+			function getNewParam(name: string, value: ethereum.Value): ethereum.EventParam {
+				return new ethereum.EventParam(name, value)
+			}
 
 			export function getI32(name: string, value: i32): ethereum.EventParam {
 				return getNewParam(name, ethereum.Value.fromI32(value))
