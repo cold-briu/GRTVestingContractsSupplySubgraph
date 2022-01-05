@@ -1,25 +1,25 @@
-import { BigInt, log, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+
 import { InitializeCall, TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { createPeriodsForContract } from '../helpers'
 import { ReleasePeriod } from '../../../generated/schema'
 import { circulatingSupply as circulatingSupplyModule } from '../../modules'
+import { GraphTokenLockWallet } from '../../../generated/templates'
 
 export function handleBlock(block: ethereum.Block): void {
   let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
 
-  if (circulatingSupply.minPeriodToProcessDate < block.timestamp) {
+  if (circulatingSupply.minPeriodToProcessDate < block.timestamp) { // something to process
     let newMin = BigInt.fromI32(0);
-    let periodsToProcess = circulatingSupply.periodsToProcess || [] as string[];
+    let periodsToProcess = circulatingSupply.periodsToProcess as Array<string>
+    // periodsToProcess Array<Tuples<periodId: string, releaseDate:BigInt>>
     let filteredPeriodsToProcess = new Array<string>();
-
 
     for (let i = 0; i < periodsToProcess.length; i++) {
 
-      let currentArray = periodsToProcess as Array<string>;
+      let currentId = periodsToProcess[i]
 
-      let currentId = currentArray[i] as string;
-      let currentPeriod = ReleasePeriod.load(currentId);
-
+      let currentPeriod = ReleasePeriod.load(currentId); // time cost
       if (!currentPeriod) {
         currentPeriod = new ReleasePeriod(currentId)
         return
@@ -27,7 +27,7 @@ export function handleBlock(block: ethereum.Block): void {
 
       // TODO: analyze following logic
 
-      if (currentPeriod && currentPeriod.releaseDate < block.timestamp) {
+      if (currentPeriod && currentPeriod.releaseDate < block.timestamp) { // find which one to process
         let prevToProcessAmount = circulatingSupply.periodsToProcessTotalAmount;
         let prevProcessedAmount = circulatingSupply.periodsProcessedTotalAmount;
 
@@ -69,9 +69,10 @@ export function handleInitialize(call: InitializeCall): void {
   let managedAmount = call.inputs._managedAmount
 
   // After researching noticed couldn't get contract addresses that's why using transaction's hash
-  let contract = call.to
+  let contractAddress = call.to
 
-  createPeriodsForContract(contract, endTime, startTime, periods, managedAmount)
+  createPeriodsForContract(contractAddress, endTime, startTime, periods, managedAmount)
+  GraphTokenLockWallet.create(contractAddress)
 }
 
 export function handleTokensReleased(event: TokensReleased): void { }
