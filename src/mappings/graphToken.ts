@@ -4,6 +4,7 @@ import { circulatingSupply } from '../modules'
 
 export function handleTransfer(event: Transfer): void {
   let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
+  graphCirculatingSupply.save()
 
   let to = event.params.to
   let from = event.params.from
