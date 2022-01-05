@@ -56,5 +56,7 @@ export function testHandleBlock(): void {
 	tests.mappingsWrapper.graphTokenLockWallet.handleInitialize(call)
 	tests.mappingsWrapper.graphTokenLockWallet.handleBlock(call.block)
 
+	// assert circulatingSupply.minPeriodToProcessDate < block.timestamp-1
+
 	clearStore()
 }
