@@ -3,7 +3,7 @@ import { InitializeCall } from "../../generated/templates/GraphTokenLockWallet/G
 import { clearStore, assert } from "matchstick-as/assembly/index"
 
 import { tests } from "../../src/modules"
-import { helpers } from "../helpers"
+import { helpers as testHelpers } from "../helpers"
 
 export function testHandleInitialize(): void {
 
@@ -48,12 +48,23 @@ export function testHandleInitialize(): void {
 	let startTime = _startTime.toString()
 	let endTime = _endTime.toString()
 
-	helpers.contractDataCreation(
+	let releaseDuration = _endTime.minus(_startTime)
+	let periodsDuration = releaseDuration.div(_periods)
+
+	testHelpers.contractDataCreation(
 		contractDataId,
 		periods,
 		managedAmount,
 		startTime,
 		endTime
+	)
+
+	testHelpers.releasePeriodsCreation(
+		contractDataId,
+		_periods,
+		_startTime,
+		periodsDuration,
+		managedAmount
 	)
 
 
