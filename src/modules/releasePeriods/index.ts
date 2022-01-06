@@ -1,17 +1,21 @@
 import { BigInt } from "@graphprotocol/graph-ts";
+import { periodsLists } from "..";
 import { ReleasePeriod } from "../../../generated/schema";
 
 export namespace releasePeriods {
 
 	export function createReleasePeriod(
 		contractId: string, index: i32,
-		releaseDate: BigInt, periodAmount: BigInt
+		releaseDate: BigInt, periodGrtAmount: BigInt
 	): ReleasePeriod {
 		let releasePeriod = new ReleasePeriod(getPeriodId(contractId, index.toString()));
-		releasePeriod.releaseDate = releaseDate
-		releasePeriod.amount = periodAmount // FIXME: why to save here the periodAmount since its already stored in contractData related entity?
+
 		releasePeriod.contract = contractId
+		releasePeriod.releaseDate = releaseDate
+		releasePeriod.amount = periodGrtAmount
 		releasePeriod.processed = false
+		releasePeriod.list = periodsLists.constants.PENDING_LISTS_ID
+
 		return releasePeriod as ReleasePeriod
 	}
 
@@ -54,6 +58,12 @@ export namespace releasePeriods {
 			walletManagedAmount: BigInt, periodsAmount: BigInt
 		): BigInt {
 			return walletManagedAmount.div(periodsAmount)
+		}
+
+		export function increasePeriodReleaseDate(
+			prevDate: BigInt, duration: BigInt
+		): BigInt {
+			return prevDate.plus(duration)
 		}
 	}
 }

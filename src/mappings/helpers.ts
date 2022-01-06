@@ -21,9 +21,14 @@ export function createPeriodsForContract(
   log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [contractId])
 
   for (let i = 0; i < periods.toI32(); i++) {
-    periodReleaseDate = periodReleaseDate.plus(periodsDuration)
 
-    let releasePeriod = releasePeriods.createReleasePeriod(contractId, i, periodReleaseDate, periodAmount)
+    periodReleaseDate = releasePeriods.calculate.increasePeriodReleaseDate(
+      periodReleaseDate, periodsDuration
+    )
+
+    let releasePeriod = releasePeriods.createReleasePeriod(
+      contractId, i, periodReleaseDate, periodAmount
+    )
     releasePeriod.save()
 
     let periodsToProcess = graphCirculatingSupply.periodsToProcess as string[]
