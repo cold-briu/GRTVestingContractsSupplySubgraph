@@ -1,32 +1,152 @@
+interface PeriodsList {
+
+  "internal id used for indexation, singleton"
+  id: ID!
+
+  "related release periods"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "list")
+
+}
+
+type PendingPeriods implements PeriodsList @entity {
+
+  "internal id used for indexation, singleton"
+  id: ID!
+
+  "related release periods"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "list")
+
+}
+
+type ProcessedPeriods implements PeriodsList @entity {
+
+  "internal id used for indexation, singleton"
+  id: ID!
+
+  "related release periods"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "list")
+
+}
+
 type ReleasePeriod @entity {
+
   "Auxiliary entity to represent amounts that will be released once releaseDate reached"
   id: ID!
+
   "This period contract"
-  contract: String!
+  contract: Contract!
+
   "date when the period will be released"
   releaseDate: BigInt!
+
   "amount that will be released once release Date was reach"
   amount: BigInt!
+
   "Indicates if period was released or not"
   processed: Boolean!
+
+  "A list to group release periods in pending or processed"
+  list: PeriodsList!
+
 }
 
-type ContractData @entity {
+interface LockWalletContract {
+
   "Entity created for debugging to know the params to call function to create periods"
   id: ID!
-  "contract address"
-  contract: String!
+
+  "contract's EVM address"
+  address: string!
+
+  "related release period entity"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
+
   "Periods to be created"
-  periods: BigInt!
+  periodsAmount: BigInt!
+
   "start time for releasing"
   startTime: BigInt!
+
   "end Time for releasing"
   endTime: BigInt!
+
   "total amount managed by it's contract"
   managedAmount: BigInt!
+ 
+  "already released grt amount managed by this contract"
+  releasedAmount: BigInt!
+
+  "already released grt amount managed by this contract"
+  pendingAmount: BigInt!
+ 
 }
 
+
+type CustomTokenLockWallet implements LockWalletContract @entity {
+
+  "Entity for TockenLock contracts deployed in a custom way"
+  id: ID!
+
+  "contract's EVM address"
+  address: string!
+
+  "related release period entity"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
+
+  "Periods to be created"
+  periodsAmount: BigInt!
+
+  "start time for releasing"
+  startTime: BigInt!
+
+  "end Time for releasing"
+  endTime: BigInt!
+
+  "total grt amount managed by it's contract"
+  managedAmount: BigInt!
+
+  "already released grt amount managed by this contract"
+  releasedAmount: BigInt!
+
+  "already released grt amount managed by this contract"
+  pendingAmount: BigInt!
+
+}
+
+type FactoryTokenLockWallet implements LockWalletContract @entity {
+
+  "Entity for TockenLock contracts deployed using the GraphTokenLockManager"
+  id: ID!
+
+  "contract's EVM address"
+  address: string!
+
+  "related release period entity"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
+
+  "Periods to be created"
+  periodsAmount: BigInt!
+
+  "start time for releasing"
+  startTime: BigInt!
+
+  "end Time for releasing"
+  endTime: BigInt!
+
+  "total amount managed by it's contract"
+  managedAmount: BigInt!
+
+  "already released grt amount managed by this contract"
+  releasedAmount: BigInt!
+
+  "already released grt amount managed by this contract"
+  pendingAmount: BigInt!
+
+}
+
+
 type GraphCirculatingSupply @entity {
+  
   "ID is set to 1"
   id: ID!
 
@@ -38,14 +158,17 @@ type GraphCirculatingSupply @entity {
 
   "Array containing periods not processed yet"
   periodsToProcess: [ReleasePeriod!]
+
   "Amount to release"
   periodsToProcessTotalAmount: BigInt!
 
   "Periods already released"
   periodsProcessed: [ReleasePeriod!]
+
   "Amount already released"
   periodsProcessedTotalAmount: BigInt!
 
   "This min date saves min release date from periodsToProcess"
   minPeriodToProcessDate: BigInt!
+
 }
