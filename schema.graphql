@@ -34,7 +34,7 @@ type ReleasePeriod @entity {
   id: ID!
 
   "This period contract"
-  contract: Contract!
+  contract: LockWalletContract!
 
   "date when the period will be released"
   releaseDate: BigInt!
@@ -56,7 +56,7 @@ interface LockWalletContract {
   id: ID!
 
   "contract's EVM address"
-  address: string!
+  address: Bytes!
 
   "related release period entity"
   periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
@@ -88,7 +88,7 @@ type CustomTokenLockWallet implements LockWalletContract @entity {
   id: ID!
 
   "contract's EVM address"
-  address: string!
+  address: Bytes!
 
   "related release period entity"
   periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
@@ -119,7 +119,7 @@ type FactoryTokenLockWallet implements LockWalletContract @entity {
   id: ID!
 
   "contract's EVM address"
-  address: string!
+  address: Bytes!
 
   "related release period entity"
   periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
@@ -146,7 +146,7 @@ type FactoryTokenLockWallet implements LockWalletContract @entity {
 
 
 type GraphCirculatingSupply @entity {
-  
+
   "ID is set to 1"
   id: ID!
 
