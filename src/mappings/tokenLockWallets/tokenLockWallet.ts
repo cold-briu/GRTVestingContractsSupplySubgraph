@@ -1,4 +1,4 @@
-import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
+import { BigInt, ethereum, log, json, Bytes } from '@graphprotocol/graph-ts'
 
 import { InitializeCall, TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { createPeriodsForContract } from '../helpers'
@@ -8,8 +8,13 @@ import { GraphTokenLockWallet } from '../../../generated/templates'
 export function handleBlock(block: ethereum.Block): void {
   let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
   log.info(
-    "\nhandleBlock: processing:\n· · · minPeriodToProcessDate ={}\n· · · block.timestamp ={}",
-    [circulatingSupply.minPeriodToProcessDate.toString(), block.timestamp.toString()]
+    "\nhandleBlock: processing:\n· · · periodsToProcess ={}\n· · · periodsProcessed ={}\n· · · minPeriodToProcessDate ={}\n· · · block.timestamp ={}",
+    [
+      circulatingSupply.periodsToProcessTotalAmount.toString(),
+      circulatingSupply.periodsProcessedTotalAmount.toString(),
+      circulatingSupply.minPeriodToProcessDate.toString(),
+      block.timestamp.toString()
+    ]
   )
   // is there something to process?
   if (circulatingSupply.minPeriodToProcessDate < block.timestamp) {
@@ -22,28 +27,30 @@ export function handleBlock(block: ethereum.Block): void {
     // periodsToProcess Array<Tuples<periodId: string, releaseDate:BigInt>>
     let filteredPeriodsToProcess = new Array<string>();
 
+    // log.info(
+    //   "\nhandleBlock: processing:\n· · · periodsToProcess \n={}\n",
+    //   [periodsToProcess.toString().replaceAll(",", "\n")]
+    // )
+
+
     for (let i = 0; i < periodsToProcess.length; i++) {
 
       let currentId = periodsToProcess[i]
-
       let currentPeriod = releasePeriods.safeLoadPeriod(currentId)
 
-      // TODO: analyze following logic
+      // log.info(
+      //   "period: ={} date ={}",
+      //   [currentId, currentPeriod.releaseDate.toString()]
+      // )
 
       // find which one to process
       if (currentPeriod && currentPeriod.releaseDate < block.timestamp) {
-        let prevToProcessAmount = circulatingSupply.periodsToProcessTotalAmount;
-        let prevProcessedAmount = circulatingSupply.periodsProcessedTotalAmount;
-
-        circulatingSupply.periodsToProcessTotalAmount = prevToProcessAmount.minus(currentPeriod.amount);
-        circulatingSupply.periodsProcessedTotalAmount = prevProcessedAmount.plus(currentPeriod.amount);
+        circulatingSupply = circulatingSupplyModule.mutations.processPeriodAmount(circulatingSupply, currentPeriod.amount)
         circulatingSupply.circulatingSupply = circulatingSupply.circulatingSupply.plus(currentPeriod.amount);
-        let pp = circulatingSupply.periodsProcessed
 
-        if (pp && Array.isArray(pp)) {
-          pp.push(currentPeriod.id)
-        }
-        circulatingSupply.periodsProcessed = pp
+        let periodsProcessed = circulatingSupply.periodsProcessed as Array<string>
+        periodsProcessed.push(currentPeriod.id)
+        circulatingSupply.periodsProcessed = periodsProcessed
 
         currentPeriod.processed = true;
       } else {
@@ -58,7 +65,6 @@ export function handleBlock(block: ethereum.Block): void {
           }
         }
       }
-
       currentPeriod.save();
     }
     circulatingSupply.minPeriodToProcessDate = newMin;
