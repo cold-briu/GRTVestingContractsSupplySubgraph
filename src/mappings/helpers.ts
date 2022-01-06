@@ -1,19 +1,25 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
-import { circulatingSupply, releasePeriods } from '../modules'
+import { circulatingSupply, periodsLists, releasePeriods } from '../modules'
 
 export function createPeriodsForContract(
   contractId: string, periods: BigInt, managedAmount: BigInt,
   startTime: BigInt, endTime: BigInt
 ): void {
+
   let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
   graphCirculatingSupply.save()
 
-  let releaseDuration = endTime.minus(startTime)
-  let periodsDuration = releaseDuration.div(periods)
+  let pendingPeriodsList = periodsLists.pending.getOrCreatePendingPeriodsList()
+  pendingPeriodsList.save()
+
+  // [periodAmount, periodsAmount, managedAmount] naming may introduce confusion: some of them talk about GRT but others don't
+  let releaseDuration = releasePeriods.calculate.walletReleaseDuration(startTime, endTime)
+  let periodsDuration = releasePeriods.calculate.periodReleaseDuration(releaseDuration, periods)
+  let periodAmount = releasePeriods.calculate.periodAmount(managedAmount, periods)
   let periodReleaseDate = startTime
-  let periodAmount = managedAmount.div(periods)
 
   log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [contractId])
+
   for (let i = 0; i < periods.toI32(); i++) {
     periodReleaseDate = periodReleaseDate.plus(periodsDuration)
 

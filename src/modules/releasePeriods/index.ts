@@ -35,4 +35,25 @@ export namespace releasePeriods {
 		}
 		return list
 	}
+
+	export namespace calculate {
+
+		export function walletReleaseDuration(
+			startTime: BigInt, endTime: BigInt
+		): BigInt {
+			return endTime.minus(startTime)
+		}
+
+		export function periodReleaseDuration(
+			releaseDuration: BigInt, periodsAmount: BigInt
+		): BigInt {
+			return releaseDuration.div(periodsAmount)
+		}
+
+		export function periodAmount(
+			walletManagedAmount: BigInt, periodsAmount: BigInt
+		): BigInt {
+			return walletManagedAmount.div(periodsAmount)
+		}
+	}
 }
