@@ -80,7 +80,6 @@ export function handleInitialize(call: InitializeCall): void {
   let endTime = call.inputs._endTime
   let managedAmount = call.inputs._managedAmount
 
-  // After researching noticed couldn't get contract addresses that's why using transaction's hash
   let contractAddress = call.to
 
   createPeriodsForContract(contractAddress, endTime, startTime, periods, managedAmount)
