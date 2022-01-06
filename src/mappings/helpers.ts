@@ -1,73 +1,50 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { ContractData, GraphCirculatingSupply, ReleasePeriod } from '../../generated/schema'
-import { GraphTokenLockWallet } from '../../generated/templates'
-
-export function createOrLoadGraphCirculatingSupply(): GraphCirculatingSupply {
-  let graphCirculatingSupply = GraphCirculatingSupply.load('1')
-  if (graphCirculatingSupply == null) {
-    graphCirculatingSupply = new GraphCirculatingSupply('1')
-    graphCirculatingSupply.totalSupply = BigInt.fromI32(0) 
-    graphCirculatingSupply.circulatingSupply = BigInt.fromI32(0)
-    graphCirculatingSupply.periodsToProcess = []
-    graphCirculatingSupply.periodsToProcessTotalAmount = BigInt.fromI32(0) 
-    graphCirculatingSupply.periodsProcessed = []
-    graphCirculatingSupply.periodsProcessedTotalAmount = BigInt.fromI32(0) 
-    graphCirculatingSupply.minPeriodToProcessDate = BigInt.fromI32(0) 
-
-    graphCirculatingSupply.save()
-  }
-  return graphCirculatingSupply as GraphCirculatingSupply
-}
+import { contracts, circulatingSupply, releasePeriods } from '../modules'
 
 export function createPeriodsForContract(contractAddress: Address, endTime: BigInt, startTime: BigInt, periods: BigInt, managedAmount: BigInt): void {
-  let graphCirculatingSupply = createOrLoadGraphCirculatingSupply()
-  let id = contractAddress.toHexString()
+  let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
+  graphCirculatingSupply.save()
+
+  let contractId = contractAddress.toHexString()
   let releaseDuration = endTime.minus(startTime)
   let periodsDuration = releaseDuration.div(periods)
   let periodReleaseDate = startTime
   let periodAmount = managedAmount.div(periods)
-  let periodsI32 = periods.toI32()
 
   // Creating contract data for debugging purposes
-  let contract  = new ContractData(id)
-  contract.contract = id
-  contract.periods = periods
-  contract.startTime = startTime
-  contract.endTime = endTime
-  contract.managedAmount = managedAmount
+  let contract = contracts.createContractData(
+    contractId, periods, managedAmount, startTime, endTime
+  )
   contract.save()
 
-  log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [id])
-  for(let i = 0; i < periodsI32; i++) {
-    let periodId = id + "-" + i.toString();
-    let releasePeriod = new ReleasePeriod(periodId);
-    let periodsToProcess = graphCirculatingSupply.periodsToProcess
+  log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [contractId])
+  for (let i = 0; i < periods.toI32(); i++) {
     periodReleaseDate = periodReleaseDate.plus(periodsDuration)
-    releasePeriod.releaseDate = periodReleaseDate
-    releasePeriod.amount = periodAmount
-    releasePeriod.contract = id
-    releasePeriod.processed = false
+
+    let releasePeriod = releasePeriods.createReleasePeriod(contractId, i, periodReleaseDate, periodAmount)
     releasePeriod.save()
 
-    if (i == 0){
-      if(graphCirculatingSupply.minPeriodToProcessDate.isZero() || 
-      graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate) {
+    let periodsToProcess = graphCirculatingSupply.periodsToProcess as string[]
+
+    if (i == 0) {
+      if (graphCirculatingSupply.minPeriodToProcessDate.isZero() ||
+        graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate) { // FIXME: may use < instead?
         graphCirculatingSupply.minPeriodToProcessDate = periodReleaseDate
       }
     }
 
-    if (periodsToProcess && Array.isArray(periodsToProcess)) {
-       periodsToProcess.push(periodId)
-    }
+    periodsToProcess.push(releasePeriod.id)
     graphCirculatingSupply.periodsToProcess = periodsToProcess
-    graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(periodAmount)
   }
+  /*
+  {
+    let prevCirculatingSupply = graphCirculatingSupply.circulatingSupply
+    graphCirculatingSupply.circulatingSupply = prevCirculatingSupply.minus(managedAmount)
+  }
+   is the same as :
+  */
+  graphCirculatingSupply.circulatingSupply = graphCirculatingSupply.circulatingSupply.minus(managedAmount) // FIXME: this may broke
 
-  let prevCirculatingSupply = graphCirculatingSupply.circulatingSupply
-
-  graphCirculatingSupply.circulatingSupply = prevCirculatingSupply.minus(managedAmount)
+  graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(managedAmount)
   graphCirculatingSupply.save()
-
-  GraphTokenLockWallet.create(contractAddress)
-
 }

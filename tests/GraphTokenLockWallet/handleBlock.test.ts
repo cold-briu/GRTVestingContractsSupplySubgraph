@@ -1,11 +1,12 @@
-import { Address, BigInt, TypedMap } from "@graphprotocol/graph-ts"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
 import { InitializeCall } from "../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet"
-import { clearStore, assert } from "matchstick-as/assembly/index"
+import { clearStore } from "matchstick-as/assembly/index"
 
 import { tests } from "../../src/modules"
 import { helpers as testHelpers } from "../helpers"
+import { integer } from "@protofire/subgraph-toolkit"
 
-export function testHandleInitialize(): void {
+export function testHandleBlock(): void {
 
 	// default contract address is 0xA16081F360e3847006dB660bae1c6d1b2e17eC2A
 	// defined by matchstick
@@ -40,8 +41,6 @@ export function testHandleInitialize(): void {
 		]
 	))
 
-	tests.mappingsWrapper.graphTokenLockWallet.handleInitialize(call)
-
 	let contractDataId = Address.fromString("0xA16081F360e3847006dB660bae1c6d1b2e17eC2A").toHexString()
 	let periods = _periods.toString()
 	let managedAmount = _managedAmount.toString()
@@ -50,30 +49,19 @@ export function testHandleInitialize(): void {
 
 	let releaseDuration = _endTime.minus(_startTime)
 	let periodsDuration = releaseDuration.div(_periods)
+	let periodReleaseDate = _startTime.plus(periodsDuration)
 
-	testHelpers.contractDataCreation(
-		contractDataId,
-		periods,
-		managedAmount,
-		startTime,
-		endTime
-	)
+	call.block.timestamp = periodReleaseDate.plus(integer.ONE) // FIXME: this wont work with same number
 
-	testHelpers.releasePeriodsCreation(
-		contractDataId,
-		_periods,
-		_startTime,
-		periodsDuration,
-		_managedAmount.div(_periods).toString()
-	)
+	tests.mappingsWrapper.graphTokenLockWallet.handleInitialize(call)
 
-	testHelpers.circulatingSupplyPeriodsCreation(
-		contractDataId,
-		_periods.toI32(),
-		_managedAmount
-	)
+	testHelpers.circulatingSupplyPreBlock(contractDataId, _periods.toI32(), _managedAmount)
 
-	// TODO: test data source and handle Released
+	tests.mappingsWrapper.graphTokenLockWallet.handleBlock(call.block)
 
-	clearStore()
+	// check circ supply result
+
+	// assert circulatingSupply.minPeriodToProcessDate < block.timestamp-1
+
+	// clearStore()
 }

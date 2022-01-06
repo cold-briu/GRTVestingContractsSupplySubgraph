@@ -2,6 +2,7 @@ import { Address, Bytes, BigInt, ethereum, TypedMap } from "@graphprotocol/graph
 import { newMockEvent, newMockCall, assert } from "matchstick-as"
 import {
 	handleInitialize as _handleInitialize,
+	handleBlock as _handleBlock
 } from "../../mappings/tokenLockWallets/tokenLockWallet"
 
 export namespace tests {
@@ -9,8 +10,10 @@ export namespace tests {
 	export namespace mappingsWrapper {
 		export namespace graphTokenLockWallet {
 			export let handleInitialize = _handleInitialize
+			export let handleBlock = _handleBlock
 		}
 	}
+
 	export namespace helpers {
 		export namespace runtime {
 
@@ -72,11 +75,6 @@ export namespace tests {
 			}
 		}
 
-
-		function getNewParam(name: string, value: ethereum.Value): ethereum.EventParam {
-			return new ethereum.EventParam(name, value)
-		}
-
 		export namespace events {
 			export function getNewEvent(params: ethereum.EventParam[]): ethereum.Event {
 				let event = newMockEvent()
@@ -99,9 +97,11 @@ export namespace tests {
 			}
 		}
 
-
-
 		export namespace params {
+
+			function getNewParam(name: string, value: ethereum.Value): ethereum.EventParam {
+				return new ethereum.EventParam(name, value)
+			}
 
 			export function getI32(name: string, value: i32): ethereum.EventParam {
 				return getNewParam(name, ethereum.Value.fromI32(value))
