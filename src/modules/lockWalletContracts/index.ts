@@ -1,6 +1,6 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { integer } from "@protofire/subgraph-toolkit";
-import { FactoryTokenLockWallet, CustomLockWallet } from "../../../generated/schema";
+import { FactoryTokenLockWallet, CustomTokenLockWallet } from "../../../generated/schema";
 
 export namespace lockWalletContracts {
 
@@ -32,10 +32,10 @@ export namespace lockWalletContracts {
 		export function createCustomLockWallet(
 			address: Bytes, periods: BigInt, managedAmount: BigInt,
 			startTime: BigInt, endTime: BigInt
-		): CustomLockWallet {
+		): CustomTokenLockWallet {
 
 			let id = address.toHexString()
-			let entity = new FactoryTokenLockWallet(id)
+			let entity = new CustomTokenLockWallet(id)
 
 			entity.address = address
 			entity.periodsAmount = periods
@@ -45,7 +45,7 @@ export namespace lockWalletContracts {
 			entity.releasedAmount = integer.ZERO
 			entity.pendingAmount = integer.ZERO
 
-			return entity as CustomLockWallet
+			return entity as CustomTokenLockWallet
 		}
 
 	}

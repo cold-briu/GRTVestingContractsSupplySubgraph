@@ -2,7 +2,7 @@ import { BigInt, ethereum, log, json, Bytes } from '@graphprotocol/graph-ts'
 
 import { InitializeCall, TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { createPeriodsForContract } from '../helpers'
-import { circulatingSupply as circulatingSupplyModule, releasePeriods } from '../../modules'
+import { circulatingSupply as circulatingSupplyModule, lockWalletContracts, releasePeriods } from '../../modules'
 import { GraphTokenLockWallet } from '../../../generated/templates'
 
 export function handleBlock(block: ethereum.Block): void {
@@ -75,14 +75,20 @@ export function handleBlock(block: ethereum.Block): void {
 
 export function handleInitialize(call: InitializeCall): void {
 
+  let contractAddress = call.to
   let periods = call.inputs._periods
+  let managedAmount = call.inputs._managedAmount
   let startTime = call.inputs._startTime
   let endTime = call.inputs._endTime
-  let managedAmount = call.inputs._managedAmount
 
-  let contractAddress = call.to
+  let lockWallet = lockWalletContracts.custom.createCustomLockWallet(
+    contractAddress, periods, managedAmount, startTime, endTime
+  )
+  lockWallet.save()
 
-  createPeriodsForContract(contractAddress, endTime, startTime, periods, managedAmount)
+  createPeriodsForContract(
+    lockWallet.id, periods, managedAmount, startTime, endTime
+  )
   GraphTokenLockWallet.create(contractAddress)
 }
 

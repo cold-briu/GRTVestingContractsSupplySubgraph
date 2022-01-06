@@ -1,21 +1,17 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { contracts, circulatingSupply, releasePeriods } from '../modules'
+import { BigInt, log } from '@graphprotocol/graph-ts'
+import { circulatingSupply, releasePeriods } from '../modules'
 
-export function createPeriodsForContract(contractAddress: Address, endTime: BigInt, startTime: BigInt, periods: BigInt, managedAmount: BigInt): void {
+export function createPeriodsForContract(
+  contractId: string, periods: BigInt, managedAmount: BigInt,
+  startTime: BigInt, endTime: BigInt
+): void {
   let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
   graphCirculatingSupply.save()
 
-  let contractId = contractAddress.toHexString()
   let releaseDuration = endTime.minus(startTime)
   let periodsDuration = releaseDuration.div(periods)
   let periodReleaseDate = startTime
   let periodAmount = managedAmount.div(periods)
-
-  // Creating contract data for debugging purposes
-  let contract = contracts.createContractData(
-    contractId, periods, managedAmount, startTime, endTime
-  )
-  contract.save()
 
   log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [contractId])
   for (let i = 0; i < periods.toI32(); i++) {
