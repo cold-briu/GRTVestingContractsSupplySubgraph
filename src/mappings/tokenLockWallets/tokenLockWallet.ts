@@ -6,7 +6,9 @@ import { circulatingSupply as circulatingSupplyModule, releasePeriods } from '..
 import { GraphTokenLockWallet } from '../../../generated/templates'
 
 export function handleBlock(block: ethereum.Block): void {
+
   let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
+
   log.info(
     "\nhandleBlock: processing:\n· · · periodsToProcess ={}\n· · · periodsProcessed ={}\n· · · minPeriodToProcessDate ={}\n· · · block.timestamp ={}",
     [
@@ -16,12 +18,15 @@ export function handleBlock(block: ethereum.Block): void {
       block.timestamp.toString()
     ]
   )
+
   // is there something to process?
   if (circulatingSupply.minPeriodToProcessDate < block.timestamp) {
+
     log.warning(
       "\nhandleBlock: Found something to process:\n· · · minPeriodToProcessDate ={}\n· · · block.timestamp ={}",
       [circulatingSupply.minPeriodToProcessDate.toString(), block.timestamp.toString()]
     )
+
     let newMin = BigInt.fromI32(0);
     let periodsToProcess = circulatingSupply.periodsToProcess as Array<string>
     // periodsToProcess Array<Tuples<periodId: string, releaseDate:BigInt>>
@@ -44,6 +49,7 @@ export function handleBlock(block: ethereum.Block): void {
 
         let periodsProcessed = circulatingSupply.periodsProcessed as Array<string>
         periodsProcessed.push(currentPeriod.id)
+        // circulatingSupply.periodsToProcess.RemoveTheStuff
         circulatingSupply.periodsProcessed = periodsProcessed
 
         currentPeriod.processed = true;
