@@ -27,24 +27,18 @@ export function handleBlock(block: ethereum.Block): void {
     // periodsToProcess Array<Tuples<periodId: string, releaseDate:BigInt>>
     let filteredPeriodsToProcess = new Array<string>();
 
-    // log.info(
-    //   "\nhandleBlock: processing:\n· · · periodsToProcess \n={}\n",
-    //   [periodsToProcess.toString().replaceAll(",", "\n")]
-    // )
-
-
     for (let i = 0; i < periodsToProcess.length; i++) {
 
       let currentId = periodsToProcess[i]
       let currentPeriod = releasePeriods.safeLoadPeriod(currentId)
 
-      // log.info(
-      //   "period: ={} date ={}",
-      //   [currentId, currentPeriod.releaseDate.toString()]
-      // )
 
       // find which one to process
       if (currentPeriod && currentPeriod.releaseDate < block.timestamp) {
+        log.info(
+          "\n @@ Processing period: ={} amount ={}\n",
+          [currentId, currentPeriod.amount.toString()]
+        )
         circulatingSupply = circulatingSupplyModule.mutations.processPeriodAmount(circulatingSupply, currentPeriod.amount)
         circulatingSupply.circulatingSupply = circulatingSupply.circulatingSupply.plus(currentPeriod.amount);
 
