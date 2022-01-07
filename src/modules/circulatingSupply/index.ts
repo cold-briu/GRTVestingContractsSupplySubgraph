@@ -1,6 +1,7 @@
 import { integer } from "@protofire/subgraph-toolkit";
 import { BigInt, log } from "@graphprotocol/graph-ts"
 import { GraphCirculatingSupply } from "../../../generated/schema"
+import { periodsLists } from "..";
 
 export namespace circulatingSupply {
 
@@ -14,13 +15,27 @@ export namespace circulatingSupply {
 			graphCirculatingSupply = new GraphCirculatingSupply(constants.CIRCULATING_SUPPLY_ID)
 			graphCirculatingSupply.totalSupply = integer.ZERO
 			graphCirculatingSupply.circulatingSupply = integer.ZERO
-			graphCirculatingSupply.periodsToProcess = []
-			graphCirculatingSupply.periodsToProcessTotalAmount = integer.ZERO
-			graphCirculatingSupply.periodsProcessed = []
-			graphCirculatingSupply.periodsProcessedTotalAmount = integer.ZERO
 			graphCirculatingSupply.minPeriodToProcessDate = integer.ZERO
+			graphCirculatingSupply.periodsToProcess = periodsLists.constants.PENDING_LISTS_ID
+			graphCirculatingSupply.periodsProcessed = periodsLists.constants.PROCESSED_LISTS_ID
 		}
 		return graphCirculatingSupply as GraphCirculatingSupply
+	}
+
+	export namespace mutations {
+
+		export function decreaseCirculatingSupply(cs: GraphCirculatingSupply, amount: BigInt): BigInt {
+			let supply = cs.circulatingSupply as BigInt
+			supply = supply.minus(amount)
+			return supply
+		}
+
+		export function increaseCirculatingSupply(cs: GraphCirculatingSupply, amount: BigInt): BigInt {
+			let supply = cs.circulatingSupply as BigInt
+			supply = supply.plus(amount)
+			return supply
+		}
+
 	}
 
 	export namespace test {
@@ -43,14 +58,5 @@ export namespace circulatingSupply {
 
 		}
 	}
-	export namespace mutations {
-		export function processPeriodAmount(cs: GraphCirculatingSupply, amount: BigInt): GraphCirculatingSupply {
-			let circulatingSupply = cs
-			circulatingSupply.periodsToProcessTotalAmount = circulatingSupply.periodsToProcessTotalAmount.minus(amount);
-			circulatingSupply.periodsProcessedTotalAmount = circulatingSupply.periodsProcessedTotalAmount.plus(amount);
-			return circulatingSupply as GraphCirculatingSupply
 
-		}
-
-	}
 }

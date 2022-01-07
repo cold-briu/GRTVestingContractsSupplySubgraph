@@ -6,6 +6,12 @@ interface PeriodsList {
   "related release periods"
   periods: [ReleasePeriod!]! @derivedFrom(field: "list")
 
+  "amount of grt in this list"
+  amount: BigInt!
+
+  "a list of periods composed keys: ${period.id}@${period.releaseStartDate}"
+  keys: [string!]!
+
 }
 
 type PendingPeriods implements PeriodsList @entity {
@@ -16,6 +22,12 @@ type PendingPeriods implements PeriodsList @entity {
   "related release periods"
   periods: [ReleasePeriod!]! @derivedFrom(field: "list")
 
+  "amount of grt pending to release"
+  amount: BigInt!
+
+  "a list of periods composed keys: ${period.id}@${period.releaseDate}"
+  keys: [string!]!
+
 }
 
 type ProcessedPeriods implements PeriodsList @entity {
@@ -25,6 +37,12 @@ type ProcessedPeriods implements PeriodsList @entity {
 
   "related release periods"
   periods: [ReleasePeriod!]! @derivedFrom(field: "list")
+
+  "amount of grt already released"
+  amount: BigInt! 
+
+  "a list of periods composed keys: ${period.id}@${period.releaseDate}"
+  keys: [string!]!
 
 }
 
@@ -157,16 +175,10 @@ type GraphCirculatingSupply @entity {
   circulatingSupply: BigInt!
 
   "Array containing periods not processed yet"
-  periodsToProcess: [ReleasePeriod!]
-
-  "Amount to release"
-  periodsToProcessTotalAmount: BigInt!
+  periodsToProcess: PendingPeriods!
 
   "Periods already released"
-  periodsProcessed: [ReleasePeriod!]
-
-  "Amount already released"
-  periodsProcessedTotalAmount: BigInt!
+  periodsProcessed: ProcessedPeriods!
 
   "This min date saves min release date from periodsToProcess"
   minPeriodToProcessDate: BigInt!

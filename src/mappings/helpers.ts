@@ -7,10 +7,6 @@ export function createPeriodsForContract(
 ): void {
 
   let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
-  graphCirculatingSupply.save()
-
-  let pendingPeriodsList = periodsLists.pending.getOrCreatePendingPeriodsList()
-  pendingPeriodsList.save()
 
   // [periodAmount, periodsAmount, managedAmount] naming may introduce confusion: some of them talk about GRT but others don't
   let releaseDuration = releasePeriods.calculate.walletReleaseDuration(startTime, endTime)
@@ -26,32 +22,33 @@ export function createPeriodsForContract(
       periodReleaseDate, periodsDuration
     )
 
+    // periodsToProcess is a derived list, periods are created w/ this relationship
     let releasePeriod = releasePeriods.createReleasePeriod(
       contractId, i, periodReleaseDate, periodAmount
     )
     releasePeriod.save()
 
-    let periodsToProcess = graphCirculatingSupply.periodsToProcess as string[]
-
+    // TODO crete helper for this
     if (i == 0) {
-      if (graphCirculatingSupply.minPeriodToProcessDate.isZero() ||
-        graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate) { // FIXME: may use < instead?
+      if (
+        graphCirculatingSupply.minPeriodToProcessDate.isZero() ||
+        graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate
+      ) {
         graphCirculatingSupply.minPeriodToProcessDate = periodReleaseDate
       }
     }
 
-    periodsToProcess.push(releasePeriod.id)
-    graphCirculatingSupply.periodsToProcess = periodsToProcess
   }
-  /*
-  {
-    let prevCirculatingSupply = graphCirculatingSupply.circulatingSupply
-    graphCirculatingSupply.circulatingSupply = prevCirculatingSupply.minus(managedAmount)
-  }
-   is the same as :
-  */
-  graphCirculatingSupply.circulatingSupply = graphCirculatingSupply.circulatingSupply.minus(managedAmount) // FIXME: this may broke
 
-  graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(managedAmount)
+  graphCirculatingSupply.circulatingSupply = circulatingSupply.mutations.decreaseCirculatingSupply(
+    graphCirculatingSupply,
+    managedAmount
+  )
   graphCirculatingSupply.save()
+
+  let pendingPeriodsList = periodsLists.pending.getOrCreateList()
+  pendingPeriodsList = periodsLists.pending.mutations.increaseAmount(
+    pendingPeriodsList, managedAmount
+  )
+  pendingPeriodsList.save()
 }
