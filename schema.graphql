@@ -185,5 +185,5 @@ type GraphCirculatingSupply @entity {
 
   "This min date saves min release date from periodsToProcess"
   minPeriodToProcessDate: BigInt!
-
+  
 }

@@ -136,14 +136,6 @@ export namespace circulatingSupply {
 			return entity as GraphCirculatingSupply
 		}
 
-		export function safeLoadPendingPeriods(entity: GraphCirculatingSupply): Array<string> {
-			return (entity.periodsToProcess || []) as Array<string>
-		}
-
-		export function safeLoadProcessedPeriods(entity: GraphCirculatingSupply): Array<string> {
-			return (entity.periodsProcessed || []) as Array<string>
-
-		}
 	}
 
 }

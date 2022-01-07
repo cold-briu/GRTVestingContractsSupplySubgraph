@@ -11,7 +11,9 @@ export function handleBlock(block: ethereum.Block): void {
   let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
 
   // is there something to process?
-  if (circulatingSupply.minPeriodToProcessDate < block.timestamp) {
+  if (
+    circulatingSupply.minPeriodToProcessDate < block.timestamp
+  ) {
 
     let newMin = BigInt.fromI32(0);
     let pendingList = periodsLists.pending.getOrCreateList()

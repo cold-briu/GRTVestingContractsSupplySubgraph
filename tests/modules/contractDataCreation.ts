@@ -13,7 +13,7 @@ export function contractDataCreation(
 	params.set("endTime", endTime)
 	params.set("managedAmount", managedAmount)
 
-	tests.helpers.runtime.assertMany(
+	tests.helpers.asserts.assertMany(
 		"ContractData", entityId, params
 	)
 }

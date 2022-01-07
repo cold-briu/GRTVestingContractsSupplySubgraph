@@ -8,12 +8,15 @@ export function circulatingSupplyPreBlock(
 ): void {
 
 	let periodsToProcess = releasePeriods.createPeriodsIdList(contractId, periods)
+	let processed = periodsToProcess.shift()
+	let processedAmount = managedAmount.div(BigInt.fromI32(periods))
+
 	let params = new TypedMap<string, string>()
 
-	params.set("periodsProcessedTotalAmount", integer.ZERO.toString())
-	params.set("periodsToProcessTotalAmount", managedAmount.toString())
+	params.set("periodsProcessedTotalAmount", processedAmount.toString())
+	params.set("periodsToProcessTotalAmount", managedAmount.minus(processedAmount).toString())
 
-	tests.helpers.runtime.assertMany(
+	tests.helpers.asserts.assertMany(
 		"GraphCirculatingSupply", circulatingSupply.constants.CIRCULATING_SUPPLY_ID, params
 	)
 
@@ -22,7 +25,7 @@ export function circulatingSupplyPreBlock(
 	assert.equals(ethereum.Value.fromStringArray(periodsToProcess), ethereum.Value.fromStringArray(pendingPeriods))
 
 	let processedPeriods = circulatingSupply.test.safeLoadProcessedPeriods(cs)
-	assert.equals(ethereum.Value.fromStringArray([]), ethereum.Value.fromStringArray(processedPeriods))
+	assert.equals(ethereum.Value.fromStringArray([processed]), ethereum.Value.fromStringArray(processedPeriods))
 
 
 
