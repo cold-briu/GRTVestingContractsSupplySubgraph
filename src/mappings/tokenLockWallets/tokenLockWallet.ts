@@ -1,8 +1,11 @@
 import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { InitializeCall, TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { createPeriodsForContract } from '../helpers'
-import { circulatingSupply as circulatingSupplyModule, lockWalletContracts, periodsLists, releasePeriods } from '../../modules'
 import { GraphTokenLockWallet } from '../../../generated/templates'
+import {
+  circulatingSupply as circulatingSupplyModule,
+  lockWalletContracts, periodsLists, releasePeriods
+} from '../../modules'
 
 export function handleBlock(block: ethereum.Block): void {
   let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
