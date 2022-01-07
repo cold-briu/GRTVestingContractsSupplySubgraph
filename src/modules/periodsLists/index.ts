@@ -61,7 +61,7 @@ export namespace periodsLists {
 		export function getOrCreateList(): ProcessedPeriods {
 			let entity = ProcessedPeriods.load(constants.PROCESSED_LISTS_ID)
 			if (entity == null) {
-				entity = new PendingPeriods(constants.PROCESSED_LISTS_ID)
+				entity = new ProcessedPeriods(constants.PROCESSED_LISTS_ID)
 				entity.amount = integer.ZERO
 			}
 			return entity as ProcessedPeriods
@@ -69,8 +69,8 @@ export namespace periodsLists {
 
 		export namespace mutations {
 			export function increaseAmount(
-				_list: PendingPeriods, amount: BigInt
-			): PendingPeriods {
+				_list: ProcessedPeriods, amount: BigInt
+			): ProcessedPeriods {
 				let list = _list
 				let totalAmount = list.amount
 				totalAmount = totalAmount.plus(amount)
@@ -78,8 +78,8 @@ export namespace periodsLists {
 				return list
 			}
 			export function decreaseAmount(
-				_list: PendingPeriods, amount: BigInt
-			): PendingPeriods {
+				_list: ProcessedPeriods, amount: BigInt
+			): ProcessedPeriods {
 				let list = _list
 				let totalAmount = list.amount
 				totalAmount = totalAmount.minus(amount)
