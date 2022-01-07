@@ -24,16 +24,51 @@ export namespace circulatingSupply {
 
 	export namespace mutations {
 
-		export function decreaseCirculatingSupply(cs: GraphCirculatingSupply, amount: BigInt): BigInt {
+		export function decreaseCirculatingSupply(
+			circulatingSupply: GraphCirculatingSupply, amount: BigInt
+		): GraphCirculatingSupply {
+			let cs = circulatingSupply
 			let supply = cs.circulatingSupply as BigInt
 			supply = supply.minus(amount)
-			return supply
+			cs.circulatingSupply = supply
+			return cs
 		}
 
-		export function increaseCirculatingSupply(cs: GraphCirculatingSupply, amount: BigInt): BigInt {
+		export function increaseCirculatingSupply(
+			circulatingSupply: GraphCirculatingSupply, amount: BigInt
+		): GraphCirculatingSupply {
+			let cs = circulatingSupply
 			let supply = cs.circulatingSupply as BigInt
 			supply = supply.plus(amount)
-			return supply
+			cs.circulatingSupply = supply
+			return cs
+		}
+
+		export function updateMinProcessToDate(
+			circulatingSupply: GraphCirculatingSupply, releaseDate: BigInt
+		): GraphCirculatingSupply {
+			let cs = circulatingSupply
+			let minDate = cs.minPeriodToProcessDate
+			minDate = helpers.setNewMinProcessDate(
+				cs.minPeriodToProcessDate, releaseDate
+			)
+			cs.minPeriodToProcessDate = minDate
+			return cs
+
+		}
+
+	}
+
+	export namespace helpers {
+
+		export function setNewMinProcessDate(
+			minProcessDate: BigInt, releaseDate: BigInt
+		): BigInt {
+			if (minProcessDate.isZero() ||
+				releaseDate.lt(minProcessDate)) {
+				return releaseDate
+			}
+			return minProcessDate
 		}
 
 	}

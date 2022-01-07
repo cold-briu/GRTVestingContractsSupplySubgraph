@@ -16,11 +16,13 @@ export namespace periodsLists {
 			if (entity == null) {
 				entity = new PendingPeriods(constants.PENDING_LISTS_ID)
 				entity.amount = integer.ZERO
+				entity.keys = []
 			}
 			return entity as PendingPeriods
 		}
 
 		export namespace mutations {
+
 			export function increaseAmount(
 				_list: PendingPeriods, amount: BigInt
 			): PendingPeriods {
@@ -30,6 +32,27 @@ export namespace periodsLists {
 				list.amount = totalAmount
 				return list
 			}
+
+			export function decreaseAmount(
+				_list: PendingPeriods, amount: BigInt
+			): PendingPeriods {
+				let list = _list
+				let totalAmount = list.amount
+				totalAmount = totalAmount.minus(amount)
+				list.amount = totalAmount
+				return list
+			}
+
+			export function addPeriodKey(
+				_list: PendingPeriods, key: string
+			): PendingPeriods {
+				let list = _list
+				let keys = list.keys
+				keys.push(key)
+				list.keys = keys
+				return list
+			}
+
 		}
 	}
 

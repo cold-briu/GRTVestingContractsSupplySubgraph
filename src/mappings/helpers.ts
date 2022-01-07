@@ -1,12 +1,13 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
-import { circulatingSupply, periodsLists, releasePeriods } from '../modules'
+import { circulatingSupply as circulatingSupplyModule, periodsLists, releasePeriods } from '../modules'
 
 export function createPeriodsForContract(
   contractId: string, periods: BigInt, managedAmount: BigInt,
   startTime: BigInt, endTime: BigInt
 ): void {
 
-  let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
+  let graphCirculatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply()
+  let pendingPeriodsList = periodsLists.pending.getOrCreateList()
 
   // [periodAmount, periodsAmount, managedAmount] naming may introduce confusion: some of them talk about GRT but others don't
   let releaseDuration = releasePeriods.calculate.walletReleaseDuration(startTime, endTime)
@@ -28,25 +29,20 @@ export function createPeriodsForContract(
     )
     releasePeriod.save()
 
-    // TODO crete helper for this
     if (i == 0) {
-      if (
-        graphCirculatingSupply.minPeriodToProcessDate.isZero() ||
-        graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate
-      ) {
-        graphCirculatingSupply.minPeriodToProcessDate = periodReleaseDate
-      }
+      graphCirculatingSupply = circulatingSupplyModule.mutations.updateMinProcessToDate(
+        graphCirculatingSupply, periodReleaseDate
+      )
     }
 
   }
 
-  graphCirculatingSupply.circulatingSupply = circulatingSupply.mutations.decreaseCirculatingSupply(
+  graphCirculatingSupply = circulatingSupplyModule.mutations.decreaseCirculatingSupply(
     graphCirculatingSupply,
     managedAmount
   )
   graphCirculatingSupply.save()
 
-  let pendingPeriodsList = periodsLists.pending.getOrCreateList()
   pendingPeriodsList = periodsLists.pending.mutations.increaseAmount(
     pendingPeriodsList, managedAmount
   )

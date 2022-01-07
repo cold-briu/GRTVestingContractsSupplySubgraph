@@ -8,13 +8,15 @@ export namespace releasePeriods {
 		contractId: string, index: i32,
 		releaseDate: BigInt, periodGrtAmount: BigInt
 	): ReleasePeriod {
-		let releasePeriod = new ReleasePeriod(getPeriodId(contractId, index.toString()));
+		let id = getPeriodId(contractId, index.toString())
+		let releasePeriod = new ReleasePeriod(id);
 
 		releasePeriod.contract = contractId
 		releasePeriod.releaseDate = releaseDate
 		releasePeriod.amount = periodGrtAmount
 		releasePeriod.processed = false
 		releasePeriod.list = periodsLists.constants.PENDING_LISTS_ID
+		releasePeriod.key = keys.encode(id, releaseDate)
 
 		return releasePeriod as ReleasePeriod
 	}
@@ -38,6 +40,31 @@ export namespace releasePeriods {
 			list.push(id)
 		}
 		return list
+	}
+
+	export namespace mutations {
+
+		export function setAsProcessed(p: ReleasePeriod): ReleasePeriod {
+			let period = p
+			let list = period.list
+			list = periodsLists.constants.PROCESSED_LISTS_ID
+			period.list = list
+			period.processed = true
+
+			return period
+		}
+	}
+
+	export namespace keys {
+
+		export function encode(id: string, releaseDate: BigInt): string {
+			return id + "@" + releaseDate.toString()
+		}
+
+		export function decode(periodKey: string): string[] {
+			return periodKey.split("@")
+		}
+
 	}
 
 	export namespace calculate {
