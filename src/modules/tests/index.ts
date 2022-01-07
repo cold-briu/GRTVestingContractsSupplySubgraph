@@ -133,6 +133,19 @@ export namespace tests {
 				)
 			}
 
+			export function assertStringArray(
+				expected: string[], actual: string[]
+			): void {
+				logs.internal.testing(
+					"assertStringArray", expected.toString(), actual.toString()
+				)
+				assertEqual(
+					expected,
+					actual,
+					ethereum.Value.fromStringArray
+				)
+			}
+
 		}
 		export namespace runtime {
 

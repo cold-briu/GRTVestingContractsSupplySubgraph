@@ -1,6 +1,11 @@
 import { creation as LockWalletContratCustomCreation } from "./LockWalletContract/custom/creation.test";
+
 import { creation as GraphCirculatingSupplyCreation } from "./GraphCirculatingSupply/creation.test";
 import { createPeriods as GraphCirculatingSupplyCreatePeriods } from "./GraphCirculatingSupply/createPeriods.test";
+
+import { creation as PeriodsListCreation } from "./PeriodsList/pending/creation.test";
+// import { createPeriods as PeriodsListCreatePeriods } from "./PeriodsList/pending/createPeriods.test";
+
 
 import { circulatingSupplyPreBlock as _circulatingSupplyPreBlock } from "./circulatingSupplyPreBlock"
 import { contractDataCreation as _contractDataCreation } from "./contractDataCreation"
@@ -19,6 +24,15 @@ export namespace modules {
 	export namespace GraphCirculatingSupply {
 		export let creation = GraphCirculatingSupplyCreation
 		export let createPeriods = GraphCirculatingSupplyCreatePeriods
+	}
+
+	export namespace PeriodsList {
+		export namespace pending {
+			export let creation = PeriodsListCreation
+			// export let createPeriods = PeriodsListcreatePeriods
+
+		}
+
 	}
 
 	export let contractDataCreation = _contractDataCreation

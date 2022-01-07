@@ -68,6 +68,8 @@ export function testHandleInitialize(): void {
 		_endTime
 	)
 
+	testModules.PeriodsList.pending.creation()
+
 	// testHelpers.circulatingSupplyPeriodsCreation(
 	// 	contractDataId,
 	// 	_periods.toI32(),
