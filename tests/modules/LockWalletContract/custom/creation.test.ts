@@ -1,6 +1,4 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts"
-import { integer } from "@protofire/subgraph-toolkit"
-import { log } from "matchstick-as"
 import { CustomTokenLockWallet } from "../../../../generated/schema"
 import { tests } from "../../../../src/modules"
 
@@ -26,8 +24,6 @@ export function creation(
 	tests.helpers.asserts.assertBytes(address, entity.address)
 	tests.helpers.asserts.assertBigInt(periods, entity.periodsAmount)
 	tests.helpers.asserts.assertBigInt(managedAmount, entity.managedAmount)
-	tests.helpers.asserts.assertBigInt(integer.ZERO, entity.pendingAmount)
-	tests.helpers.asserts.assertBigInt(integer.ZERO, entity.releasedAmount)
 	tests.helpers.asserts.assertBigInt(startTime, entity.startTime)
 	tests.helpers.asserts.assertBigInt(endTime, entity.endTime)
 

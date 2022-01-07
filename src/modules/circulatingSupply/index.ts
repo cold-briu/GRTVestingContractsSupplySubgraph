@@ -9,15 +9,20 @@ export namespace circulatingSupply {
 		export let CIRCULATING_SUPPLY_ID = '1'
 	}
 
+	export function createCirculatingSupply(): GraphCirculatingSupply {
+		let graphCirculatingSupply = new GraphCirculatingSupply(constants.CIRCULATING_SUPPLY_ID)
+		graphCirculatingSupply.totalSupply = integer.ZERO
+		graphCirculatingSupply.circulatingSupply = integer.ZERO
+		graphCirculatingSupply.minPeriodToProcessDate = integer.ZERO
+		graphCirculatingSupply.periodsToProcess = periodsLists.constants.PENDING_LISTS_ID
+		graphCirculatingSupply.periodsProcessed = periodsLists.constants.PROCESSED_LISTS_ID
+		return graphCirculatingSupply
+	}
+
 	export function createOrLoadGraphCirculatingSupply(): GraphCirculatingSupply {
 		let graphCirculatingSupply = GraphCirculatingSupply.load(constants.CIRCULATING_SUPPLY_ID)
 		if (graphCirculatingSupply == null) {
-			graphCirculatingSupply = new GraphCirculatingSupply(constants.CIRCULATING_SUPPLY_ID)
-			graphCirculatingSupply.totalSupply = integer.ZERO
-			graphCirculatingSupply.circulatingSupply = integer.ZERO
-			graphCirculatingSupply.minPeriodToProcessDate = integer.ZERO
-			graphCirculatingSupply.periodsToProcess = periodsLists.constants.PENDING_LISTS_ID
-			graphCirculatingSupply.periodsProcessed = periodsLists.constants.PROCESSED_LISTS_ID
+			graphCirculatingSupply = createCirculatingSupply()
 		}
 		return graphCirculatingSupply as GraphCirculatingSupply
 

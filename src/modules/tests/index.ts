@@ -113,6 +113,19 @@ export namespace tests {
 				)
 			}
 
+			export function assertString(
+				expected: string, actual: string
+			): void {
+				logs.internal.testing(
+					"assertString", expected, actual
+				)
+				assertEqual(
+					expected,
+					actual,
+					ethereum.Value.fromString
+				)
+			}
+
 		}
 		export namespace runtime {
 

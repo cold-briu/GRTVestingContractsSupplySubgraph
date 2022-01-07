@@ -42,8 +42,6 @@ export namespace lockWalletContracts {
 			entity.startTime = startTime
 			entity.endTime = endTime
 			entity.managedAmount = managedAmount
-			entity.releasedAmount = integer.ZERO
-			entity.pendingAmount = integer.ZERO
 
 			return entity as CustomTokenLockWallet
 		}
