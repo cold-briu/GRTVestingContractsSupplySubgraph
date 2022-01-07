@@ -61,6 +61,13 @@ export function testHandleInitialize(): void {
 
 	testModules.GraphCirculatingSupply.creation()
 
+	testModules.GraphCirculatingSupply.createPeriods(
+		_periods,
+		_managedAmount,
+		_startTime,
+		_endTime
+	)
+
 	// testHelpers.circulatingSupplyPeriodsCreation(
 	// 	contractDataId,
 	// 	_periods.toI32(),

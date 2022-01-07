@@ -36,6 +36,13 @@ export namespace tests {
 					[funcName, detail]
 				)
 			}
+
+			export function warn(funcName: string, detail: string): void {
+				log.warning(
+					"\nfunc={} :: ={}\n",
+					[funcName, detail]
+				)
+			}
 		}
 
 		export namespace internal {
