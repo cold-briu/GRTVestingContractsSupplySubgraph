@@ -1,9 +1,9 @@
-import { Address, BigInt, TypedMap } from "@graphprotocol/graph-ts"
-import { InitializeCall } from "../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet"
-import { clearStore, assert } from "matchstick-as/assembly/index"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { InitializeCall } from "../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet"
+import { clearStore } from "matchstick-as/assembly/index"
+import { tests } from "../src/modules"
+import { modules as testModules } from "./modules"
 
-import { tests } from "../../src/modules"
-import { helpers as testHelpers } from "../helpers"
 
 export function testHandleInitialize(): void {
 
@@ -51,27 +51,28 @@ export function testHandleInitialize(): void {
 	let releaseDuration = _endTime.minus(_startTime)
 	let periodsDuration = releaseDuration.div(_periods)
 
-	testHelpers.contractDataCreation(
-		contractDataId,
-		periods,
-		managedAmount,
-		startTime,
-		endTime
-	)
-
-	testHelpers.releasePeriodsCreation(
-		contractDataId,
+	testModules.LockWalletContract.custom.creation(
+		call.to,
 		_periods,
+		_managedAmount,
 		_startTime,
-		periodsDuration,
-		_managedAmount.div(_periods).toString()
+		_endTime
 	)
 
-	testHelpers.circulatingSupplyPeriodsCreation(
-		contractDataId,
-		_periods.toI32(),
-		_managedAmount
+	testModules.GraphCirculatingSupply.creation()
+
+	testModules.GraphCirculatingSupply.createPeriods(
+		_periods,
+		_managedAmount,
+		_startTime,
+		_endTime
 	)
+
+	// testHelpers.circulatingSupplyPeriodsCreation(
+	// 	contractDataId,
+	// 	_periods.toI32(),
+	// 	_managedAmount
+	// )
 
 	// TODO: test data source and handle Released
 

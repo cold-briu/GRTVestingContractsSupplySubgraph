@@ -32,7 +32,7 @@ export function releasePeriodsCreation(
 		params.set("contract", contractId)
 		params.set("processed", "false")
 
-		tests.helpers.runtime.assertMany(
+		tests.helpers.asserts.assertMany(
 			"ReleasePeriod", periodId, params
 		)
 	}

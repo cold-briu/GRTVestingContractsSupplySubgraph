@@ -1,4 +1,6 @@
-import { GraphTokenLockWallet } from "./GraphTokenLockWallet";
-GraphTokenLockWallet.runtTests()
+import { test } from "matchstick-as";
+import { testHandleInitialize } from "./handleInitialize.test";
 
-// TODO agnostic tests for each src/module
+test("GraphTokenLockWallet - testHandleInitialize",
+	testHandleInitialize
+)
