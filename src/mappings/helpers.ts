@@ -29,6 +29,10 @@ export function createPeriodsForContract(
     )
     releasePeriod.save()
 
+    pendingPeriodsList = periodsLists.pending.mutations.addPeriodKey(
+      pendingPeriodsList, releasePeriods.keys.encode(releasePeriod.id, releasePeriod.releaseDate)
+    )
+
     if (i == 0) {
       graphCirculatingSupply = circulatingSupplyModule.mutations.updateMinProcessToDate(
         graphCirculatingSupply, periodReleaseDate
