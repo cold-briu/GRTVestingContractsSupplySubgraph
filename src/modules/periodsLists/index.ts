@@ -11,6 +11,14 @@ export namespace periodsLists {
 
 	export namespace pending {
 
+		export function createList(): PendingPeriods {
+			let entity = new PendingPeriods(constants.PENDING_LISTS_ID)
+			entity.amount = integer.ZERO
+			entity.keys = []
+			return entity as PendingPeriods
+
+		}
+
 		export function getOrCreateList(): PendingPeriods {
 			let entity = PendingPeriods.load(constants.PENDING_LISTS_ID)
 			if (entity == null) {

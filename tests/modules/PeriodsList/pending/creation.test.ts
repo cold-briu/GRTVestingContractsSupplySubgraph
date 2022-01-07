@@ -1,11 +1,10 @@
 import { integer } from "@protofire/subgraph-toolkit"
-import { PendingPeriods } from "../../../../generated/schema"
 import { periodsLists, tests } from "../../../../src/modules"
 
 export function creation(): void {
 
 	let id = periodsLists.constants.PENDING_LISTS_ID
-	let entity = periodsLists.pending.getOrCreateList()
+	let entity = periodsLists.pending.createList()
 
 	tests.logs.global.started(
 		"PeriodsList.creation.test", id
