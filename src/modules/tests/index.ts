@@ -50,7 +50,7 @@ export namespace tests {
 				funcName: string, expected: string, actual: string
 			): void {
 				log.debug(
-					"\n · func={} :: testing expected={} actual={}\n",
+					"\n · func={} ::\ntesting expected={}\nactual={}\n",
 					[funcName, expected, actual]
 				)
 			}

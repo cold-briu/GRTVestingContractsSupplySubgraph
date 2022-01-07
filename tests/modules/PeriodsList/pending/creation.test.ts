@@ -7,11 +7,11 @@ export function creation(): void {
 	let entity = periodsLists.pending.createList()
 
 	tests.logs.global.started(
-		"PeriodsList.creation.test", id
+		"PeriodsList.pending.creation.test", id
 	)
 
 	tests.helpers.asserts.assertBigInt(integer.ZERO, entity.amount)
 	tests.helpers.asserts.assertStringArray([], entity.keys)
 
-	tests.logs.global.success("PeriodsList.creation.test", id)
+	tests.logs.global.success("PeriodsList.pending.creation.test", id)
 }

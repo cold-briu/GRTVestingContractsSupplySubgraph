@@ -3,8 +3,8 @@ import { creation as LockWalletContratCustomCreation } from "./LockWalletContrac
 import { creation as GraphCirculatingSupplyCreation } from "./GraphCirculatingSupply/creation.test";
 import { createPeriods as GraphCirculatingSupplyCreatePeriods } from "./GraphCirculatingSupply/createPeriods.test";
 
-import { creation as PeriodsListCreation } from "./PeriodsList/pending/creation.test";
-// import { createPeriods as PeriodsListCreatePeriods } from "./PeriodsList/pending/createPeriods.test";
+import { creation as PendingPeriodsListCreation } from "./PeriodsList/pending/creation.test";
+import { createPeriods as PendingPeriodsListCreatePeriods } from "./PeriodsList/pending/createPeriods.test";
 
 
 import { circulatingSupplyPreBlock as _circulatingSupplyPreBlock } from "./circulatingSupplyPreBlock"
@@ -28,8 +28,8 @@ export namespace modules {
 
 	export namespace PeriodsList {
 		export namespace pending {
-			export let creation = PeriodsListCreation
-			// export let createPeriods = PeriodsListcreatePeriods
+			export let creation = PendingPeriodsListCreation
+			export let createPeriods = PendingPeriodsListCreatePeriods
 
 		}
 
