@@ -1,4 +1,3 @@
-import { log } from '@graphprotocol/graph-ts'
 import { TokenLockCreated } from '../../../generated/GraphTokenLockManager/GraphTokenLockManager'
 import { lockWalletContracts } from '../../modules'
 import { createPeriodsForContract } from '../helpers'
@@ -15,5 +14,7 @@ export function handleTokenLockCreated(event: TokenLockCreated): void {
   )
   lockWallet.save()
 
-  createPeriodsForContract(lockWallet.id, endTime, startTime, periods, managedAmount)
+  createPeriodsForContract(
+    lockWallet.id, periods, managedAmount, endTime, startTime
+  )
 }
