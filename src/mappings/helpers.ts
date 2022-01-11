@@ -15,9 +15,8 @@ export function createPeriodsForContract(
   let periodAmount = releasePeriods.calculate.periodAmount(managedAmount, periods)
   let periodReleaseDate = startTime
 
-  log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [contractId])
-
-  for (let i = 0; i < periods.toI32(); i++) {
+  let periodsCount = periods.toI32()
+  for (let i = 0; i < periodsCount; i++) {
 
     periodReleaseDate = releasePeriods.calculate.increasePeriodReleaseDate(
       periodReleaseDate, periodsDuration
@@ -30,7 +29,7 @@ export function createPeriodsForContract(
     releasePeriod.save()
 
     pendingPeriodsList = periodsLists.pending.mutations.addPeriodKey(
-      pendingPeriodsList, releasePeriods.keys.encode(releasePeriod.id, releasePeriod.releaseDate)
+      pendingPeriodsList, releasePeriods.keys.encode("releasePeriod.id", releasePeriod.releaseDate)
     )
 
     if (i == 0) {
@@ -38,7 +37,6 @@ export function createPeriodsForContract(
         graphCirculatingSupply, periodReleaseDate
       )
     }
-
   }
 
   graphCirculatingSupply = circulatingSupplyModule.mutations.decreaseCirculatingSupply(
