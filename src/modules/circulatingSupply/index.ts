@@ -11,6 +11,8 @@ export namespace circulatingSupply {
 
 	export function createCirculatingSupply(): GraphCirculatingSupply {
 		let graphCirculatingSupply = new GraphCirculatingSupply(constants.CIRCULATING_SUPPLY_ID)
+		graphCirculatingSupply.burned = integer.ZERO
+		graphCirculatingSupply.minted = integer.ZERO
 		graphCirculatingSupply.totalSupply = integer.ZERO
 		graphCirculatingSupply.circulatingSupply = integer.ZERO
 		graphCirculatingSupply.minPeriodToProcessDate = integer.ZERO
@@ -41,6 +43,10 @@ export namespace circulatingSupply {
 			graphCirculatingSupply, value
 		)
 
+		graphCirculatingSupply = circulatingSupply.mutations.increaseMinted(
+			graphCirculatingSupply, value
+		)
+
 		return graphCirculatingSupply
 	}
 
@@ -58,10 +64,35 @@ export namespace circulatingSupply {
 			graphCirculatingSupply, value
 		)
 
+		graphCirculatingSupply = circulatingSupply.mutations.increaseBurned(
+			graphCirculatingSupply, value
+		)
+
 		return graphCirculatingSupply
 	}
 
 	export namespace mutations {
+
+		export function increaseBurned(
+			circulatingSupply: GraphCirculatingSupply, amount: BigInt
+		): GraphCirculatingSupply {
+			let cs = circulatingSupply
+			let supply = cs.burned as BigInt
+			supply = supply.plus(amount)
+			cs.burned = supply
+			return cs
+		}
+
+		export function increaseMinted(
+			circulatingSupply: GraphCirculatingSupply, amount: BigInt
+		): GraphCirculatingSupply {
+			let cs = circulatingSupply
+			let supply = cs.minted as BigInt
+			supply = supply.plus(amount)
+			cs.minted = supply
+			return cs
+		}
+
 
 		export function decreaseTotalSupply(
 			circulatingSupply: GraphCirculatingSupply, amount: BigInt
@@ -69,7 +100,7 @@ export namespace circulatingSupply {
 			let cs = circulatingSupply
 			let supply = cs.totalSupply as BigInt
 			supply = supply.minus(amount)
-			cs.circulatingSupply = supply
+			cs.totalSupply = supply
 			return cs
 		}
 
@@ -79,9 +110,10 @@ export namespace circulatingSupply {
 			let cs = circulatingSupply
 			let supply = cs.totalSupply as BigInt
 			supply = supply.plus(amount)
-			cs.circulatingSupply = supply
+			cs.totalSupply = supply
 			return cs
 		}
+
 		export function decreaseCirculatingSupply(
 			circulatingSupply: GraphCirculatingSupply, amount: BigInt
 		): GraphCirculatingSupply {
