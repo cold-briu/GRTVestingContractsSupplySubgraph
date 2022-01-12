@@ -1,8 +1,10 @@
+import { address } from '@protofire/subgraph-toolkit';
 import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { createPeriodsForContract } from '../helpers'
-import { TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
-import { InitializeCall } from '../../../generated/GTLSEAN/GraphTokenLockWallet';
-// import { GraphTokenLockWallet } from '../../../generated/templates'
+import { GraphTokenLockWallet } from '../../../generated/templates'
+import {
+  TokensReleased, InitializeCall, OwnershipTransferred
+} from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import {
   circulatingSupply as circulatingSupplyModule,
   lockWalletContracts, periodsLists, releasePeriods
@@ -76,17 +78,49 @@ export function handleInitialize(call: InitializeCall): void {
   let startTime = call.inputs._startTime
   let endTime = call.inputs._endTime
 
+  log.warning("::: CALL HANDLER ::: handleInitialize : triggered", [])
+
   let lockWallet = lockWalletContracts.custom.createCustomLockWallet(
     contractAddress, periods, managedAmount, startTime, endTime
   )
   lockWallet.save()
 
-  log.warning("::: ::: Triggered custom lock contract", [])
-
   createPeriodsForContract(
     lockWallet.id, periods, managedAmount, startTime, endTime
   )
-  // GraphTokenLockWallet.create(contractAddress)
+  GraphTokenLockWallet.create(contractAddress)
+}
+
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {
+
+  if (address.isZeroAddress(event.params.previousOwner)) {
+
+    let contract = lockWalletContracts.custom.getInitializedLockWalletContract(event.address)
+    if (contract) {
+
+      let values = lockWalletContracts.custom.getValuesFromContract(contract)
+      if (values) {
+        log.warning("::: EVENT HANDLER ::: OwnershipTransferred : creating periods", [])
+
+        let contractAddress = event.address
+        let periods = values[0]
+        let managedAmount = values[1]
+        let startTime = values[2]
+        let endTime = values[3]
+
+        let lockWallet = lockWalletContracts.custom.createCustomLockWallet(
+          contractAddress, periods, managedAmount, startTime, endTime
+        )
+        lockWallet.save()
+
+        createPeriodsForContract(
+          lockWallet.id, periods, managedAmount, startTime, endTime
+        )
+        GraphTokenLockWallet.create(contractAddress)
+      }
+
+    }
+  }
 }
 
 export function handleTokensReleased(event: TokensReleased): void { }
