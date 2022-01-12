@@ -1,4 +1,4 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { createPeriodsForContract } from '../helpers'
 import { TokensReleased } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { InitializeCall } from '../../../generated/GTLSEAN/GraphTokenLockWallet';
@@ -80,6 +80,8 @@ export function handleInitialize(call: InitializeCall): void {
     contractAddress, periods, managedAmount, startTime, endTime
   )
   lockWallet.save()
+
+  log.warning("::: ::: Triggered custom lock contract", [])
 
   createPeriodsForContract(
     lockWallet.id, periods, managedAmount, startTime, endTime

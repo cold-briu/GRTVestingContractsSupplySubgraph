@@ -11,6 +11,7 @@ export function handleTransfer(event: Transfer): void {
   let from = event.params.from
   let value = event.params.value
 
+  // if adress from y deployer, mint but not circulate
   if (address.isZeroAddress(from)) {
 
     graphCirculatingSupply = circulatingSupply.mintTokens(
