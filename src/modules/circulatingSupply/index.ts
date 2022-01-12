@@ -39,10 +39,6 @@ export namespace circulatingSupply {
 			graphCirculatingSupply, value
 		)
 
-		graphCirculatingSupply = circulatingSupply.mutations.increaseCirculatingSupply(
-			graphCirculatingSupply, value
-		)
-
 		graphCirculatingSupply = circulatingSupply.mutations.increaseMinted(
 			graphCirculatingSupply, value
 		)
@@ -56,13 +52,13 @@ export namespace circulatingSupply {
 	): GraphCirculatingSupply {
 		let graphCirculatingSupply = cs
 
-		graphCirculatingSupply = circulatingSupply.mutations.decreaseTotalSupply(
-			graphCirculatingSupply, value
-		)
+		// graphCirculatingSupply = circulatingSupply.mutations.decreaseTotalSupply(
+		// 	graphCirculatingSupply, value
+		// )
 
-		graphCirculatingSupply = circulatingSupply.mutations.decreaseCirculatingSupply(
-			graphCirculatingSupply, value
-		)
+		// graphCirculatingSupply = circulatingSupply.mutations.decreaseCirculatingSupply(
+		// 	graphCirculatingSupply, value
+		// )
 
 		graphCirculatingSupply = circulatingSupply.mutations.increaseBurned(
 			graphCirculatingSupply, value
