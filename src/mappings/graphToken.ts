@@ -5,24 +5,25 @@ import { address } from "@protofire/subgraph-toolkit";
 
 export function handleTransfer(event: Transfer): void {
 
-  let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
+  let isFromZero = address.isZeroAddress(event.params.from)
+  let isToZero = address.isZeroAddress(event.params.to)
 
-  let to = event.params.to
-  let from = event.params.from
-  let value = event.params.value
+  // Check this condition to avoid load entity in regular transfers
+  if (isFromZero || isToZero) {
+    let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
 
-  // if adress from y deployer, mint but not circulate
-  if (address.isZeroAddress(from)) {
+    if (isFromZero) {
+      graphCirculatingSupply = circulatingSupply.mintTokens(
+        graphCirculatingSupply, event.params.value
+      )
 
-    graphCirculatingSupply = circulatingSupply.mintTokens(
-      graphCirculatingSupply, value
-    )
+    } else if (isToZero) {
+      graphCirculatingSupply = circulatingSupply.burnTokens(
+        graphCirculatingSupply, event.params.value
+      )
+    }
 
-  } else if (address.isZeroAddress(to)) {
-
-    graphCirculatingSupply = circulatingSupply.burnTokens(
-      graphCirculatingSupply, value
-    )
+    graphCirculatingSupply.save()
   }
-  graphCirculatingSupply.save()
+
 }
