@@ -100,7 +100,6 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 
       let values = lockWalletContracts.custom.getValuesFromContract(contract)
       if (values) {
-        log.warning("::: EVENT HANDLER ::: OwnershipTransferred : creating periods", [])
 
         let contractAddress = event.address
         let periods = values[0]
