@@ -1,5 +1,9 @@
-import { BigInt, log } from '@graphprotocol/graph-ts'
-import { circulatingSupply as circulatingSupplyModule, periodsLists, releasePeriods } from '../modules'
+import { BigInt } from '@graphprotocol/graph-ts'
+import {
+  circulatingSupply as circulatingSupplyModule,
+  periodsLists,
+  releasePeriods
+} from '../modules'
 
 export function createPeriodsForContract(
   contractId: string, periods: BigInt, managedAmount: BigInt,
@@ -29,7 +33,10 @@ export function createPeriodsForContract(
     releasePeriod.save()
 
     pendingPeriodsList = periodsLists.pending.mutations.addPeriodKey(
-      pendingPeriodsList, releasePeriods.keys.encode(releasePeriod.id, releasePeriod.releaseDate)
+      pendingPeriodsList, releasePeriods.keys.encode(
+        releasePeriod.id,
+        releasePeriod.releaseDate
+      )
     )
 
     if (i == 0) {
@@ -45,6 +52,7 @@ export function createPeriodsForContract(
   )
   graphCirculatingSupply.save()
 
+  // grt amount
   pendingPeriodsList = periodsLists.pending.mutations.increaseAmount(
     pendingPeriodsList, managedAmount
   )

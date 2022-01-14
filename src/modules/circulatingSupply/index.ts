@@ -56,9 +56,9 @@ export namespace circulatingSupply {
 		// 	graphCirculatingSupply, value
 		// )
 
-		// graphCirculatingSupply = circulatingSupply.mutations.decreaseCirculatingSupply(
-		// 	graphCirculatingSupply, value
-		// )
+		graphCirculatingSupply = circulatingSupply.mutations.decreaseCirculatingSupply(
+			graphCirculatingSupply, value
+		)
 
 		graphCirculatingSupply = circulatingSupply.mutations.increaseBurned(
 			graphCirculatingSupply, value

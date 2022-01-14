@@ -1,4 +1,5 @@
 import { TokenLockCreated } from '../../../generated/GraphTokenLockManager/GraphTokenLockManager'
+import { GraphTokenLockWallet } from '../../../generated/templates'
 import { lockWalletContracts } from '../../modules'
 import { createPeriodsForContract } from '../helpers'
 
@@ -17,4 +18,6 @@ export function handleTokenLockCreated(event: TokenLockCreated): void {
   createPeriodsForContract(
     lockWallet.id, periods, managedAmount, endTime, startTime
   )
+
+  GraphTokenLockWallet.create(contractAddress)
 }
