@@ -71,7 +71,12 @@ type ReleasePeriod @entity {
 
 }
 
-interface LockWalletContract {
+enum LockWalletTypes {
+  FACTORY
+  CUSTOM
+}
+
+type LockWalletContract @entity {
 
   "Entity created for debugging to know the params to call function to create periods"
   id: ID!
@@ -99,70 +104,9 @@ interface LockWalletContract {
 
   "already released grt amount managed by this contract"
   pendingAmount: BigInt!
+
+  type: LockWalletTypes!
  
-}
-
-
-type CustomTokenLockWallet implements LockWalletContract @entity {
-
-  "Entity for TockenLock contracts deployed in a custom way"
-  id: ID!
-
-  "contract's EVM address"
-  address: Bytes!
-
-  "related release period entity"
-  periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
-
-  "Periods to be created"
-  periodsAmount: BigInt!
-
-  "start time for releasing"
-  startTime: BigInt!
-
-  "end Time for releasing"
-  endTime: BigInt!
-
-  "total grt amount managed by it's contract"
-  managedAmount: BigInt!
-
-  "already released grt amount managed by this contract"
-  releasedAmount: BigInt!
-
-  "already released grt amount managed by this contract"
-  pendingAmount: BigInt!
-
-}
-
-type FactoryTokenLockWallet implements LockWalletContract @entity {
-
-  "Entity for TockenLock contracts deployed using the GraphTokenLockManager"
-  id: ID!
-
-  "contract's EVM address"
-  address: Bytes!
-
-  "related release period entity"
-  periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
-
-  "Periods to be created"
-  periodsAmount: BigInt!
-
-  "start time for releasing"
-  startTime: BigInt!
-
-  "end Time for releasing"
-  endTime: BigInt!
-
-  "total amount managed by it's contract"
-  managedAmount: BigInt!
-
-  "already released grt amount managed by this contract"
-  releasedAmount: BigInt!
-
-  "already released grt amount managed by this contract"
-  pendingAmount: BigInt!
-
 }
 
 

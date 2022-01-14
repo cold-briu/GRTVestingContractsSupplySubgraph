@@ -9,7 +9,7 @@ export function handleTokenLockCreated(event: TokenLockCreated): void {
   let startTime = event.params.startTime
   let endTime = event.params.endTime
 
-  let lockWallet = lockWalletContracts.factory.createFactoryLockWallet(
+  let lockWallet = lockWalletContracts.createFactoryLockWallet(
     contractAddress, periods, managedAmount, startTime, endTime
   )
   lockWallet.save()

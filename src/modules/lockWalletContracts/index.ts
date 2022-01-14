@@ -1,20 +1,23 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { integer } from "@protofire/subgraph-toolkit";
 import { GraphTokenLockWallet } from "../../../generated/GTLSEAN/GraphTokenLockWallet";
-import { FactoryTokenLockWallet, CustomTokenLockWallet } from "../../../generated/schema";
+import { LockWalletContract } from "../../../generated/schema";
 
 export namespace lockWalletContracts {
 
-	export namespace factory {
+	export namespace constants {
+		export let FACTORY_CONTRACT_TYPENAME = "FACTORY"
+		export let CUSTOM_CONTRACT_TYPENAME = "CUSTOM"
+	}
 
-		export function createFactoryLockWallet(
-			address: Bytes, periods: BigInt, managedAmount: BigInt,
-			startTime: BigInt, endTime: BigInt
-		): FactoryTokenLockWallet {
-
-			let id = address.toHexString()
-			let entity = new FactoryTokenLockWallet(id)
-
+	export function getOrCreateLockWalletContract(
+		address: Bytes, periods: BigInt, managedAmount: BigInt,
+		startTime: BigInt, endTime: BigInt, type: string
+	): LockWalletContract {
+		let id = address.toHexString()
+		let entity = LockWalletContract.load(id)
+		if (entity == null) {
+			entity = new LockWalletContract(id)
 			entity.address = address
 			entity.periodsAmount = periods
 			entity.startTime = startTime
@@ -22,30 +25,46 @@ export namespace lockWalletContracts {
 			entity.managedAmount = managedAmount
 			entity.releasedAmount = integer.ZERO
 			entity.pendingAmount = integer.ZERO
-
-			return entity as FactoryTokenLockWallet
+			entity.type = type
 		}
-
+		return entity as LockWalletContract
 	}
 
-	export namespace custom {
+	export function createFactoryLockWallet(
+		address: Bytes, periods: BigInt, managedAmount: BigInt,
+		startTime: BigInt, endTime: BigInt
+	): LockWalletContract {
 
-		export function createCustomLockWallet(
-			address: Bytes, periods: BigInt, managedAmount: BigInt,
-			startTime: BigInt, endTime: BigInt
-		): CustomTokenLockWallet {
+		let entity = getOrCreateLockWalletContract(
+			address,
+			periods,
+			startTime,
+			endTime,
+			managedAmount,
+			constants.FACTORY_CONTRACT_TYPENAME
+		)
 
-			let id = address.toHexString()
-			let entity = new CustomTokenLockWallet(id)
+		return entity as LockWalletContract
+	}
 
-			entity.address = address
-			entity.periodsAmount = periods
-			entity.startTime = startTime
-			entity.endTime = endTime
-			entity.managedAmount = managedAmount
+	export function createCustomLockWallet(
+		address: Bytes, periods: BigInt, managedAmount: BigInt,
+		startTime: BigInt, endTime: BigInt
+	): LockWalletContract {
 
-			return entity as CustomTokenLockWallet
-		}
+		let entity = getOrCreateLockWalletContract(
+			address,
+			periods,
+			startTime,
+			endTime,
+			managedAmount,
+			constants.CUSTOM_CONTRACT_TYPENAME
+		)
+
+		return entity as LockWalletContract
+	}
+
+	export namespace contract {
 
 		export function getInitializedLockWalletContract(address: Address): GraphTokenLockWallet | null {
 			let contract = GraphTokenLockWallet.bind(address)
@@ -77,6 +96,6 @@ export namespace lockWalletContracts {
 				end_result.value
 			]
 		}
-
 	}
+
 }

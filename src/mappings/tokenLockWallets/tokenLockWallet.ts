@@ -1,14 +1,18 @@
+import {
+  circulatingSupply as circulatingSupplyModule,
+  lockWalletContracts,
+  periodsLists,
+  releasePeriods
+} from '../../modules'
+import {
+  TokensReleased,
+  InitializeCall,
+  OwnershipTransferred
+} from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { address } from '@protofire/subgraph-toolkit';
 import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { createPeriodsForContract } from '../helpers'
 import { GraphTokenLockWallet } from '../../../generated/templates'
-import {
-  TokensReleased, InitializeCall, OwnershipTransferred
-} from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
-import {
-  circulatingSupply as circulatingSupplyModule,
-  lockWalletContracts, periodsLists, releasePeriods
-} from '../../modules'
 
 
 export function handleBlock(block: ethereum.Block): void {
@@ -80,7 +84,7 @@ export function handleInitialize(call: InitializeCall): void {
 
   log.warning("::: CALL HANDLER ::: handleInitialize : triggered", [])
 
-  let lockWallet = lockWalletContracts.custom.createCustomLockWallet(
+  let lockWallet = lockWalletContracts.createCustomLockWallet(
     contractAddress, periods, managedAmount, startTime, endTime
   )
   lockWallet.save()
@@ -95,10 +99,10 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 
   if (address.isZeroAddress(event.params.previousOwner)) {
 
-    let contract = lockWalletContracts.custom.getInitializedLockWalletContract(event.address)
+    let contract = lockWalletContracts.contract.getInitializedLockWalletContract(event.address)
     if (contract) {
 
-      let values = lockWalletContracts.custom.getValuesFromContract(contract)
+      let values = lockWalletContracts.contract.getValuesFromContract(contract)
       if (values) {
 
         let contractAddress = event.address
@@ -107,7 +111,7 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
         let startTime = values[2]
         let endTime = values[3]
 
-        let lockWallet = lockWalletContracts.custom.createCustomLockWallet(
+        let lockWallet = lockWalletContracts.createCustomLockWallet(
           contractAddress, periods, managedAmount, startTime, endTime
         )
         lockWallet.save()
