@@ -1,7 +1,7 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import { InitializeCall } from "../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet"
 import { clearStore } from "matchstick-as/assembly/index"
-import { tests } from "../src/modules"
+import { tests, lockWalletContracts } from "../src/modules"
 import { modules as testModules } from "./modules"
 
 
@@ -51,12 +51,14 @@ export function testHandleInitialize(): void {
 	let releaseDuration = _endTime.minus(_startTime)
 	let periodsDuration = releaseDuration.div(_periods)
 
-	testModules.LockWalletContract.custom.creation(
+	// err
+	testModules.LockWalletContract.creation(
 		call.to,
 		_periods,
 		_managedAmount,
 		_startTime,
-		_endTime
+		_endTime,
+		lockWalletContracts.constants.CUSTOM_CONTRACT_TYPENAME
 	)
 
 	testModules.GraphCirculatingSupply.creation()

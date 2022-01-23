@@ -1,14 +1,14 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts"
-import { CustomTokenLockWallet } from "../../../../generated/schema"
-import { tests } from "../../../../src/modules"
+import { LockWalletContract } from "../../../generated/schema"
+import { tests } from "../../../src/modules"
 
 export function creation(
-	address: Bytes, periods: BigInt,
-	managedAmount: BigInt, startTime: BigInt, endTime: BigInt
+	address: Bytes, periods: BigInt, managedAmount: BigInt,
+	startTime: BigInt, endTime: BigInt, type: string
 ): void {
 
 	let id = address.toHexString()
-	let entity = CustomTokenLockWallet.load(id)
+	let entity = LockWalletContract.load(id)
 	if (entity == null) {
 		tests.logs.global.error(
 			"LockWalletContract.custom.creation.test",
@@ -26,6 +26,7 @@ export function creation(
 	tests.helpers.asserts.assertBigInt(managedAmount, entity.managedAmount)
 	tests.helpers.asserts.assertBigInt(startTime, entity.startTime)
 	tests.helpers.asserts.assertBigInt(endTime, entity.endTime)
+	tests.helpers.asserts.assertString(type, entity.type)
 
 	tests.logs.global.success("LockWalletContract.custom.creation.test", id)
 }

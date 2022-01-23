@@ -1,4 +1,4 @@
-import { creation as LockWalletContratCustomCreation } from "./LockWalletContract/custom/creation.test";
+import { creation as LockWalletContratCreation } from "./LockWalletContract/creation.test";
 
 import { creation as GraphCirculatingSupplyCreation } from "./GraphCirculatingSupply/creation.test";
 import { createPeriods as GraphCirculatingSupplyCreatePeriods } from "./GraphCirculatingSupply/createPeriods.test";
@@ -16,9 +16,7 @@ import {
 
 export namespace modules {
 	export namespace LockWalletContract {
-		export namespace custom {
-			export let creation = LockWalletContratCustomCreation
-		}
+		export let creation = LockWalletContratCreation
 	}
 
 	export namespace GraphCirculatingSupply {
