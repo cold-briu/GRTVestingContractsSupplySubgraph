@@ -80,12 +80,6 @@ export function testHandleInitialize(): void {
 		_endTime
 	)
 
-	// testHelpers.circulatingSupplyPeriodsCreation(
-	// 	contractDataId,
-	// 	_periods.toI32(),
-	// 	_managedAmount
-	// )
-
 	// TODO: test data source and handle Released
 
 	clearStore()

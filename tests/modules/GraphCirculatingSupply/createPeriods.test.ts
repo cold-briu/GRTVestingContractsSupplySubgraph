@@ -22,10 +22,6 @@ export function createPeriods(
 	)
 
 	let entity = circulatingSupply.createCirculatingSupply()
-	entity = circulatingSupply.mutations.decreaseCirculatingSupply(
-		entity,
-		managedAmount
-	)
 	let releaseDuration = releasePeriods.calculate.walletReleaseDuration(startTime, endTime)
 	let periodsDuration = releasePeriods.calculate.periodReleaseDuration(releaseDuration, periods)
 
@@ -44,21 +40,19 @@ export function createPeriods(
 		}
 	}
 
-	entity = circulatingSupply.mutations.decreaseCirculatingSupply(
-		entity,
-		managedAmount // maybe negative val
-	)
-
 	tests.helpers.asserts.assertBigInt(entity.totalSupply, storedEntity.totalSupply)
 	tests.helpers.asserts.assertBigInt(entity.minPeriodToProcessDate, storedEntity.minPeriodToProcessDate)
 	tests.helpers.asserts.assertString(periodsLists.constants.PENDING_LISTS_ID, entity.periodsToProcess)
 	tests.helpers.asserts.assertString(periodsLists.constants.PROCESSED_LISTS_ID, entity.periodsProcessed)
 
-	tests.logs.global.warn(
-		"GraphCirculatingSupply.createPeriods.test",
-		"skip test :: assertBigInt(entity.circulatingSupply, storedEntity.circulatingSupply)\n -> Returns negative values"
-	)
-	// tests.helpers.asserts.assertBigInt(entity.circulatingSupply, storedEntity.circulatingSupply)
+	// tests.logs.global.warn(
+	// 	"GraphCirculatingSupply.createPeriods.test",
+	// 	"skip test :: assertBigInt(entity.circulatingSupply, storedEntity.circulatingSupply)\n -> Returns negative values"
+	// )
+	// tests.logs.internal.testing(
+	// 	"SKIPPED assertBigInt", entity.circulatingSupply.toString(), storedEntity.circulatingSupply.toString()
+	// )
+	tests.helpers.asserts.assertBigInt(entity.circulatingSupply, storedEntity.circulatingSupply)
 
 	tests.logs.global.success("GraphCirculatingSupply.createPeriods.test", id)
 }
