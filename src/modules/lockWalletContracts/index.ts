@@ -38,9 +38,9 @@ export namespace lockWalletContracts {
 		let entity = getOrCreateLockWalletContract(
 			address,
 			periods,
+			managedAmount,
 			startTime,
 			endTime,
-			managedAmount,
 			constants.FACTORY_CONTRACT_TYPENAME
 		)
 
@@ -55,9 +55,9 @@ export namespace lockWalletContracts {
 		let entity = getOrCreateLockWalletContract(
 			address,
 			periods,
+			managedAmount,
 			startTime,
 			endTime,
-			managedAmount,
 			constants.CUSTOM_CONTRACT_TYPENAME
 		)
 
