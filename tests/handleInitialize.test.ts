@@ -43,13 +43,6 @@ export function testHandleInitialize(): void {
 	tests.mappingsWrapper.graphTokenLockWallet.handleInitialize(call)
 
 	let contractDataId = Address.fromString("0xA16081F360e3847006dB660bae1c6d1b2e17eC2A").toHexString()
-	let periods = _periods.toString()
-	let managedAmount = _managedAmount.toString()
-	let startTime = _startTime.toString()
-	let endTime = _endTime.toString()
-
-	let releaseDuration = _endTime.minus(_startTime)
-	let periodsDuration = releaseDuration.div(_periods)
 
 	// err
 	testModules.LockWalletContract.creation(

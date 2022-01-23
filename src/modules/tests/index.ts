@@ -1,6 +1,7 @@
 import { Address, Bytes, BigInt, ethereum, TypedMap } from "@graphprotocol/graph-ts"
-import { newMockEvent, newMockCall, assert, log } from "matchstick-as"
+import { newMockEvent, newMockCall, assert, log, createMockedFunction } from "matchstick-as"
 import {
+	handleOwnershipTransferred as _handleOwnershipTransferred,
 	handleInitialize as _handleInitialize,
 	handleBlock as _handleBlock
 } from "../../mappings/tokenLockWallets/tokenLockWallet"
@@ -9,6 +10,7 @@ export namespace tests {
 
 	export namespace mappingsWrapper {
 		export namespace graphTokenLockWallet {
+			export let handleOwnershipTransferred = _handleOwnershipTransferred
 			export let handleInitialize = _handleInitialize
 			export let handleBlock = _handleBlock
 		}
@@ -218,6 +220,19 @@ export namespace tests {
 			}
 		}
 
+		export namespace contractCalls {
+			export function mockFunction(
+				contractAddress: Address,
+				functionName: string,
+				functionSignature: string,
+				args: ethereum.Value[],
+				returnValues: ethereum.Value[]
+			): void {
+				createMockedFunction(contractAddress, functionName, functionSignature)
+					.withArgs(args)
+					.returns(returnValues)
+			}
+		}
 		export namespace params {
 
 			function getNewParam(name: string, value: ethereum.Value): ethereum.EventParam {
@@ -237,7 +252,7 @@ export namespace tests {
 			}
 
 			export function getBoolean(name: string, value: boolean): ethereum.EventParam {
-				return getNewParam(name, ethereum.Value.fromBoolean(value))
+				return getNewParam(name, ethereumValue.getFromBoolean(value))
 			}
 
 			export function getBigInt(name: string, value: BigInt): ethereum.EventParam {
@@ -246,6 +261,21 @@ export namespace tests {
 
 			export function getAddress(name: string, value: Address): ethereum.EventParam {
 				return getNewParam(name, ethereum.Value.fromAddress(value))
+			}
+
+		}
+
+		export namespace ethereumValue {
+			export function getFromBoolean(value: boolean): ethereum.Value {
+				return ethereum.Value.fromBoolean(value)
+			}
+
+			export function getFromI32(value: i32): ethereum.Value {
+				return ethereum.Value.fromI32(value)
+			}
+
+			export function getFromBigInt(value: BigInt): ethereum.Value {
+				return ethereum.Value.fromUnsignedBigInt(value)
 			}
 
 		}
