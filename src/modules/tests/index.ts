@@ -5,6 +5,7 @@ import {
 	handleInitialize as _handleInitialize,
 	handleBlock as _handleBlock
 } from "../../mappings/tokenLockWallets/tokenLockWallet"
+import { handleTransfer as _handleTransfer } from "../../mappings/graphToken"
 
 export namespace tests {
 
@@ -13,6 +14,9 @@ export namespace tests {
 			export let handleOwnershipTransferred = _handleOwnershipTransferred
 			export let handleInitialize = _handleInitialize
 			export let handleBlock = _handleBlock
+		}
+		export namespace graphToken {
+			export let handleTransfer = _handleTransfer
 		}
 	}
 
