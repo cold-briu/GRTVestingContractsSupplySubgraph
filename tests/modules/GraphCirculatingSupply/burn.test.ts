@@ -18,8 +18,13 @@ export function burn(populationAmount: BigInt, burnedAmount: BigInt): void {
 		"GraphToken.burn.test", id
 	)
 
+	let processedAmount = populationAmount.minus(burnedAmount)
 	tests.helpers.asserts.assertBigInt(
-		populationAmount.minus(burnedAmount), storedEntity.circulatingSupply
+		processedAmount, storedEntity.totalSupply
+	)
+
+	tests.helpers.asserts.assertBigInt(
+		processedAmount, storedEntity.circulatingSupply
 	)
 	tests.helpers.asserts.assertBigInt(burnedAmount, storedEntity.burned)
 

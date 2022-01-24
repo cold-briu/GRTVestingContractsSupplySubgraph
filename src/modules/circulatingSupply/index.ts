@@ -56,9 +56,9 @@ export namespace circulatingSupply {
 	): GraphCirculatingSupply {
 		let graphCirculatingSupply = cs
 
-		// graphCirculatingSupply = circulatingSupply.mutations.decreaseTotalSupply(
-		// 	graphCirculatingSupply, value
-		// )
+		graphCirculatingSupply = circulatingSupply.mutations.decreaseTotalSupply(
+			graphCirculatingSupply, value
+		)
 
 		graphCirculatingSupply = circulatingSupply.mutations.decreaseCirculatingSupply(
 			graphCirculatingSupply, value
