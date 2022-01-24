@@ -1,5 +1,4 @@
 import { integer } from "@protofire/subgraph-toolkit"
-import { GraphCirculatingSupply } from "../../../generated/schema"
 import { circulatingSupply, periodsLists, tests } from "../../../src/modules"
 
 export function creation(): void {
