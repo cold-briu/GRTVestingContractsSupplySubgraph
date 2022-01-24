@@ -3,11 +3,10 @@ import { circulatingSupply, periodsLists, tests } from "../../../src/modules"
 
 export function creation(): void {
 
-	let id = circulatingSupply.constants.CIRCULATING_SUPPLY_ID
 	let entity = circulatingSupply.createCirculatingSupply()
 
 	tests.logs.global.started(
-		"GraphCirculatingSupply.creation.test", id
+		"GraphCirculatingSupply.creation.test", entity.id
 	)
 
 	tests.helpers.asserts.assertBigInt(integer.ZERO, entity.totalSupply)
@@ -17,5 +16,5 @@ export function creation(): void {
 	tests.helpers.asserts.assertString(periodsLists.constants.PROCESSED_LISTS_ID, entity.periodsProcessed)
 
 
-	tests.logs.global.success("GraphCirculatingSupply.creation.test", id)
+	tests.logs.global.success("GraphCirculatingSupply.creation.test", entity.id)
 }
