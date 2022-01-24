@@ -2,7 +2,7 @@ import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { ADDRESS_ZERO } from "@protofire/subgraph-toolkit";
 import { clearStore } from "matchstick-as";
 import { OwnershipTransferred } from "../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet";
-import { lockWalletContracts, tests } from "../src/modules";
+import { circulatingSupply, lockWalletContracts, tests } from "../src/modules";
 import { modules as testModules } from "./modules"
 
 
@@ -43,6 +43,8 @@ export function testHandleOwnershipTransferred(): void {
 
 	testModules.GraphCirculatingSupply.creation()
 
+	prePopulateTest(_managedAmount)
+
 	testModules.GraphCirculatingSupply.createPeriods(
 		_periods,
 		_managedAmount,
@@ -64,6 +66,12 @@ export function testHandleOwnershipTransferred(): void {
 
 	clearStore()
 
+}
+
+function prePopulateTest(managedAmount: BigInt): void {
+	let entity = circulatingSupply.createOrLoadGraphCirculatingSupply()
+	entity = circulatingSupply.mutations.increaseCirculatingSupply(entity, managedAmount)
+	entity.save()
 }
 
 function mockContractCalls(

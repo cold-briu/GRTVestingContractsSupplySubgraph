@@ -46,10 +46,10 @@ export function createPeriodsForContract(
     }
   }
 
-  // graphCirculatingSupply = circulatingSupplyModule.mutations.decreaseCirculatingSupply(
-  //   graphCirculatingSupply,
-  //   managedAmount
-  // )
+  graphCirculatingSupply = circulatingSupplyModule.mutations.decreaseCirculatingSupply(
+    graphCirculatingSupply,
+    managedAmount
+  )
   graphCirculatingSupply.save()
 
   // grt amount

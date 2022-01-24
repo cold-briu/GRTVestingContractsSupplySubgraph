@@ -1,7 +1,7 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import { InitializeCall } from "../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet"
 import { clearStore } from "matchstick-as/assembly/index"
-import { tests, lockWalletContracts } from "../src/modules"
+import { tests, lockWalletContracts, circulatingSupply } from "../src/modules"
 import { modules as testModules } from "./modules"
 
 
@@ -56,6 +56,8 @@ export function testHandleInitialize(): void {
 
 	testModules.GraphCirculatingSupply.creation()
 
+	prePopulateTest(_managedAmount)
+
 	testModules.GraphCirculatingSupply.createPeriods(
 		_periods,
 		_managedAmount,
@@ -76,4 +78,10 @@ export function testHandleInitialize(): void {
 	// TODO: test data source and handle Released
 
 	clearStore()
+}
+
+function prePopulateTest(managedAmount: BigInt): void {
+	let entity = circulatingSupply.createOrLoadGraphCirculatingSupply()
+	entity = circulatingSupply.mutations.increaseCirculatingSupply(entity, managedAmount)
+	entity.save()
 }
