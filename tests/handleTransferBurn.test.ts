@@ -32,6 +32,5 @@ export function testHandleTransferBurn(): void {
 function prePopulateTest(amount: BigInt): void {
 	let entity = circulatingSupply.createOrLoadGraphCirculatingSupply()
 	entity = circulatingSupply.mintTokens(entity, amount)
-	entity = circulatingSupply.mutations.increaseCirculatingSupply(entity, amount)
 	entity.save()
 }

@@ -39,6 +39,10 @@ export namespace circulatingSupply {
 			graphCirculatingSupply, value
 		)
 
+		graphCirculatingSupply = circulatingSupply.mutations.increaseCirculatingSupply(
+			graphCirculatingSupply, value
+		)
+
 		graphCirculatingSupply = circulatingSupply.mutations.increaseMinted(
 			graphCirculatingSupply, value
 		)

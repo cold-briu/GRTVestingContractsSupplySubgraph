@@ -18,6 +18,7 @@ export function mint(mintedAmount: BigInt): void {
 		"GraphToken.mint.test", id
 	)
 
+	tests.helpers.asserts.assertBigInt(mintedAmount, storedEntity.circulatingSupply)
 	tests.helpers.asserts.assertBigInt(mintedAmount, storedEntity.totalSupply)
 	tests.helpers.asserts.assertBigInt(mintedAmount, storedEntity.minted)
 
