@@ -8,7 +8,7 @@ dataSources:
     name: GraphToken
     network: mainnet
     source:
-      address: '0xc944E90C64B2c07662A292be6244BDf05Cda44a7'
+      address: "0xc944E90C64B2c07662A292be6244BDf05Cda44a7"
       abi: GraphToken
       startBlock: 11446769
     mapping:
@@ -29,16 +29,16 @@ dataSources:
     name: GraphTokenLockManager
     network: mainnet
     source:
-      address: '0xFCf78AC094288D7200cfdB367A8CD07108dFa128'
+      address: "0xFCf78AC094288D7200cfdB367A8CD07108dFa128"
       abi: GraphTokenLockManager
-      startBlock: 11466643	
+      startBlock: 11466643
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/tokenLockWallets/manager.ts
       entities:
-        - TODO
+        - ReleasePeriod
       abis:
         - name: GraphTokenLockManager
           file: ./abis/GraphTokenLockManager.json
@@ -49,9 +49,9 @@ dataSources:
     name: GTLSEAN
     network: mainnet
     source:
-      address: '0x5785176048BEB00DcB6eC84A604d76E30E0666db'
+      address: "0x5785176048BEB00DcB6eC84A604d76E30E0666db"
       abi: GraphTokenLockWallet
-      startBlock: 11481575
+      startBlock: 11481574
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -61,17 +61,20 @@ dataSources:
       abis:
         - name: GraphTokenLockWallet
           file: ./abis/GraphTokenLockWallet.json
-      callHandlers:
-        - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
-          handler: handleIntitialize
+      # callHandlers:
+      #   - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
+      #     handler: handleInitialize
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
       file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
   - kind: ethereum/contract
     name: GTLSGRT
     network: mainnet
     source:
-      address: '0x32Ec7A59549b9F114c9D7d8b21891d91Ae7F2ca1'
+      address: "0x32Ec7A59549b9F114c9D7d8b21891d91Ae7F2ca1"
       abi: GraphTokenLockWallet
-      startBlock: 11481572
+      startBlock: 11481571
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -83,9 +86,12 @@ dataSources:
           file: ./abis/GraphTokenLockWallet.json
       blockHandlers:
         - handler: handleBlock
-      callHandlers:
-        - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
-          handler: handleInitialize
+      # callHandlers:
+      #   - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
+      #     handler: handleInitialize
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
       file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
 templates:
   - kind: ethereum/contract

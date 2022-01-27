@@ -1,50 +1,60 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { contracts, circulatingSupply, releasePeriods } from '../modules'
+import { BigInt } from '@graphprotocol/graph-ts'
+import {
+  circulatingSupply as circulatingSupplyModule,
+  periodsLists,
+  releasePeriods
+} from '../modules'
 
-export function createPeriodsForContract(contractAddress: Address, endTime: BigInt, startTime: BigInt, periods: BigInt, managedAmount: BigInt): void {
-  let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
-  graphCirculatingSupply.save()
+export function createPeriodsForContract(
+  contractId: string, periods: BigInt, managedAmount: BigInt,
+  startTime: BigInt, endTime: BigInt
+): void {
 
-  let contractId = contractAddress.toHexString()
-  let releaseDuration = endTime.minus(startTime)
-  let periodsDuration = releaseDuration.div(periods)
+  let graphCirculatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply()
+  let pendingPeriodsList = periodsLists.pending.getOrCreateList()
+
+  // [periodAmount, periodsAmount, managedAmount] naming may introduce confusion: some of them talk about GRT but others don't
+  let releaseDuration = releasePeriods.calculate.walletReleaseDuration(startTime, endTime)
+  let periodsDuration = releasePeriods.calculate.periodReleaseDuration(releaseDuration, periods)
+  let periodAmount = releasePeriods.calculate.periodAmount(managedAmount, periods)
   let periodReleaseDate = startTime
-  let periodAmount = managedAmount.div(periods)
 
-  // Creating contract data for debugging purposes
-  let contract = contracts.createContractData(
-    contractId, periods, managedAmount, startTime, endTime
-  )
-  contract.save()
+  let periodsCount = periods.toI32()
+  for (let i = 0; i < periodsCount; i++) {
 
-  log.warning('[RELEASE PERIODS] creating release periods for contract: {}', [contractId])
-  for (let i = 0; i < periods.toI32(); i++) {
-    periodReleaseDate = periodReleaseDate.plus(periodsDuration)
+    periodReleaseDate = releasePeriods.calculate.increasePeriodReleaseDate(
+      periodReleaseDate, periodsDuration
+    )
 
-    let releasePeriod = releasePeriods.createReleasePeriod(contractId, i, periodReleaseDate, periodAmount)
+    // periodsToProcess is a derived list, periods are created w/ this relationship
+    let releasePeriod = releasePeriods.createReleasePeriod(
+      contractId, i, periodReleaseDate, periodAmount
+    )
     releasePeriod.save()
 
-    let periodsToProcess = graphCirculatingSupply.periodsToProcess as string[]
+    pendingPeriodsList = periodsLists.pending.mutations.addPeriodKey(
+      pendingPeriodsList, releasePeriods.keys.encode(
+        releasePeriod.id,
+        releasePeriod.releaseDate
+      )
+    )
 
     if (i == 0) {
-      if (graphCirculatingSupply.minPeriodToProcessDate.isZero() ||
-        graphCirculatingSupply.minPeriodToProcessDate > periodReleaseDate) { // FIXME: may use < instead?
-        graphCirculatingSupply.minPeriodToProcessDate = periodReleaseDate
-      }
+      graphCirculatingSupply = circulatingSupplyModule.mutations.updateMinProcessToDate(
+        graphCirculatingSupply, periodReleaseDate
+      )
     }
-
-    periodsToProcess.push(releasePeriod.id)
-    graphCirculatingSupply.periodsToProcess = periodsToProcess
   }
-  /*
-  {
-    let prevCirculatingSupply = graphCirculatingSupply.circulatingSupply
-    graphCirculatingSupply.circulatingSupply = prevCirculatingSupply.minus(managedAmount)
-  }
-   is the same as :
-  */
-  graphCirculatingSupply.circulatingSupply = graphCirculatingSupply.circulatingSupply.minus(managedAmount) // FIXME: this may broke
 
-  graphCirculatingSupply.periodsToProcessTotalAmount = graphCirculatingSupply.periodsToProcessTotalAmount.plus(managedAmount)
+  graphCirculatingSupply = circulatingSupplyModule.mutations.decreaseCirculatingSupply(
+    graphCirculatingSupply,
+    managedAmount
+  )
   graphCirculatingSupply.save()
+
+  // grt amount
+  pendingPeriodsList = periodsLists.pending.mutations.increaseAmount(
+    pendingPeriodsList, managedAmount
+  )
+  pendingPeriodsList.save()
 }

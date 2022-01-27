@@ -1,4 +1,5 @@
 export * from "./circulatingSupply"
-export * from "./contracts"
+export * from "./lockWalletContracts"
+export * from "./periodsLists"
 export * from "./releasePeriods"
 export * from "./tests"

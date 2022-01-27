@@ -3,7 +3,7 @@ import { InitializeCall } from "../../generated/templates/GraphTokenLockWallet/G
 import { clearStore } from "matchstick-as/assembly/index"
 
 import { tests } from "../../src/modules"
-import { helpers as testHelpers } from "../helpers"
+// import { helpers as testHelpers } from "../helpers"
 import { integer } from "@protofire/subgraph-toolkit"
 
 export function testHandleBlock(): void {
@@ -55,7 +55,7 @@ export function testHandleBlock(): void {
 
 	tests.mappingsWrapper.graphTokenLockWallet.handleInitialize(call)
 
-	testHelpers.circulatingSupplyPreBlock(contractDataId, _periods.toI32(), _managedAmount)
+	// testHelpers.circulatingSupplyPreBlock(contractDataId, _periods.toI32(), _managedAmount)
 
 	tests.mappingsWrapper.graphTokenLockWallet.handleBlock(call.block)
 

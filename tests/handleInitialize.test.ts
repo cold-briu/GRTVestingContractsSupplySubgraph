@@ -1,9 +1,9 @@
-import { Address, BigInt, TypedMap } from "@graphprotocol/graph-ts"
-import { InitializeCall } from "../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet"
-import { clearStore, assert } from "matchstick-as/assembly/index"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { InitializeCall } from "../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet"
+import { clearStore } from "matchstick-as/assembly/index"
+import { tests, lockWalletContracts, circulatingSupply } from "../src/modules"
+import { modules as testModules } from "./modules"
 
-import { tests } from "../../src/modules"
-import { helpers as testHelpers } from "../helpers"
 
 export function testHandleInitialize(): void {
 
@@ -43,37 +43,45 @@ export function testHandleInitialize(): void {
 	tests.mappingsWrapper.graphTokenLockWallet.handleInitialize(call)
 
 	let contractDataId = Address.fromString("0xA16081F360e3847006dB660bae1c6d1b2e17eC2A").toHexString()
-	let periods = _periods.toString()
-	let managedAmount = _managedAmount.toString()
-	let startTime = _startTime.toString()
-	let endTime = _endTime.toString()
 
-	let releaseDuration = _endTime.minus(_startTime)
-	let periodsDuration = releaseDuration.div(_periods)
-
-	testHelpers.contractDataCreation(
-		contractDataId,
-		periods,
-		managedAmount,
-		startTime,
-		endTime
+	// err
+	testModules.LockWalletContract.creation(
+		call.to,
+		_periods,
+		_managedAmount,
+		_startTime,
+		_endTime,
+		lockWalletContracts.constants.CUSTOM_CONTRACT_TYPENAME
 	)
 
-	testHelpers.releasePeriodsCreation(
+	testModules.GraphCirculatingSupply.creation()
+
+	prePopulateTest(_managedAmount)
+
+	testModules.GraphCirculatingSupply.createPeriods(
+		_periods,
+		_managedAmount,
+		_startTime,
+		_endTime
+	)
+
+	testModules.PeriodsList.pending.creation()
+
+	testModules.PeriodsList.pending.createPeriods(
 		contractDataId,
 		_periods,
+		_managedAmount,
 		_startTime,
-		periodsDuration,
-		_managedAmount.div(_periods).toString()
-	)
-
-	testHelpers.circulatingSupplyPeriodsCreation(
-		contractDataId,
-		_periods.toI32(),
-		_managedAmount
+		_endTime
 	)
 
 	// TODO: test data source and handle Released
 
 	clearStore()
+}
+
+function prePopulateTest(managedAmount: BigInt): void {
+	let entity = circulatingSupply.createOrLoadGraphCirculatingSupply()
+	entity = circulatingSupply.mutations.increaseCirculatingSupply(entity, managedAmount)
+	entity.save()
 }
