@@ -1,25 +1,29 @@
 import { Transfer } from '../../generated/GraphToken/GraphToken'
-import { createOrLoadGraphCirculatingSupply } from './helpers'
+import { circulatingSupply } from '../modules'
+import { address } from "@protofire/subgraph-toolkit";
 
 
 export function handleTransfer(event: Transfer): void {
-  let graphCirculatingSupply = createOrLoadGraphCirculatingSupply()
 
-  let to = event.params.to
-  let from = event.params.from
-  let value = event.params.value
+  let isFromZero = address.isZeroAddress(event.params.from)
+  let isToZero = address.isZeroAddress(event.params.to)
 
-  // Mint Transfer
-  if (from.toHexString() == '0x0000000000000000000000000000000000000000') {
-    graphCirculatingSupply.totalSupply = graphCirculatingSupply.totalSupply.plus(value)
-    graphCirculatingSupply.circulatingSupply = graphCirculatingSupply.circulatingSupply.plus(value)
+  // Check this condition to avoid load entity in regular transfers
+  if (isFromZero || isToZero) {
+    let graphCirculatingSupply = circulatingSupply.createOrLoadGraphCirculatingSupply()
+
+    if (isFromZero) {
+      graphCirculatingSupply = circulatingSupply.mintTokens(
+        graphCirculatingSupply, event.params.value
+      )
+
+    } else if (isToZero) {
+      graphCirculatingSupply = circulatingSupply.burnTokens(
+        graphCirculatingSupply, event.params.value
+      )
+    }
+
     graphCirculatingSupply.save()
+  }
 
-  // Burn Transfer
-  } else if (to.toHexString() == '0x0000000000000000000000000000000000000000') {
-    graphCirculatingSupply.totalSupply = graphCirculatingSupply.totalSupply.minus(value)
-    graphCirculatingSupply.circulatingSupply = graphCirculatingSupply.circulatingSupply.minus(value)
-    graphCirculatingSupply.save()
-    
-  } 
 }

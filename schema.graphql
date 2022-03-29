@@ -1,36 +1,139 @@
-type ReleasePeriod @entity {
-  "Auxiliary entity to represent amounts that will be released once releaseDate reached"
+interface PeriodsList {
+
+  "internal id used for indexation, singleton"
   id: ID!
-  "This period contract"
-  contract: String!
-  "date when the period will be released"
-  releaseDate: BigInt!
-  "amount that will be released once release Date was reach"
+
+  "related release periods"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "list")
+
+  "amount of grt in this list"
   amount: BigInt!
-  "Indicates if period was released or not"
-  processed: Boolean!
+
+  "a list of periods composed keys: ${period.id}@${period.releaseStartDate}"
+  keys: [String!]!
+
 }
 
+type PendingPeriods implements PeriodsList @entity {
+
+  "internal id used for indexation, singleton"
+  id: ID!
+
+  "related release periods"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "list")
+
+  "amount of grt pending to release"
+  amount: BigInt!
+
+  "a list of periods composed keys: ${period.id}@${period.releaseDate}"
+  keys: [String!]!
+
+}
+
+type ProcessedPeriods implements PeriodsList @entity {
+
+  "internal id used for indexation, singleton"
+  id: ID!
+
+  "related release periods"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "list")
+
+  "amount of grt already released"
+  amount: BigInt! 
+
+  "a list of periods composed keys: ${period.id}@${period.releaseDate}"
+  keys: [String!]!
+
+}
+
+type ReleasePeriod @entity {
+
+  "Auxiliary entity to represent amounts that will be released once releaseDate reached"
+  id: ID!
+
+  "This period contract"
+  contract: LockWalletContract!
+
+  "date when the period will be released"
+  releaseDate: BigInt!
+
+  "amount that will be released once release Date was reach"
+  amount: BigInt!
+
+  "Indicates if period was released or not"
+  processed: Boolean!
+
+  "A list to group release periods in pending or processed"
+  list: PeriodsList!
+
+  "period composed key: ${period.id}@${period.releaseDate}"
+  key: String!
+
+}
+
+enum LockWalletTypes {
+  FACTORY
+  CUSTOM
+}
+
+type LockWalletContract @entity {
+
+  "Entity created for debugging to know the params to call function to create periods"
+  id: ID!
+
+  "contract's EVM address"
+  address: Bytes!
+
+  "related release period entity"
+  periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
+
+  "Periods to be created"
+  periodsAmount: BigInt!
+
+  "start time for releasing"
+  startTime: BigInt!
+
+  "end Time for releasing"
+  endTime: BigInt!
+
+  "total amount managed by it's contract"
+  managedAmount: BigInt!
+ 
+  "already released grt amount managed by this contract"
+  releasedAmount: BigInt!
+
+  "already released grt amount managed by this contract"
+  pendingAmount: BigInt!
+
+  type: LockWalletTypes!
+ 
+}
+
+
 type GraphCirculatingSupply @entity {
+
   "ID is set to 1"
   id: ID!
 
   "Graph Token supply"
   totalSupply: BigInt!
 
+  "Graph Token minted amount"
+  minted: BigInt!
+
+  "Graph Token burnt amount"
+  burned: BigInt!
+
   "Graph Circulating Supply should be totalSupply minus periodsToProcessTotalAmount plus periodsProcessedTotalAmount" 
   circulatingSupply: BigInt!
 
   "Array containing periods not processed yet"
-  periodsToProcess: [ReleasePeriod!]
-  "Amount to release"
-  periodsToProcessTotalAmount: BigInt!
+  periodsToProcess: PendingPeriods!
 
   "Periods already released"
-  periodsProcessed: [ReleasePeriod!]
-  "Amount already released"
-  periodsProcessedTotalAmount: BigInt!
+  periodsProcessed: ProcessedPeriods!
 
   "This min date saves min release date from periodsToProcess"
   minPeriodToProcessDate: BigInt!
+  
 }
