@@ -1,19 +1,60 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { GraphCirculatingSupply } from '../../generated/schema'
+import {
+  circulatingSupply as circulatingSupplyModule,
+  periodsLists,
+  releasePeriods
+} from '../modules'
 
-export function createOrLoadGraphCirculatingSupply(): GraphCirculatingSupply {
-  let graphCirculatingSupply = GraphCirculatingSupply.load('1')
-  if (graphCirculatingSupply == null) {
-    graphCirculatingSupply = new GraphCirculatingSupply('1')
-    graphCirculatingSupply.totalSupply = BigInt.fromI32(0) 
-    graphCirculatingSupply.circulatingSupply = BigInt.fromI32(0)
-    graphCirculatingSupply.periodsToProcess = []
-    graphCirculatingSupply.periodsToProcessTotalAmount = BigInt.fromI32(0) 
-    graphCirculatingSupply.periodsProcessed = []
-    graphCirculatingSupply.periodsProcessedTotalAmount = BigInt.fromI32(0) 
-    graphCirculatingSupply.minPeriodToProcessDate = BigInt.fromI32(0) 
+export function createPeriodsForContract(
+  contractId: string, periods: BigInt, managedAmount: BigInt,
+  startTime: BigInt, endTime: BigInt
+): void {
 
-    graphCirculatingSupply.save()
+  let graphCirculatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply()
+  let pendingPeriodsList = periodsLists.pending.getOrCreateList()
+
+  // [periodAmount, periodsAmount, managedAmount] naming may introduce confusion: some of them talk about GRT but others don't
+  let releaseDuration = releasePeriods.calculate.walletReleaseDuration(startTime, endTime)
+  let periodsDuration = releasePeriods.calculate.periodReleaseDuration(releaseDuration, periods)
+  let periodAmount = releasePeriods.calculate.periodAmount(managedAmount, periods)
+  let periodReleaseDate = startTime
+
+  let periodsCount = periods.toI32()
+  for (let i = 0; i < periodsCount; i++) {
+
+    periodReleaseDate = releasePeriods.calculate.increasePeriodReleaseDate(
+      periodReleaseDate, periodsDuration
+    )
+
+    // periodsToProcess is a derived list, periods are created w/ this relationship
+    let releasePeriod = releasePeriods.createReleasePeriod(
+      contractId, i, periodReleaseDate, periodAmount
+    )
+    releasePeriod.save()
+
+    pendingPeriodsList = periodsLists.pending.mutations.addPeriodKey(
+      pendingPeriodsList, releasePeriods.keys.encode(
+        releasePeriod.id,
+        releasePeriod.releaseDate
+      )
+    )
+
+    if (i == 0) {
+      graphCirculatingSupply = circulatingSupplyModule.mutations.updateMinProcessToDate(
+        graphCirculatingSupply, periodReleaseDate
+      )
+    }
   }
-  return graphCirculatingSupply as GraphCirculatingSupply
+
+  graphCirculatingSupply = circulatingSupplyModule.mutations.decreaseCirculatingSupply(
+    graphCirculatingSupply,
+    managedAmount
+  )
+  graphCirculatingSupply.save()
+
+  // grt amount
+  pendingPeriodsList = periodsLists.pending.mutations.increaseAmount(
+    pendingPeriodsList, managedAmount
+  )
+  pendingPeriodsList.save()
 }
