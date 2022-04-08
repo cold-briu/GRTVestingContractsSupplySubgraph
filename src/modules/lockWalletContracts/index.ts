@@ -21,6 +21,7 @@ export namespace lockWalletContracts {
 			entity.address = address
 			entity.passedPeriods = integer.ZERO
 			entity.periodsAmount = periods
+			entity.amountPerPeriod = managedAmount.div(periods)
 			entity.startTime = startTime
 			entity.endTime = endTime
 			entity.managedAmount = managedAmount
@@ -82,7 +83,7 @@ export namespace lockWalletContracts {
 
 		export function updateavAilableAmount(wallet: LockWalletContract): LockWalletContract {
 			let w = wallet
-			w.availableAmount = w.periodsAmount.times(w.passedPeriods)
+			w.availableAmount = w.amountPerPeriod.times(w.passedPeriods)
 			return w
 		}
 

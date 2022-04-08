@@ -90,6 +90,9 @@ type LockWalletContract @entity {
   "Periods to be created"
   periodsAmount: BigInt!
 
+  "managedAmount div periodsAmount"
+  amountPerPeriod: BigInt!
+
   "Periods already released"
   passedPeriods: BigInt!
 
@@ -115,6 +118,7 @@ type LockWalletContract @entity {
 
   "Released amount calculated as the contract does: periodAmount * passedPeriods "
   availableAmount: BigInt! 
+
 
 }
 
