@@ -19,6 +19,7 @@ export namespace lockWalletContracts {
 		if (entity == null) {
 			entity = new LockWalletContract(id)
 			entity.address = address
+			entity.passedPeriods = integer.ZERO
 			entity.periodsAmount = periods
 			entity.startTime = startTime
 			entity.endTime = endTime
@@ -68,6 +69,12 @@ export namespace lockWalletContracts {
 		export function increaseReleaseAmount(wallet: LockWalletContract, amount: BigInt): LockWalletContract {
 			let w = wallet
 			w.releasedAmount = w.releasedAmount.plus(amount)
+			return w
+		}
+
+		export function increasePassedPeriods(wallet: LockWalletContract): LockWalletContract {
+			let w = wallet
+			w.passedPeriods = w.passedPeriods.plus(integer.ONE)
 			return w
 		}
 	}
