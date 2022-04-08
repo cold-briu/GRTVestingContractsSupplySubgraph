@@ -64,6 +64,14 @@ export namespace lockWalletContracts {
 		return entity as LockWalletContract
 	}
 
+	export namespace mutators {
+		export function increaseReleaseAmount(wallet: LockWalletContract, amount: BigInt): LockWalletContract {
+			let w = wallet
+			w.releasedAmount = w.releasedAmount.plus(amount)
+			return w
+		}
+	}
+
 	export namespace contract {
 
 		export function getInitializedLockWalletContract(address: Address): GraphTokenLockWallet | null {

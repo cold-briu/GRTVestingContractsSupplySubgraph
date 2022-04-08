@@ -100,13 +100,16 @@ type LockWalletContract @entity {
   managedAmount: BigInt!
  
   "already released grt amount managed by this contract"
-  releasedAmount: BigInt!
-
-  "already released grt amount managed by this contract"
   pendingAmount: BigInt!
 
   type: LockWalletTypes!
- 
+
+  "already released grt amount managed by this contract"
+  releasedAmount: BigInt!
+
+  # availableAmount = periodAmount * passedPeriods 
+
+  # totalLocked = managedAmount - availableAmount 
 }
 
 

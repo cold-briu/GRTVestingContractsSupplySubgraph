@@ -13,6 +13,7 @@ import { address } from '@protofire/subgraph-toolkit';
 import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { createPeriodsForContract } from '../helpers'
 import { GraphTokenLockWallet } from '../../../generated/templates'
+import { LockWalletContract } from '../../../generated/schema';
 
 
 export function handleBlock(block: ethereum.Block): void {
@@ -43,6 +44,16 @@ export function handleBlock(block: ethereum.Block): void {
         let period = releasePeriods.safeLoadPeriod(periodId)
         period = releasePeriods.mutations.setAsProcessed(period)
 
+        let contractId = period.id.split("@")[0]
+        let contract = LockWalletContract.load(contractId)
+        if (!contract) {
+          log.critical("!!!! FATAL: missing contract for id {}", [contractId])
+          return
+        }
+
+        contract = lockWalletContracts.mutators.increaseReleaseAmount(contract, period.amount)
+        contract.save()
+
         circulatingSupply = circulatingSupplyModule.mutations.increaseCirculatingSupply(
           circulatingSupply, period.amount
         )
@@ -54,6 +65,8 @@ export function handleBlock(block: ethereum.Block): void {
         processedList = periodsLists.processed.mutations.increaseAmount(
           processedList, period.amount
         )
+
+        // TODO : increase released amount on lockWallet entity
 
       } else {
         newMin = circulatingSupplyModule.helpers.setNewMinProcessDate(
