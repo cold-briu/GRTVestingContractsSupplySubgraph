@@ -26,6 +26,7 @@ export namespace lockWalletContracts {
 			entity.managedAmount = managedAmount
 			entity.releasedAmount = integer.ZERO
 			entity.pendingAmount = integer.ZERO
+			entity.availableAmount = integer.ZERO
 			entity.type = type
 		}
 		return entity as LockWalletContract
@@ -75,6 +76,12 @@ export namespace lockWalletContracts {
 		export function increasePassedPeriods(wallet: LockWalletContract): LockWalletContract {
 			let w = wallet
 			w.passedPeriods = w.passedPeriods.plus(integer.ONE)
+			return w
+		}
+
+		export function updateavAilableAmount(wallet: LockWalletContract): LockWalletContract {
+			let w = wallet
+			w.availableAmount = w.periodsAmount.times(w.passedPeriods)
 			return w
 		}
 	}
