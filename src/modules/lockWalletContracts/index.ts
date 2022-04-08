@@ -26,6 +26,7 @@ export namespace lockWalletContracts {
 			entity.managedAmount = managedAmount
 			entity.releasedAmount = integer.ZERO
 			entity.pendingAmount = integer.ZERO
+			entity.totalLocked = integer.ZERO
 			entity.availableAmount = integer.ZERO
 			entity.type = type
 		}
@@ -82,6 +83,12 @@ export namespace lockWalletContracts {
 		export function updateavAilableAmount(wallet: LockWalletContract): LockWalletContract {
 			let w = wallet
 			w.availableAmount = w.periodsAmount.times(w.passedPeriods)
+			return w
+		}
+
+		export function updateavTotalLocked(wallet: LockWalletContract): LockWalletContract {
+			let w = wallet
+			w.totalLocked = w.managedAmount.minus(w.availableAmount)
 			return w
 		}
 	}

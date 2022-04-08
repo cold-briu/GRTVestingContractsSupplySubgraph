@@ -54,6 +54,7 @@ export function handleBlock(block: ethereum.Block): void {
         contract = lockWalletContracts.mutators.increaseReleaseAmount(contract, period.amount)
         contract = lockWalletContracts.mutators.increasePassedPeriods(contract)
         contract = lockWalletContracts.mutators.updateavAilableAmount(contract)
+        contract = lockWalletContracts.mutators.updateavTotalLocked(contract)
         contract.save()
 
         circulatingSupply = circulatingSupplyModule.mutations.increaseCirculatingSupply(
