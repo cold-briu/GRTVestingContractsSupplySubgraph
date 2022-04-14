@@ -11,7 +11,7 @@ import {
 } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { address } from '@protofire/subgraph-toolkit';
 import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
-import { createPeriodsForContract } from '../helpers'
+import { createPeriodsForContract } from '../mappingHelpers'
 import { GraphTokenLockWallet } from '../../../generated/templates'
 
 
@@ -140,4 +140,6 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   }
 }
 
-export function handleTokensReleased(event: TokensReleased): void { }
+export function handleTokensReleased(event: TokensReleased): void {
+  log.warning("::: EVENT HANDLER ::: handleTokensReleased : triggered", [])
+}

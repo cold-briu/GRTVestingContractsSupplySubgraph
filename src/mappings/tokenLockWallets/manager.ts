@@ -1,7 +1,7 @@
 import { TokenLockCreated } from '../../../generated/GraphTokenLockManager/GraphTokenLockManager'
 import { GraphTokenLockWallet } from '../../../generated/templates'
 import { lockWalletContracts } from '../../modules'
-import { createPeriodsForContract } from '../helpers'
+import { createPeriodsForContract } from '../mappingHelpers'
 
 export function handleTokenLockCreated(event: TokenLockCreated): void {
   let contractAddress = event.params.contractAddress
