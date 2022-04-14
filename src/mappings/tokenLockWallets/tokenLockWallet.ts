@@ -13,7 +13,6 @@ import { address } from '@protofire/subgraph-toolkit';
 import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { createPeriodsForContract } from '../helpers'
 import { GraphTokenLockWallet } from '../../../generated/templates'
-import { LockWalletContract } from '../../../generated/schema';
 
 
 export function handleBlock(block: ethereum.Block): void {
@@ -44,12 +43,8 @@ export function handleBlock(block: ethereum.Block): void {
         let period = releasePeriods.safeLoadPeriod(periodId)
         period = releasePeriods.mutations.setAsProcessed(period)
 
-        let contractId = period.id.split("@")[0]
-        let contract = LockWalletContract.load(contractId)
-        if (!contract) {
-          log.critical("!!!! FATAL: missing contract for id {}", [contractId])
-          return
-        }
+        let contractId = period.id.split("-")[0]
+        let contract = lockWalletContracts.safeLoadLockWalletContract(contractId)
 
         contract = lockWalletContracts.mutators.increaseReleaseAmount(contract, period.amount)
         contract = lockWalletContracts.mutators.increasePassedPeriods(contract)
@@ -69,7 +64,7 @@ export function handleBlock(block: ethereum.Block): void {
           processedList, period.amount
         )
 
-        // TODO : increase released amount on lockWallet entity
+        // TODO set as processed
 
       } else {
         newMin = circulatingSupplyModule.helpers.setNewMinProcessDate(
@@ -125,10 +120,10 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
         log.warning("::: EVENT HANDLER ::: handleOwnershipTransferred : values fetched", [])
 
         let contractAddress = event.address
-        let periods = values[0]
-        let managedAmount = values[1]
-        let startTime = values[2]
-        let endTime = values[3]
+        let periods = values.periods
+        let managedAmount = values.managedAmount
+        let startTime = values.managedAmount
+        let endTime = values.endTime
 
         let lockWallet = lockWalletContracts.createCustomLockWallet(
           contractAddress, periods, managedAmount, startTime, endTime
