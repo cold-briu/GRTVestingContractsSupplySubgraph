@@ -15,7 +15,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/graphToken.ts
+      file: ./src/mappings/graphToken/index.ts
       entities:
         - GraphAccount
         - GraphNetwork
@@ -42,6 +42,8 @@ dataSources:
       abis:
         - name: GraphTokenLockManager
           file: ./abis/GraphTokenLockManager.json
+      blockHandlers:
+        - handler: handleBlock
       eventHandlers:
         - event: TokenLockCreated(indexed address,indexed bytes32,indexed address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
           handler: handleTokenLockCreated
@@ -61,13 +63,13 @@ dataSources:
       abis:
         - name: GraphTokenLockWallet
           file: ./abis/GraphTokenLockWallet.json
-      # callHandlers:
-      #   - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
-      #     handler: handleInitialize
+      callHandlers:
+        - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
+          handler: handleInitialize
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
+      file: ./src/mappings/tokenLockWallets/custom.ts
   - kind: ethereum/contract
     name: GTLSGRT
     network: mainnet
@@ -84,15 +86,13 @@ dataSources:
       abis:
         - name: GraphTokenLockWallet
           file: ./abis/GraphTokenLockWallet.json
-      blockHandlers:
-        - handler: handleBlock
-      # callHandlers:
-      #   - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
-      #     handler: handleInitialize
+      callHandlers:
+        - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
+          handler: handleInitialize
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
+      file: ./src/mappings/tokenLockWallets/custom.ts
 templates:
   - kind: ethereum/contract
     name: GraphTokenLockWallet
@@ -103,7 +103,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/tokenLockWallets/tokenLockWallet.ts
+      file: ./src/mappings/tokenLockWallets/custom.ts
       entities:
         - TokenLockWallet
       abis:

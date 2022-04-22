@@ -15,14 +15,14 @@ export function testHandleInitialize(): void {
 	let _beneficiary = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
 	let _token = Address.fromString("0x7b7cc10852f215bcea3e684ef584eb2b7c24b8f7")
 
-	let _managedAmount = BigInt.fromI32(25000)
-	let _startTime = BigInt.fromI32(9000)
-	let _endTime = BigInt.fromI32(90000)
-	let _periods = BigInt.fromI32(10)
+	let _managedAmount = BigInt.fromI64(1153846000000000000000000)
+	let _startTime = BigInt.fromI32(1608224400)
+	let _endTime = BigInt.fromI32(1639760400)
+	let _periods = BigInt.fromI32(1)
 
 	let _releaseStartTime = BigInt.fromI32(0)
 	let _vestingCliffTime = BigInt.fromI32(0)
-	let _revocable = 10
+	let _revocable = 0
 
 	let call = changetype<InitializeCall>(tests.helpers.calls.getNewCall(
 		[

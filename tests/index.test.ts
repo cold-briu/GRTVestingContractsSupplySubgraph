@@ -4,25 +4,25 @@ import { testHandleOwnershipTransferred } from "./handleOwnershipTransferred.tes
 import { testHandleTransferMint } from "./handleTransferMint.test";
 import { testHandleTransferBurn } from "./handleTransferBurn.test";
 import { testHandleBlock } from "./handleBlock.test";
+import { testPeriodsReleaseProcessIssue } from "./periodsReleaseProcessIssue.test";
 
-// TODO: test periods entities creation
-function runTests(): void {
-	test("TokenLockWallet - testHandleInitialize",
-		testHandleInitialize
-	)
-	test("TokenLockWallet - testHandleOwnershipTransferred",
-		testHandleOwnershipTransferred
-	)
+// test("testPeriodsReleaseProcessIssue", testPeriodsReleaseProcessIssue)
 
-	test("GraphToken - testHandleTransferMint",
-		testHandleTransferMint
-	)
-	test("GraphToken - testHandleTransferBurn",
-		testHandleTransferBurn
-	)
+// // TODO: test periods entities creation
+test("TokenLockWallet - testHandleInitialize",
+	testHandleInitialize
+)
+// test("TokenLockWallet - testHandleOwnershipTransferred",
+// 	testHandleOwnershipTransferred
+// )
 
-	test("TokenLockWallet - testHandleBlock",
-		testHandleBlock
-	)
-}
-runTests()
+// test("GraphToken - testHandleTransferMint",
+// 	testHandleTransferMint
+// )
+// test("GraphToken - testHandleTransferBurn",
+// 	testHandleTransferBurn
+// )
+
+// test("TokenLockWallet - testHandleBlock",
+// 	testHandleBlock
+// )
