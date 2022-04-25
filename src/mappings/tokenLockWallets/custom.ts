@@ -48,7 +48,7 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
         let contractAddress = event.address
         let periods = values.periods
         let managedAmount = values.managedAmount
-        let startTime = values.managedAmount
+        let startTime = values.startTime
         let endTime = values.endTime
 
         let lockWallet = lockWalletContracts.createCustomLockWallet(
