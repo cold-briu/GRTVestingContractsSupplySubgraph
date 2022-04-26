@@ -3,8 +3,13 @@ import {
   circulatingSupply as circulatingSupplyModule,
   periodsLists,
   releasePeriods,
-  tests
 } from '../../modules'
+
+const firstBLock: BigInt = BigInt.fromI32(11466643)
+
+export function isFirstBlock(blockNumber: BigInt): bool {
+  return firstBLock == blockNumber
+}
 
 export function createPeriodsForContract(
   contractId: string, periods: BigInt, managedAmount: BigInt,

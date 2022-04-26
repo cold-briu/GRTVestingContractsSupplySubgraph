@@ -1,28 +1,23 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { TokenLockCreated } from '../../../generated/GraphTokenLockManager/GraphTokenLockManager'
 import { GraphTokenLockWallet } from '../../../generated/templates'
 import { circulatingSupply as circulatingSupplyModule, lockWalletContracts, periodsLists, releasePeriods } from '../../modules'
-import { createPeriodsForContract } from '../mappingHelpers'
+import { createPeriodsForContract, isFirstBlock } from '../mappingHelpers'
+import { onstart } from '../initializer'
 
 export function handleTokenLockCreated(event: TokenLockCreated): void {
+  if (isFirstBlock(event.block.number)) {
+    onstart.loadDefautlExchanges()
+  }
+
   let contractAddress = event.params.contractAddress
   let periods = event.params.periods
   let managedAmount = event.params.managedAmount
   let startTime = event.params.startTime
   let endTime = event.params.endTime
 
-  let lockWallet = lockWalletContracts.createFactoryLockWallet(
-    contractAddress, periods, managedAmount, startTime, endTime
-  )
-  lockWallet.save()
-
-  createPeriodsForContract(
-    lockWallet.id, periods, managedAmount, endTime, startTime
-  )
-
-  GraphTokenLockWallet.create(contractAddress)
+  createTokenLock(contractAddress, periods, managedAmount, startTime, endTime)
 }
-
 
 export function handleBlock(block: ethereum.Block): void {
   let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
@@ -92,4 +87,23 @@ export function handleBlock(block: ethereum.Block): void {
 
     processedList.save()
   }
+}
+
+export function createTokenLock(
+  contractAddress: Address,
+  periods: BigInt,
+  managedAmount: BigInt,
+  startTime: BigInt,
+  endTime: BigInt): void 
+{
+  let lockWallet = lockWalletContracts.createFactoryLockWallet(
+    contractAddress, periods, managedAmount, startTime, endTime
+  )
+  lockWallet.save()
+
+  createPeriodsForContract(
+    lockWallet.id, periods, managedAmount, endTime, startTime
+  )
+
+  GraphTokenLockWallet.create(contractAddress)
 }
