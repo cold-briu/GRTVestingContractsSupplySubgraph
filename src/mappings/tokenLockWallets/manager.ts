@@ -1,22 +1,22 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { TokenLockCreated } from '../../../generated/GraphTokenLockManager/GraphTokenLockManager'
-import { GraphTokenLockWallet } from '../../../generated/templates'
 import { circulatingSupply as circulatingSupplyModule, lockWalletContracts, periodsLists, releasePeriods } from '../../modules'
-import { createPeriodsForContract, isFirstBlock } from '../mappingHelpers'
-import { onstart } from '../initializer'
+import { common } from './common'
 
 export function handleTokenLockCreated(event: TokenLockCreated): void {
-  if (isFirstBlock(event.block.number)) {
-    onstart.loadDefautlExchanges()
-  }
-
   let contractAddress = event.params.contractAddress
   let periods = event.params.periods
   let managedAmount = event.params.managedAmount
   let startTime = event.params.startTime
   let endTime = event.params.endTime
 
-  createTokenLock(contractAddress, periods, managedAmount, startTime, endTime)
+  common.createTokenLockWallet(
+    contractAddress, 
+    periods, 
+    managedAmount, 
+    startTime, 
+    endTime,
+    false)
 }
 
 export function handleBlock(block: ethereum.Block): void {
@@ -87,23 +87,4 @@ export function handleBlock(block: ethereum.Block): void {
 
     processedList.save()
   }
-}
-
-export function createTokenLock(
-  contractAddress: Address,
-  periods: BigInt,
-  managedAmount: BigInt,
-  startTime: BigInt,
-  endTime: BigInt): void 
-{
-  let lockWallet = lockWalletContracts.createFactoryLockWallet(
-    contractAddress, periods, managedAmount, startTime, endTime
-  )
-  lockWallet.save()
-
-  createPeriodsForContract(
-    lockWallet.id, periods, managedAmount, endTime, startTime
-  )
-
-  GraphTokenLockWallet.create(contractAddress)
 }

@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { createTokenLock } from './tokenLockWallets/manager';
+import { common } from './tokenLockWallets/common';
 
-interface ExchangeContract {
+class ExchangeContract {
   id: Address
   periods: BigInt
   managedAmount: BigInt
@@ -11,35 +11,35 @@ interface ExchangeContract {
 
 const vestingListExchanges: ExchangeContract[] = [
   {
-    id: Address.fromHexString('0x0000000000000000000000000000000000000000'),
+    id: Address.fromString('0x0000000000000000000000000000000000000001'),
     periods: BigInt.fromI32(48),
     managedAmount: BigInt.fromString('50000000'),
     startTime: BigInt.fromString('1522602000'),
     endTime: BigInt.fromString('1648832400'),
   },
   {
-    id: Address.fromHexString('0x0000000000000000000000000000000000000000'),
+    id: Address.fromString('0x0000000000000000000000000000000000000002'),
     periods: BigInt.fromI32(1),
     managedAmount: BigInt.fromString('8000000'),
     startTime: BigInt.fromString('1608224400'),
     endTime: BigInt.fromString('1627146000'),
   },
   {
-    id: Address.fromHexString('0x0000000000000000000000000000000000000000'),
+    id: Address.fromString('0x0000000000000000000000000000000000000003'),
     periods: BigInt.fromI32(48),
     managedAmount: BigInt.fromString('59000000'),
     startTime: BigInt.fromString('1543683600'),
     endTime: BigInt.fromString('1669914000'),
   },
   {
-    id: Address.fromHexString('0x0000000000000000000000000000000000000000'),
+    id: Address.fromString('0x0000000000000000000000000000000000000004'),
     periods: BigInt.fromI32(1),
     managedAmount: BigInt.fromString('4000000'),
     startTime: BigInt.fromString('1608224400'),
     endTime: BigInt.fromString('1627146000'),
   },
   {
-    id: Address.fromHexString('0x0000000000000000000000000000000000000000'),
+    id: Address.fromString('0x0000000000000000000000000000000000000005'),
     periods: BigInt.fromI32(48),
     managedAmount: BigInt.fromString('50000000'),
     startTime: BigInt.fromString('1527872400'),
@@ -49,14 +49,15 @@ const vestingListExchanges: ExchangeContract[] = [
 
 export namespace onstart {
   export function loadDefautlExchanges(): void {
-    vestingListExchanges.forEach((params: ExchangeContract): void => {
+    for (let index = 0; index < vestingListExchanges.length; index++) {
+      const params = vestingListExchanges[index];
       let contractAddress = params.id
       let periods = params.periods
       let managedAmount = params.managedAmount
       let startTime = params.startTime
       let endTime = params.endTime
   
-      createTokenLock(contractAddress, periods, managedAmount, startTime, endTime)
-    })
+      common.createTokenLockWallet(contractAddress, periods, managedAmount, startTime, endTime, false) 
+    }
   }
 }

@@ -5,12 +5,6 @@ import {
   releasePeriods,
 } from '../../modules'
 
-const firstBLock: BigInt = BigInt.fromI32(11466643)
-
-export function isFirstBlock(blockNumber: BigInt): bool {
-  return firstBLock == blockNumber
-}
-
 export function createPeriodsForContract(
   contractId: string, periods: BigInt, managedAmount: BigInt,
   startTime: BigInt, endTime: BigInt

@@ -8,11 +8,9 @@ import {
 } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { address } from '@protofire/subgraph-toolkit';
 import { log } from '@graphprotocol/graph-ts'
-import { createPeriodsForContract } from '../mappingHelpers'
-import { GraphTokenLockWallet } from '../../../generated/templates'
+import { common } from './common';
 
 export function handleInitialize(call: InitializeCall): void {
-
   let contractAddress = call.to
   let periods = call.inputs._periods
   let managedAmount = call.inputs._managedAmount
@@ -21,22 +19,20 @@ export function handleInitialize(call: InitializeCall): void {
 
   log.warning("::: CALL HANDLER ::: handleInitialize : triggered", [])
 
-  let lockWallet = lockWalletContracts.createCustomLockWallet(
-    contractAddress, periods, managedAmount, startTime, endTime
+  common.createTokenLockWallet(
+    contractAddress,
+    periods,
+    managedAmount,
+    startTime,
+    endTime,
+    false
   )
-  lockWallet.save()
-
-  createPeriodsForContract(
-    lockWallet.id, periods, managedAmount, startTime, endTime
-  )
-  GraphTokenLockWallet.create(contractAddress)
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   log.warning("::: EVENT HANDLER ::: handleOwnershipTransferred : triggered", [])
 
   if (address.isZeroAddress(event.params.previousOwner)) {
-
     let contract = lockWalletContracts.contract.getInitializedLockWalletContract(event.address)
     if (contract) {
       log.warning("::: EVENT HANDLER ::: handleOwnershipTransferred : initialized contract", [])
@@ -51,17 +47,15 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
         let startTime = values.startTime
         let endTime = values.endTime
 
-        let lockWallet = lockWalletContracts.createCustomLockWallet(
-          contractAddress, periods, managedAmount, startTime, endTime
+        common.createTokenLockWallet(
+          contractAddress,
+          periods,
+          managedAmount,
+          startTime,
+          endTime,
+          false,
         )
-        lockWallet.save()
-
-        createPeriodsForContract(
-          lockWallet.id, periods, managedAmount, startTime, endTime
-        )
-        GraphTokenLockWallet.create(contractAddress)
       }
-
     }
   }
 }
