@@ -25,7 +25,7 @@ export function handleInitialize(call: InitializeCall): void {
     managedAmount,
     startTime,
     endTime,
-    false
+    lockWalletContracts.constants.CUSTOM_CONTRACT_TYPENAME,
   )
 }
 
@@ -53,7 +53,7 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
           managedAmount,
           startTime,
           endTime,
-          false,
+          lockWalletContracts.constants.CUSTOM_CONTRACT_TYPENAME,
         )
       }
     }

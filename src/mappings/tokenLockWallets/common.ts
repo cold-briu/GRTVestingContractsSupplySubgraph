@@ -20,15 +20,11 @@ export namespace common {
     managedAmount: BigInt,
     startTime: BigInt,
     endTime: BigInt,
-    isFactory: boolean): void 
+    walletType: string): void 
   {
-    let lockWallet = isFactory 
-      ? lockWalletContracts.createFactoryLockWallet(
-        contractAddress, periods, managedAmount, startTime, endTime
-      ) :
-      lockWalletContracts.createCustomLockWallet(
-        contractAddress, periods, managedAmount, startTime, endTime
-      )
+    let lockWallet = lockWalletContracts.createLockWallet(
+      contractAddress, periods, managedAmount, startTime, endTime, walletType
+    )
     lockWallet.save()
   
     createPeriodsForContract(

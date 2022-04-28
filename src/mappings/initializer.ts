@@ -57,7 +57,14 @@ export namespace onstart {
       let startTime = params.startTime
       let endTime = params.endTime
   
-      common.createTokenLockWallet(contractAddress, periods, managedAmount, startTime, endTime, false) 
+      common.createTokenLockWallet(
+        contractAddress, 
+        periods, 
+        managedAmount, 
+        startTime, 
+        endTime, 
+        lockWalletContracts.constants.EXCHANGE_CONTRACT_TYPENAME,
+      ) 
     }
   }
 }

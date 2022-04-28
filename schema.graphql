@@ -74,6 +74,7 @@ type ReleasePeriod @entity {
 enum LockWalletTypes {
   FACTORY
   CUSTOM
+  EXCHANGE
 }
 
 type LockWalletContract @entity {

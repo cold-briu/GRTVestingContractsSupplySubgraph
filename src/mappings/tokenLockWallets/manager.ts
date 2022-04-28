@@ -16,7 +16,7 @@ export function handleTokenLockCreated(event: TokenLockCreated): void {
     managedAmount, 
     startTime, 
     endTime,
-    false)
+    lockWalletContracts.constants.FACTORY_CONTRACT_TYPENAME)
 }
 
 export function handleBlock(block: ethereum.Block): void {
