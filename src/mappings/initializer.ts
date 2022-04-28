@@ -1,4 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { lockWalletContracts } from '../modules';
 import { common } from './tokenLockWallets/common';
 
 class ExchangeContract {
@@ -13,35 +14,35 @@ const vestingListExchanges: ExchangeContract[] = [
   {
     id: Address.fromString('0x0000000000000000000000000000000000000001'),
     periods: BigInt.fromI32(48),
-    managedAmount: BigInt.fromString('50000000'),
+    managedAmount: BigInt.fromString('50000000000000000000000000'),
     startTime: BigInt.fromString('1522602000'),
     endTime: BigInt.fromString('1648832400'),
   },
   {
     id: Address.fromString('0x0000000000000000000000000000000000000002'),
     periods: BigInt.fromI32(1),
-    managedAmount: BigInt.fromString('8000000'),
+    managedAmount: BigInt.fromString('8000000000000000000000000'),
     startTime: BigInt.fromString('1608224400'),
     endTime: BigInt.fromString('1627146000'),
   },
   {
     id: Address.fromString('0x0000000000000000000000000000000000000003'),
     periods: BigInt.fromI32(48),
-    managedAmount: BigInt.fromString('59000000'),
+    managedAmount: BigInt.fromString('59000000000000000000000000'),
     startTime: BigInt.fromString('1543683600'),
     endTime: BigInt.fromString('1669914000'),
   },
   {
     id: Address.fromString('0x0000000000000000000000000000000000000004'),
     periods: BigInt.fromI32(1),
-    managedAmount: BigInt.fromString('4000000'),
+    managedAmount: BigInt.fromString('4000000000000000000000000'),
     startTime: BigInt.fromString('1608224400'),
     endTime: BigInt.fromString('1627146000'),
   },
   {
     id: Address.fromString('0x0000000000000000000000000000000000000005'),
     periods: BigInt.fromI32(48),
-    managedAmount: BigInt.fromString('50000000'),
+    managedAmount: BigInt.fromString('50000000000000000000000000'),
     startTime: BigInt.fromString('1527872400'),
     endTime: BigInt.fromString('1654102800'),
   },
