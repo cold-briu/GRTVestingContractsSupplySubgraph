@@ -28,7 +28,7 @@ export namespace common {
     lockWallet.save()
   
     createPeriodsForContract(
-      lockWallet.id, periods, managedAmount, endTime, startTime
+      lockWallet.id, periods, managedAmount, startTime, endTime
     )
   
     GraphTokenLockWallet.create(contractAddress)
