@@ -46,6 +46,20 @@ const vestingListExchanges: ExchangeContract[] = [
     startTime: BigInt.fromString('1527872400'),
     endTime: BigInt.fromString('1654102800'),
   },
+  {
+    id: Address.fromString('0x0000000000000000000000000000000000000006'),
+    periods: BigInt.fromI32(1),
+    managedAmount: BigInt.fromString('150000000000000000000000000'),
+    startTime: BigInt.fromString('1527872400'),
+    endTime: BigInt.fromString('1654102800'),
+  },
+  {
+    id: Address.fromString('0x0000000000000000000000000000000000000007'),
+    periods: BigInt.fromI32(1),
+    managedAmount: BigInt.fromString('133333334000000000000000000'),
+    startTime: BigInt.fromString('2535197937'),
+    endTime: BigInt.fromString('2566733937'),
+  },
 ]
 
 export namespace onstart {
