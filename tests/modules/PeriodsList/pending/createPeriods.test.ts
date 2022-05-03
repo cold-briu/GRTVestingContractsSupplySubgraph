@@ -15,30 +15,28 @@ export function createPeriods(
 	)
 
 	let entity = periodsLists.pending.createList()
-
 	let releaseDuration = releasePeriods.calculate.walletReleaseDuration(startTime, endTime)
 	let periodsDuration = releasePeriods.calculate.periodReleaseDuration(releaseDuration, periods)
+	let periodAmount = releasePeriods.calculate.periodAmount(managedAmount, periods)
+	// let periodReleaseDate = startTime
+	let periodReleaseDate = startTime.plus(periodsDuration)
 
-	let periodReleaseDate = startTime
-	// log generating dummy data
-	for (let index = 0; index < periods.toI32(); index++) {
-
+	let periodsCount = periods.toI32()
+	for (let i = 0; i < periodsCount; i++) {
 		periodReleaseDate = releasePeriods.calculate.increasePeriodReleaseDate(
 			periodReleaseDate, periodsDuration
 		)
 
-		entity = periodsLists.pending.mutations.addPeriodKey(
-			entity,
-			releasePeriods.keys.encode(
-				releasePeriods.getPeriodId(contractId, index.toString()),
-				periodReleaseDate
-			),
+		// periodsToProcess is a derived list, periods are created w/ this relationship
+		let releasePeriod = releasePeriods.createReleasePeriod(
+			contractId, i, periodReleaseDate, periodAmount
 		)
-
+		releasePeriod.save()
 	}
 
-	tests.helpers.asserts.assertBigInt(managedAmount, storedEntity.amount)
-	tests.helpers.asserts.assertStringArray(entity.keys, storedEntity.keys)
+
+	// tests.helpers.asserts.assertBigInt(managedAmount, storedEntity.amount)
+	// tests.helpers.asserts.assertStringArray(entity.keys, storedEntity.keys)
 
 	tests.logs.global.success("PeriodsList.pending.createPeriods.test", id)
 }

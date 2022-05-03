@@ -3,9 +3,11 @@ import { newMockEvent, newMockCall, assert, log, createMockedFunction } from "ma
 import {
 	handleOwnershipTransferred as _handleOwnershipTransferred,
 	handleInitialize as _handleInitialize,
-	handleBlock as _handleBlock
-} from "../../mappings/tokenLockWallets/tokenLockWallet"
+} from "../../mappings/tokenLockWallets/custom"
 import { handleTransfer as _handleTransfer } from "../../mappings/graphToken"
+import {
+	handleBlock as _handleBlock
+} from "../../mappings/tokenLockWallets/manager"
 
 export namespace tests {
 

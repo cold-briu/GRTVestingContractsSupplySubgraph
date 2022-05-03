@@ -21,12 +21,12 @@ export function creation(
 		"LockWalletContract.custom.creation.test", id
 	)
 
-	tests.helpers.asserts.assertBytes(address, entity.address)
-	tests.helpers.asserts.assertBigInt(periods, entity.periodsAmount)
-	tests.helpers.asserts.assertBigInt(managedAmount, entity.managedAmount)
-	tests.helpers.asserts.assertBigInt(startTime, entity.startTime)
-	tests.helpers.asserts.assertBigInt(endTime, entity.endTime)
-	tests.helpers.asserts.assertString(type, entity.type)
+	tests.helpers.asserts.assertBytes(address, entity.address!)
+	tests.helpers.asserts.assertBigInt(periods, entity.periodsAmount!)
+	tests.helpers.asserts.assertBigInt(managedAmount, entity.managedAmount!)
+	tests.helpers.asserts.assertBigInt(startTime, entity.startTime!)
+	tests.helpers.asserts.assertBigInt(endTime, entity.endTime!)
+	tests.helpers.asserts.assertString(type, entity.type!)
 
 	tests.logs.global.success("LockWalletContract.custom.creation.test", id)
 }
