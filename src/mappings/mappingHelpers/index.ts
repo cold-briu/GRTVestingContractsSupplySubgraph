@@ -25,10 +25,9 @@ export function createPeriodsForContract(
 
   // tests.logs.global.warn("startTime.plus", `periodDuration: ${periodReleaseDuration} - startTime: ${startTime}`)
 
-
   let periodsCount = periods.toI32()
   for (let i = 0; i < periodsCount; i++) {
-    let periodReleaseStart = startTime.plus(periodReleaseDuration.times(BigInt.fromI32(i)))
+    let periodReleaseStart = startTime.plus(periodReleaseDuration.times(BigInt.fromI32(i + 1)))
 
     // tests.logs.global.warn("calculate.increasePeriodReleaseDate", `post.periodReleaseDate: ${periodReleaseStart}`)
 

@@ -63,9 +63,6 @@ dataSources:
       abis:
         - name: GraphTokenLockWallet
           file: ./abis/GraphTokenLockWallet.json
-      callHandlers:
-        - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
-          handler: handleInitialize
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
@@ -86,9 +83,6 @@ dataSources:
       abis:
         - name: GraphTokenLockWallet
           file: ./abis/GraphTokenLockWallet.json
-      callHandlers:
-        - function: initialize(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
-          handler: handleInitialize
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
