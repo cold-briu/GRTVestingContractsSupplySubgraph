@@ -3,31 +3,11 @@ import {
 } from '../../modules'
 import {
   TokensReleased,
-  InitializeCall,
   OwnershipTransferred
 } from '../../../generated/templates/GraphTokenLockWallet/GraphTokenLockWallet'
 import { address } from '@protofire/subgraph-toolkit';
 import { log } from '@graphprotocol/graph-ts'
 import { common } from './common';
-
-export function handleInitialize(call: InitializeCall): void {
-  let contractAddress = call.to
-  let periods = call.inputs._periods
-  let managedAmount = call.inputs._managedAmount
-  let startTime = call.inputs._startTime
-  let endTime = call.inputs._endTime
-
-  log.warning("::: CALL HANDLER ::: handleInitialize : triggered", [])
-
-  common.createTokenLockWallet(
-    contractAddress,
-    periods,
-    managedAmount,
-    startTime,
-    endTime,
-    lockWalletContracts.constants.CUSTOM_CONTRACT_TYPENAME,
-  )
-}
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   log.warning("::: EVENT HANDLER ::: handleOwnershipTransferred : triggered", [])
