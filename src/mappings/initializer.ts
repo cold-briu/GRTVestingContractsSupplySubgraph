@@ -51,7 +51,7 @@ const vestingListExchanges: ExchangeContract[] = [
     periods: BigInt.fromI32(1),
     managedAmount: BigInt.fromString('150000000000000000000000000'),
     startTime: BigInt.fromString('1527872400'),
-    endTime: BigInt.fromString('1654102800'),
+    endTime: BigInt.fromString('1554102800'),
   },
   {
     id: Address.fromString('0x0000000000000000000000000000000000000007'),
@@ -71,15 +71,15 @@ export namespace onstart {
       let managedAmount = params.managedAmount
       let startTime = params.startTime
       let endTime = params.endTime
-  
+
       common.createTokenLockWallet(
-        contractAddress, 
-        periods, 
-        managedAmount, 
-        startTime, 
-        endTime, 
+        contractAddress,
+        periods,
+        managedAmount,
+        startTime,
+        endTime,
         lockWalletContracts.constants.EXCHANGE_CONTRACT_TYPENAME,
-      ) 
+      )
     }
   }
 }
