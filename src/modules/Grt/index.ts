@@ -155,19 +155,7 @@ export namespace grt {
 
 	}
 
-	export namespace helpers {
 
-		export function setNewMinProcessDate(
-			minProcessDate: BigInt, releaseDate: BigInt
-		): BigInt {
-			if (minProcessDate.isZero() ||
-				releaseDate.lt(minProcessDate)) {
-				return releaseDate
-			}
-			return minProcessDate
-		}
-
-	}
 
 	export namespace test {
 

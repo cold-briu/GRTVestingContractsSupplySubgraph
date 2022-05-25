@@ -29,6 +29,20 @@ export namespace periodsLists {
 			return entity as PendingPeriods
 		}
 
+		export namespace helpers {
+
+			export function setNewMinProcessDate(
+				minProcessDate: BigInt, releaseDate: BigInt
+			): BigInt {
+				if (minProcessDate.isZero() ||
+					releaseDate.lt(minProcessDate)) {
+					return releaseDate
+				}
+				return minProcessDate
+			}
+
+		}
+
 		export namespace mutations {
 
 			export function increaseAmount(
@@ -59,6 +73,18 @@ export namespace periodsLists {
 				keys.push(key)
 				list.keys = keys
 				return list
+			}
+
+			export function updateMinProcessToDate(
+				list: PendingPeriods, releaseDate: BigInt
+			): PendingPeriods {
+				let e = list
+				let minDate = list.nextDateToProcess
+				minDate = helpers.setNewMinProcessDate(
+					e.nextDateToProcess, releaseDate
+				)
+				e.nextDateToProcess = minDate
+				return e
 			}
 
 		}
