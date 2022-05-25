@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import {
-  circulatingSupply as circulatingSupplyModule,
+  grt as grtModule,
   periodsLists,
   releasePeriods,
 } from '../../modules'
@@ -10,7 +10,7 @@ export function createPeriodsForContract(
   startTime: BigInt, endTime: BigInt
 ): void {
 
-  let graphCirculatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply()
+  let grt = grtModule.createOrLoadGrt()
   let pendingPeriodsList = periodsLists.pending.getOrCreateList()
 
   // [periodAmount, periodsAmount, managedAmount] naming may introduce confusion: some of them talk about GRT but others don't
@@ -48,17 +48,17 @@ export function createPeriodsForContract(
     )
 
     if (i == 0) {
-      graphCirculatingSupply = circulatingSupplyModule.mutations.updateMinProcessToDate(
-        graphCirculatingSupply, periodReleaseStart
+      pendingPeriodsList = periodsLists.pending.mutations.updateNextToProcess(
+        pendingPeriodsList, releasePeriod.releaseDate, releasePeriod.id
       )
     }
   }
 
-  graphCirculatingSupply = circulatingSupplyModule.mutations.decreaseCirculatingSupply(
-    graphCirculatingSupply,
+  grt = grtModule.mutations.decreaseCirculatingSupply(
+    grt,
     managedAmount
   )
-  graphCirculatingSupply.save()
+  grt.save()
 
   // grt amount
   pendingPeriodsList = periodsLists.pending.mutations.increaseAmount(

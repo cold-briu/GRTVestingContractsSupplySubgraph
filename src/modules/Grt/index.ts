@@ -14,7 +14,10 @@ export namespace grt {
 		entity.burned = integer.ZERO
 		entity.minted = integer.ZERO
 		entity.totalSupply = integer.ZERO
-		entity.grt = integer.ZERO
+		entity.circulatingSupply = integer.ZERO
+		entity.liquidSupply = integer.ZERO
+		entity.totalAvailableAmount = integer.ZERO
+		entity.totalLockedAmount = integer.ZERO
 		entity.periodsToProcess = periodsLists.constants.PENDING_LISTS_ID
 		entity.periodsProcessed = periodsLists.constants.PROCESSED_LISTS_ID
 		return entity

@@ -8,7 +8,7 @@ export namespace lockWalletContracts {
 	export namespace constants {
 		export let FACTORY_CONTRACT_TYPENAME = "FACTORY"
 		export let CUSTOM_CONTRACT_TYPENAME = "CUSTOM"
-    export let EXCHANGE_CONTRACT_TYPENAME = "EXCHANGE"
+		export let EXCHANGE_CONTRACT_TYPENAME = "EXCHANGE"
 	}
 
 	export function safeLoadLockWalletContract(id: string): LockWalletContract {
@@ -45,12 +45,12 @@ export namespace lockWalletContracts {
 	}
 
 	export function createLockWallet(
-		address: Bytes, 
-    periods: BigInt, 
-    managedAmount: BigInt,
-		startTime: BigInt, 
-    endTime: BigInt,
-    walletType: string
+		address: Bytes,
+		periods: BigInt,
+		managedAmount: BigInt,
+		startTime: BigInt,
+		endTime: BigInt,
+		walletType: string
 	): LockWalletContract {
 
 		let entity = getOrCreateLockWalletContract(
