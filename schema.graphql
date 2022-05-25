@@ -28,6 +28,12 @@ type PendingPeriods implements PeriodsList @entity {
   "a list of periods composed keys: ${period.id}@${period.releaseDate}"
   keys: [String!]!
 
+  "next date to initiate a release"
+  nextDateToProcess: BigInt!
+
+  "next period to process"
+  nextPeriodToProcess: BigInt!
+
 }
 
 type ProcessedPeriods implements PeriodsList @entity {
@@ -75,6 +81,7 @@ enum LockWalletTypes {
   FACTORY
   CUSTOM
   EXCHANGE
+  GENESIS
 }
 
 type LockWalletContract @entity {
@@ -112,7 +119,6 @@ type LockWalletContract @entity {
   "grt amount to be released by this contract calculated as the contract does: managedAmount - availableAmount "
   totalLocked: BigInt
 
-  type: LockWalletTypes
 
   "already released grt amount managed by this contract"
   releasedAmount: BigInt
@@ -120,16 +126,16 @@ type LockWalletContract @entity {
   "Released amount calculated as the contract does: periodAmount * passedPeriods "
   availableAmount: BigInt
 
+  type: LockWalletTypes
 
 }
 
 
-type GraphCirculatingSupply @entity {
-
-  "ID is set to 1"
+type Grt @entity {
+  "Singleton entity where ID is set to 1"
   id: ID!
 
-  "Graph Token supply"
+  "Graph token total existing tokens == Minted - Burned"
   totalSupply: BigInt!
 
   "Graph Token minted amount"
@@ -138,16 +144,21 @@ type GraphCirculatingSupply @entity {
   "Graph Token burnt amount"
   burned: BigInt!
 
-  "Graph Circulating Supply should be totalSupply minus periodsToProcessTotalAmount plus periodsProcessedTotalAmount" 
+  "GRT Liquid Supply: All of the non locked tokens" 
+  liquidSupply: BigInt!
+
+  "GRT circulating Supply: All of non-genesis locked tokens" 
   circulatingSupply: BigInt!
 
-  "Array containing periods not processed yet"
+  "Sum of all currently released Tokens"
+  totalAvailableAmount: BigInt
+
+  "Sum of all currently locked tokens"
+  totalLockedAmount: BigInt
+
+  "List of release periods"
   periodsToProcess: PendingPeriods!
 
   "Periods already released"
   periodsProcessed: ProcessedPeriods!
-
-  "This min date saves min release date from periodsToProcess"
-  minPeriodToProcessDate: BigInt!
-  
 }
