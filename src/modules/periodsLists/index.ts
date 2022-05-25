@@ -29,19 +29,7 @@ export namespace periodsLists {
 			return entity as PendingPeriods
 		}
 
-		export namespace helpers {
 
-			export function setNewMinProcessDate(
-				minProcessDate: BigInt, releaseDate: BigInt
-			): BigInt {
-				if (minProcessDate.isZero() ||
-					releaseDate.lt(minProcessDate)) {
-					return releaseDate
-				}
-				return minProcessDate
-			}
-
-		}
 
 		export namespace mutations {
 
@@ -75,15 +63,14 @@ export namespace periodsLists {
 				return list
 			}
 
-			export function updateMinProcessToDate(
-				list: PendingPeriods, releaseDate: BigInt
+			export function updateNextToProcess(
+				list: PendingPeriods, periodDate: BigInt, periodId: string
 			): PendingPeriods {
 				let e = list
-				let minDate = list.nextDateToProcess
-				minDate = helpers.setNewMinProcessDate(
-					e.nextDateToProcess, releaseDate
-				)
-				e.nextDateToProcess = minDate
+				if (e.nextDateToProcess.isZero() || periodDate.lt(e.nextDateToProcess)) {
+					e.nextDateToProcess = periodDate
+					e.nextPeriodToProcess = periodId
+				}
 				return e
 			}
 

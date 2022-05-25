@@ -9,7 +9,7 @@ export namespace grt {
 		export let CIRCULATING_SUPPLY_ID = '1'
 	}
 
-	export function createCirculatingSupply(): Grt {
+	export function createGrt(): Grt {
 		let entity = new Grt(constants.CIRCULATING_SUPPLY_ID)
 		entity.burned = integer.ZERO
 		entity.minted = integer.ZERO
@@ -23,7 +23,7 @@ export namespace grt {
 	export function createOrLoadGrt(): Grt {
 		let entity = Grt.load(constants.CIRCULATING_SUPPLY_ID)
 		if (entity == null) {
-			entity = createCirculatingSupply()
+			entity = createGrt()
 		}
 		return entity as Grt
 

@@ -1,4 +1,4 @@
-export * from "./Grt"
+export * from "./grt"
 export * from "./lockWalletContracts"
 export * from "./periodsLists"
 export * from "./releasePeriods"

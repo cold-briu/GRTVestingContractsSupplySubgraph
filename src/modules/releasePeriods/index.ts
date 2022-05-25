@@ -57,12 +57,23 @@ export namespace releasePeriods {
 
 	export namespace keys {
 
+
 		export function encode(id: string, releaseDate: BigInt): string {
 			return id + "@" + releaseDate.toString()
 		}
 
-		export function decode(periodKey: string): string[] {
-			return periodKey.split("@")
+		export function decode(periodKey: string): PeriodKeyDecodeResult {
+			let decodeResult = periodKey.split("@")
+			return new PeriodKeyDecodeResult(decodeResult[0], BigInt.fromString(decodeResult[1]))
+		}
+
+		export class PeriodKeyDecodeResult {
+			id: string;
+			date: BigInt;
+			constructor(_id: string, _date: BigInt) {
+				this.id = _id
+				this.date = _date
+			}
 		}
 
 	}
