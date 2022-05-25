@@ -74,6 +74,7 @@ type ReleasePeriod @entity {
 enum LockWalletTypes {
   FACTORY
   CUSTOM
+  EXCHANGE
 }
 
 type LockWalletContract @entity {
@@ -82,31 +83,44 @@ type LockWalletContract @entity {
   id: ID!
 
   "contract's EVM address"
-  address: Bytes!
+  address: Bytes
 
   "related release period entity"
-  periods: [ReleasePeriod!]! @derivedFrom(field: "contract")
+  periods: [ReleasePeriod!] @derivedFrom(field: "contract")
 
   "Periods to be created"
-  periodsAmount: BigInt!
+  periodsAmount: BigInt
+
+  "managedAmount div periodsAmount"
+  amountPerPeriod: BigInt
+
+  "Periods already released"
+  passedPeriods: BigInt
 
   "start time for releasing"
-  startTime: BigInt!
+  startTime: BigInt
 
   "end Time for releasing"
-  endTime: BigInt!
+  endTime: BigInt
 
   "total amount managed by it's contract"
-  managedAmount: BigInt!
+  managedAmount: BigInt
  
-  "already released grt amount managed by this contract"
-  releasedAmount: BigInt!
+  "grt amount to be released by this contract"
+  pendingAmount: BigInt
+
+  "grt amount to be released by this contract calculated as the contract does: managedAmount - availableAmount "
+  totalLocked: BigInt
+
+  type: LockWalletTypes
 
   "already released grt amount managed by this contract"
-  pendingAmount: BigInt!
+  releasedAmount: BigInt
 
-  type: LockWalletTypes!
- 
+  "Released amount calculated as the contract does: periodAmount * passedPeriods "
+  availableAmount: BigInt
+
+
 }
 
 

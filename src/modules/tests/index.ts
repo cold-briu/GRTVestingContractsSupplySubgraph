@@ -2,17 +2,17 @@ import { Address, Bytes, BigInt, ethereum, TypedMap } from "@graphprotocol/graph
 import { newMockEvent, newMockCall, assert, log, createMockedFunction } from "matchstick-as"
 import {
 	handleOwnershipTransferred as _handleOwnershipTransferred,
-	handleInitialize as _handleInitialize,
-	handleBlock as _handleBlock
-} from "../../mappings/tokenLockWallets/tokenLockWallet"
+} from "../../mappings/tokenLockWallets/custom"
 import { handleTransfer as _handleTransfer } from "../../mappings/graphToken"
+import {
+	handleBlock as _handleBlock
+} from "../../mappings/tokenLockWallets/manager"
 
 export namespace tests {
 
 	export namespace mappingsWrapper {
 		export namespace graphTokenLockWallet {
 			export let handleOwnershipTransferred = _handleOwnershipTransferred
-			export let handleInitialize = _handleInitialize
 			export let handleBlock = _handleBlock
 		}
 		export namespace graphToken {
