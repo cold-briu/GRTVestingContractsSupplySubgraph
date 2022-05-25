@@ -45,6 +45,10 @@ export namespace grt {
 			Grt, value
 		)
 
+		Grt = grt.mutations.increaseLiquidSupply(
+			Grt, value
+		)
+
 		Grt = grt.mutations.increaseMinted(
 			Grt, value
 		)
@@ -63,6 +67,10 @@ export namespace grt {
 		)
 
 		Grt = grt.mutations.decreaseCirculatingSupply(
+			Grt, value
+		)
+
+		Grt = grt.mutations.decreaseLiquidSupply(
 			Grt, value
 		)
 

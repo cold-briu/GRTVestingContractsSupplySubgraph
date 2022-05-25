@@ -45,7 +45,7 @@ export function releasePeriod(periodId: string, _grt: Grt, pendingList: PendingP
   contract = lockWalletContracts.mutators.updateavTotalLocked(contract)
   contract.save()
 
-  _grt = grtModule.mutations.increaseCirculatingSupply(
+  _grt = grtModule.mutations.increaseLiquidSupply(
     _grt, period.amount
   )
 

@@ -54,7 +54,7 @@ export function createPeriodsForContract(
     }
   }
 
-  grt = grtModule.mutations.decreaseCirculatingSupply(
+  grt = grtModule.mutations.decreaseLiquidSupply(
     grt,
     managedAmount
   )
