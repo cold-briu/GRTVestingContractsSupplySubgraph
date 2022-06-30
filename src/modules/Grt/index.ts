@@ -11,13 +11,6 @@ export namespace grt {
 
 	export function createGrt(): Grt {
 		let entity = new Grt(constants.CIRCULATING_SUPPLY_ID)
-		entity.burned = integer.ZERO
-		entity.minted = integer.ZERO
-		entity.totalSupply = integer.ZERO
-		entity.circulatingSupply = integer.ZERO
-		entity.liquidSupply = integer.ZERO
-		entity.totalAvailableAmount = integer.ZERO
-		entity.totalLockedAmount = integer.ZERO
 		entity.periodsToProcess = periodsLists.constants.PENDING_LISTS_ID
 		entity.periodsProcessed = periodsLists.constants.PROCESSED_LISTS_ID
 		return entity
@@ -181,6 +174,16 @@ export namespace grt {
 			let supply = e.transferredSupplyGenesis as BigInt
 			supply = supply.plus(amount)
 			e.transferredSupplyGenesis = supply
+			return e
+		}
+
+		export function increaseLockedSupply(
+			grt: Grt, amount: BigInt
+		): Grt {
+			let e = grt
+			let supply = e.lockedSupply as BigInt
+			supply = supply.plus(amount)
+			e.lockedSupply = supply
 			return e
 		}
 

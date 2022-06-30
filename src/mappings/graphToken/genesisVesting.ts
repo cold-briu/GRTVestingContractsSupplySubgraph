@@ -18,7 +18,8 @@ export namespace genesisVesting {
 
 	export function lockGenesisTransaction(amount: BigInt): void {
 		let entity = grt.createOrLoadGrt()
-		entity = grt.mutations.decreaseCirculatingSupply(entity, amount)
+		entity = grt.mutations.increaseTransferredSupplyGenesis(entity, amount)
+		entity = grt.mutations.increaseLockedSupply(entity, amount)
 		entity = grt.mutations.increaseLockedSupplyGenesis(entity, amount)
 		entity.save()
 	}

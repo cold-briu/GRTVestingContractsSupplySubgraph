@@ -58,6 +58,10 @@ export function createPeriodsForContract(
     grt,
     managedAmount
   )
+  grt = grtModule.mutations.increaseLockedSupply(
+    grt,
+    managedAmount
+  )
   grt.save()
 
   // grt amount
