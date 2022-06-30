@@ -129,13 +129,27 @@ type LockWalletContract @entity {
 
 }
 
-
 type Grt @entity {
   "Singleton entity where ID is set to 1"
   id: ID!
 
-  "Graph token total existing tokens == Minted - Burned"
+  "GRT totalSupply: total existing tokens == Minted - Burned"
   totalSupply: BigInt!
+
+  "GRT lockedSupply: Sum of all currently locked tokens"
+  lockedSupply: BigInt!
+
+  "GRT Liquid Supply: All of the non locked tokens" 
+  liquidSupply: BigInt!
+
+  "GRT locked in vesting contracts deployed as part of the initial allocations at protocol launch"
+  lockedSupplyGenesis: BigInt!
+
+  "GRT transferredSupplyGenesis: Tokens transferred at protocol launch as part of initial allocations."
+  transferredSupplyGenesis: BigInt!
+
+  "GRT circulating Supply: All of non-genesis-locked tokens" 
+  circulatingSupply: BigInt!
 
   "Graph Token minted amount"
   minted: BigInt!
@@ -143,17 +157,8 @@ type Grt @entity {
   "Graph Token burnt amount"
   burned: BigInt!
 
-  "GRT Liquid Supply: All of the non locked tokens" 
-  liquidSupply: BigInt!
-
-  "GRT circulating Supply: All of non-genesis locked tokens" 
-  circulatingSupply: BigInt!
-
   "Sum of all currently released Tokens"
   totalAvailableAmount: BigInt
-
-  "Sum of all currently locked tokens"
-  totalLockedAmount: BigInt
 
   "List of release periods"
   periodsToProcess: PendingPeriods!

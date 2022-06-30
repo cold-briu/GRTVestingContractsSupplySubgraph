@@ -1,12 +1,18 @@
 import { Transfer } from '../../../generated/GraphToken/GraphToken'
 import { grt as grtModule } from '../../modules'
 import { address } from "@protofire/subgraph-toolkit";
+import { genesisVesting } from './genesisVesting'
 import { onstart } from '../initializer'
 import { common } from '../tokenLockWallets/common';
 
 export function handleTransfer(event: Transfer): void {
 	if (common.isFirstBlock(event.block.number)) {
 		onstart.loadDefautlExchanges()
+	}
+	if (genesisVesting.helpers.isGenesisTransaction(
+		event.transaction.hash.toHexString()
+	)) {
+		genesisVesting.lockGenesisTransaction(event.params.value)
 	}
 
 	let isFromZero = address.isZeroAddress(event.params.from)

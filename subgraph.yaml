@@ -144,6 +144,6 @@ templates:
       abis:
         - name: GraphTokenLockWallet
           file: ./abis/GraphTokenLockWallet.json
-      eventHandlers:
-        - event: TokensReleased(indexed address,uint256)
-          handler: handleTokensReleased
+      # eventHandlers:
+      #   - event: TokensReleased(indexed address,uint256)
+      #     handler: handleTokensReleased

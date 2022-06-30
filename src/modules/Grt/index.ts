@@ -164,6 +164,26 @@ export namespace grt {
 			return e
 		}
 
+		export function increaseLockedSupplyGenesis(
+			grt: Grt, amount: BigInt
+		): Grt {
+			let e = grt
+			let supply = e.lockedSupplyGenesis as BigInt
+			supply = supply.plus(amount)
+			e.lockedSupplyGenesis = supply
+			return e
+		}
+
+		export function increaseTransferredSupplyGenesis(
+			grt: Grt, amount: BigInt
+		): Grt {
+			let e = grt
+			let supply = e.transferredSupplyGenesis as BigInt
+			supply = supply.plus(amount)
+			e.transferredSupplyGenesis = supply
+			return e
+		}
+
 	}
 
 
