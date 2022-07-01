@@ -1,7 +1,7 @@
 import { BigInt } from "@graphprotocol/graph-ts"
 import { grt } from "../../modules"
 
-export namespace genesisVesting {
+export namespace transferGenesisVesting {
 
 	export const GENESIS_TX_LIST = [
 		"0x0e88219fa121e7d3bc90d7478c12e222b54fe7e0f6656115c38db17446dd1f93",
