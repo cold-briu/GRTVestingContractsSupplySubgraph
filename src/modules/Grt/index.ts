@@ -31,19 +31,19 @@ export namespace grt {
 		let grt = e
 
 		grt = mutations.increaseTotalSupply(
-			Grt, value
+			grt, value
 		)
 
 		grt = mutations.increaseCirculatingSupply(
-			Grt, value
+			grt, value
 		)
 
 		grt = mutations.increaseLiquidSupply(
-			Grt, value
+			grt, value
 		)
 
 		grt = mutations.increaseMinted(
-			Grt, value
+			grt, value
 		)
 
 		return grt
@@ -218,7 +218,7 @@ export namespace grt {
 		export function safeLoad(): Grt {
 			let grt = Grt.load(constants.CIRCULATING_SUPPLY_ID)
 			if (grt == null) {
-				log.warning("Grt@SafeLoad :: failed to load w/ id ={}", [grt.constants.CIRCULATING_SUPPLY_ID])
+				log.warning("Grt@SafeLoad :: failed to load w/ id ={}", [constants.CIRCULATING_SUPPLY_ID])
 				return new Grt(constants.CIRCULATING_SUPPLY_ID)
 			}
 			return grt as Grt
