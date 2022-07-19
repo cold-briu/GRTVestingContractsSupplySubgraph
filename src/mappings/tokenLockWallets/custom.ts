@@ -1,4 +1,5 @@
 import {
+  grt as grtModule,
   lockWalletContracts,
 } from '../../modules'
 import {
@@ -10,6 +11,7 @@ import { log } from '@graphprotocol/graph-ts'
 import { common } from './common';
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
+  // EAN & FoundationGenesisVesting
 
   if (address.isZeroAddress(event.params.previousOwner)) {
     let contract = lockWalletContracts.contract.getInitializedLockWalletContract(event.address)
@@ -23,6 +25,14 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
         let managedAmount = values.managedAmount
         let startTime = values.startTime
         let endTime = values.endTime
+
+        let grt = grtModule.createOrLoadGrt()
+        grt = grtModule.lockGenesisExchanges(grt, managedAmount)
+        /*
+        * FIXME: performance issue
+        * The grt entity is loaded at this scope, 
+        * also, the grt entity is loaded and saved inside of createTokenWallet -> createPeriods for contract 
+        */
 
         common.createTokenLockWallet(
           contractAddress,

@@ -1,10 +1,22 @@
 import { common } from './common'
 import { releasePeriods } from '../mappingHelpers'
-import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { TokenLockCreated } from '../../../generated/GraphTokenLockManagerV1/GraphTokenLockManager'
 import {
   grt as grtModule, lockWalletContracts, periodsLists, releasePeriods as releasePeriodsModule
 } from '../../modules'
+
+function isCuratorVesting(
+  periods: BigInt,
+  startTime: BigInt,
+  endTime: BigInt,
+  revocable: i32,
+): boolean {
+  return periods == BigInt.fromI32(16) &&
+    startTime == BigInt.fromI32(1608224400) &&
+    endTime == BigInt.fromI32(1734454800) &&
+    revocable == 0
+}
 
 export function handleTokenLockCreated(event: TokenLockCreated): void {
   let contractAddress = event.params.contractAddress
@@ -12,6 +24,23 @@ export function handleTokenLockCreated(event: TokenLockCreated): void {
   let managedAmount = event.params.managedAmount
   let startTime = event.params.startTime
   let endTime = event.params.endTime
+  let revocable = event.params.revocable
+  log.warning("!·!·!·!·!·[ revocable is {} ]", [revocable.toString()])
+
+  /*
+    * FIXME: performance issue
+    * The grt entity is loaded at this scope, 
+    * also, the grt entity is loaded and saved inside of createTokenWallet -> createPeriods for contract 
+  */
+  if (
+    event.block.number < BigInt.fromI32(11705024
+      || isCuratorVesting(periods, startTime, endTime, revocable))
+  ) {
+    let grt = grtModule.createOrLoadGrt()
+    grt = grtModule.lockGenesisExchanges(grt, managedAmount)
+  }
+
+
 
   common.createTokenLockWallet(
     contractAddress,

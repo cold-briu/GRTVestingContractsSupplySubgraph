@@ -78,6 +78,11 @@ export namespace exchangesGenesisVesting {
       let endTime = params.endTime
 
       grt = grtModule.lockGenesisExchanges(grt, managedAmount)
+      /*
+        * FIXME: performance issue
+        * The grt entity is loaded at this scope, 
+        * also, the grt entity is loaded and saved inside of createTokenWallet -> createPeriods for contract 
+      */
 
       common.createTokenLockWallet(
         contractAddress,
@@ -89,7 +94,6 @@ export namespace exchangesGenesisVesting {
       )
     }
 
-    grt.save()
 
   }
 }

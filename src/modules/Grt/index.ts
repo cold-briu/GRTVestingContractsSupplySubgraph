@@ -10,18 +10,18 @@ export namespace grt {
 	}
 
 	export function createGrt(): Grt {
-		let entity = new Grt(constants.CIRCULATING_SUPPLY_ID)
-		entity.periodsToProcess = periodsLists.constants.PENDING_LISTS_ID
-		entity.periodsProcessed = periodsLists.constants.PROCESSED_LISTS_ID
-		return entity
+		let Grt = new Grt(constants.CIRCULATING_SUPPLY_ID)
+		Grt.periodsToProcess = periodsLists.constants.PENDING_LISTS_ID
+		Grt.periodsProcessed = periodsLists.constants.PROCESSED_LISTS_ID
+		return Grt
 	}
 
 	export function createOrLoadGrt(): Grt {
-		let entity = Grt.load(constants.CIRCULATING_SUPPLY_ID)
-		if (entity == null) {
-			entity = createGrt()
+		let Grt = Grt.load(constants.CIRCULATING_SUPPLY_ID)
+		if (Grt == null) {
+			Grt = createGrt()
 		}
-		return entity as Grt
+		return Grt as Grt
 
 	}
 
@@ -78,8 +78,11 @@ export namespace grt {
 	): Grt {
 		let Grt = e
 
-		return Grt
+		Grt = grt.mutations.increaseLockedSupply(Grt, value)
+		Grt = grt.mutations.increaseLockedSupplyGenesis(Grt, value)
+		Grt = grt.mutations.decreaseTotalSupply(Grt, value)
 
+		return Grt
 	}
 
 	export namespace mutations {
@@ -202,12 +205,12 @@ export namespace grt {
 	export namespace test {
 
 		export function safeLoad(): Grt {
-			let entity = Grt.load(grt.constants.CIRCULATING_SUPPLY_ID)
-			if (entity == null) {
+			let Grt = Grt.load(grt.constants.CIRCULATING_SUPPLY_ID)
+			if (Grt == null) {
 				log.warning("Grt@SafeLoad :: failed to load w/ id ={}", [grt.constants.CIRCULATING_SUPPLY_ID])
 				return new Grt(grt.constants.CIRCULATING_SUPPLY_ID)
 			}
-			return entity as Grt
+			return Grt as Grt
 		}
 
 	}
