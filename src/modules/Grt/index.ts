@@ -10,79 +10,90 @@ export namespace grt {
 	}
 
 	export function createGrt(): Grt {
-		let Grt = new Grt(constants.CIRCULATING_SUPPLY_ID)
-		Grt.periodsToProcess = periodsLists.constants.PENDING_LISTS_ID
-		Grt.periodsProcessed = periodsLists.constants.PROCESSED_LISTS_ID
-		return Grt
+		let grt = new Grt(constants.CIRCULATING_SUPPLY_ID)
+		grt.periodsToProcess = periodsLists.constants.PENDING_LISTS_ID
+		grt.periodsProcessed = periodsLists.constants.PROCESSED_LISTS_ID
+		return grt
 	}
 
 	export function createOrLoadGrt(): Grt {
-		let Grt = Grt.load(constants.CIRCULATING_SUPPLY_ID)
-		if (Grt == null) {
-			Grt = createGrt()
+		let grt = Grt.load(constants.CIRCULATING_SUPPLY_ID)
+		if (grt == null) {
+			grt = createGrt()
 		}
-		return Grt as Grt
+		return grt as Grt
 
 	}
 
 	export function mintTokens(
 		e: Grt, value: BigInt
 	): Grt {
-		let Grt = e
+		let grt = e
 
-		Grt = grt.mutations.increaseTotalSupply(
+		grt = mutations.increaseTotalSupply(
 			Grt, value
 		)
 
-		Grt = grt.mutations.increaseCirculatingSupply(
+		grt = mutations.increaseCirculatingSupply(
 			Grt, value
 		)
 
-		Grt = grt.mutations.increaseLiquidSupply(
+		grt = mutations.increaseLiquidSupply(
 			Grt, value
 		)
 
-		Grt = grt.mutations.increaseMinted(
+		grt = mutations.increaseMinted(
 			Grt, value
 		)
 
-		return Grt
+		return grt
 	}
 
 
 	export function burnTokens(
 		e: Grt, value: BigInt
 	): Grt {
-		let Grt = e
+		let grt = e
 
-		Grt = grt.mutations.decreaseTotalSupply(
-			Grt, value
+		grt = mutations.decreaseTotalSupply(
+			grt, value
 		)
 
-		Grt = grt.mutations.decreaseCirculatingSupply(
-			Grt, value
+		grt = mutations.decreaseCirculatingSupply(
+			grt, value
 		)
 
-		Grt = grt.mutations.decreaseLiquidSupply(
-			Grt, value
+		grt = mutations.decreaseLiquidSupply(
+			grt, value
 		)
 
-		Grt = grt.mutations.increaseBurned(
-			Grt, value
+		grt = mutations.increaseBurned(
+			grt, value
 		)
 
-		return Grt
+		return grt
 	}
 
 	export function lockGenesisExchanges(e: Grt, value: BigInt
 	): Grt {
-		let Grt = e
+		let grt = e
 
-		Grt = grt.mutations.increaseLockedSupply(Grt, value)
-		Grt = grt.mutations.increaseLockedSupplyGenesis(Grt, value)
-		Grt = grt.mutations.decreaseTotalSupply(Grt, value)
+		grt = mutations.increaseLockedSupply(grt, value)
+		grt = mutations.increaseLockedSupplyGenesis(grt, value)
+		grt = mutations.decreaseTotalSupply(grt, value)
 
-		return Grt
+		return grt
+	}
+
+	export function lockGenesisTransfer(e: Grt, value: BigInt
+	): Grt {
+		let grt = e
+		grt = mutations.increaseTransferredSupplyGenesis(grt, value)
+		grt = mutations.increaseLockedSupply(grt, value)
+		grt = mutations.increaseLockedSupplyGenesis(grt, value)
+		grt = mutations.decreaseCirculatingSupply(grt, value)
+
+		return grt
 	}
 
 	export namespace mutations {
@@ -205,12 +216,12 @@ export namespace grt {
 	export namespace test {
 
 		export function safeLoad(): Grt {
-			let Grt = Grt.load(grt.constants.CIRCULATING_SUPPLY_ID)
-			if (Grt == null) {
+			let grt = Grt.load(constants.CIRCULATING_SUPPLY_ID)
+			if (grt == null) {
 				log.warning("Grt@SafeLoad :: failed to load w/ id ={}", [grt.constants.CIRCULATING_SUPPLY_ID])
-				return new Grt(grt.constants.CIRCULATING_SUPPLY_ID)
+				return new Grt(constants.CIRCULATING_SUPPLY_ID)
 			}
-			return Grt as Grt
+			return grt as Grt
 		}
 
 	}
