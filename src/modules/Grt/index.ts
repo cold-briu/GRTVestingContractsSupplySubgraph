@@ -74,6 +74,14 @@ export namespace grt {
 		return Grt
 	}
 
+	export function lockGenesisExchanges(e: Grt, value: BigInt
+	): Grt {
+		let Grt = e
+
+		return Grt
+
+	}
+
 	export namespace mutations {
 
 		export function increaseBurned(

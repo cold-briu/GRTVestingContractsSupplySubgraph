@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { grt, lockWalletContracts } from '../../modules';
+import { grt as grtModule, lockWalletContracts } from '../../modules';
 import { common } from '../tokenLockWallets/common';
 
 class ExchangeContract {
@@ -66,7 +66,7 @@ export namespace exchangesGenesisVesting {
   // coinbase custody
   export function createVesting(): void {
 
-    let entity = grt.createOrLoadGrt()
+    let grt = grtModule.createOrLoadGrt()
 
     for (let index = 0; index < vestingListExchanges.length; index++) {
 
@@ -77,8 +77,7 @@ export namespace exchangesGenesisVesting {
       let startTime = params.startTime
       let endTime = params.endTime
 
-      entity = grt.mutations.increaseLockedSupply(entity, managedAmount)
-      entity = grt.mutations.increaseLockedSupplyGenesis(entity, managedAmount)
+      grt = grtModule.lockGenesisExchanges(grt, managedAmount)
 
       common.createTokenLockWallet(
         contractAddress,
@@ -89,5 +88,8 @@ export namespace exchangesGenesisVesting {
         lockWalletContracts.constants.EXCHANGE_CONTRACT_TYPENAME,
       )
     }
+
+    grt.save()
+
   }
 }
