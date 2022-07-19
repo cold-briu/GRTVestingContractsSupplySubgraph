@@ -1,6 +1,6 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { lockWalletContracts } from '../modules';
-import { common } from './tokenLockWallets/common';
+import { grt as grtModule, lockWalletContracts } from '../../modules';
+import { common } from '../tokenLockWallets/common';
 
 class ExchangeContract {
   id: Address
@@ -62,15 +62,27 @@ const vestingListExchanges: ExchangeContract[] = [
   },
 ]
 
-export namespace onstart {
-  export function loadDefautlExchanges(): void {
+export namespace exchangesGenesisVesting {
+  // coinbase custody
+  export function createVesting(): void {
+
+    let grt = grtModule.createOrLoadGrt()
+
     for (let index = 0; index < vestingListExchanges.length; index++) {
+
       const params = vestingListExchanges[index];
       let contractAddress = params.id
       let periods = params.periods
       let managedAmount = params.managedAmount
       let startTime = params.startTime
       let endTime = params.endTime
+
+      grt = grtModule.lockGenesisExchanges(grt, managedAmount)
+      /*
+        * FIXME: performance issue
+        * The grt entity is loaded at this scope, 
+        * also, the grt entity is loaded and saved inside of createTokenWallet -> createPeriods for contract 
+      */
 
       common.createTokenLockWallet(
         contractAddress,
@@ -81,5 +93,7 @@ export namespace onstart {
         lockWalletContracts.constants.EXCHANGE_CONTRACT_TYPENAME,
       )
     }
+
+
   }
 }

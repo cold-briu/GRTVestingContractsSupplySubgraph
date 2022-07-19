@@ -26,7 +26,7 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
   - kind: ethereum/contract
-    name: GraphTokenLockManager
+    name: GraphTokenLockManagerV1
     network: mainnet
     source:
       address: "0xFCf78AC094288D7200cfdB367A8CD07108dFa128"
@@ -44,6 +44,47 @@ dataSources:
           file: ./abis/GraphTokenLockManager.json
       blockHandlers:
         - handler: handleBlock
+      eventHandlers:
+        - event: TokenLockCreated(indexed address,indexed bytes32,indexed address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
+          handler: handleTokenLockCreated
+  - kind: ethereum/contract
+    name: GraphTokenLockManagerV2
+    network: mainnet
+    source:
+      address: "0x6284042d4da0931cbc64c5aab2d6184403095883"
+      abi: GraphTokenLockManager
+      startBlock: 12908982
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenLockWallets/manager.ts
+      entities:
+        - ReleasePeriod
+      abis:
+        - name: GraphTokenLockManager
+          file: ./abis/GraphTokenLockManager.json
+      eventHandlers:
+        - event: TokenLockCreated(indexed address,indexed bytes32,indexed address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
+          handler: handleTokenLockCreated
+
+  - kind: ethereum/contract
+    name: GraphTokenLockManagerV3
+    network: mainnet
+    source:
+      address: "0xa242759664f68e20e8f5c690a70b6116256914bf"
+      abi: GraphTokenLockManager
+      startBlock: 13863822
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenLockWallets/manager.ts
+      entities:
+        - ReleasePeriod
+      abis:
+        - name: GraphTokenLockManager
+          file: ./abis/GraphTokenLockManager.json
       eventHandlers:
         - event: TokenLockCreated(indexed address,indexed bytes32,indexed address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)
           handler: handleTokenLockCreated
@@ -103,6 +144,6 @@ templates:
       abis:
         - name: GraphTokenLockWallet
           file: ./abis/GraphTokenLockWallet.json
-      eventHandlers:
-        - event: TokensReleased(indexed address,uint256)
-          handler: handleTokensReleased
+      # eventHandlers:
+      #   - event: TokensReleased(indexed address,uint256)
+      #     handler: handleTokensReleased

@@ -1,7 +1,22 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { TokenLockCreated } from '../../../generated/GraphTokenLockManager/GraphTokenLockManager'
-import { circulatingSupply as circulatingSupplyModule, lockWalletContracts, periodsLists, releasePeriods } from '../../modules'
 import { common } from './common'
+import { releasePeriods } from '../mappingHelpers'
+import { BigInt, ethereum, log } from '@graphprotocol/graph-ts'
+import { TokenLockCreated } from '../../../generated/GraphTokenLockManagerV1/GraphTokenLockManager'
+import {
+  grt as grtModule, lockWalletContracts, periodsLists, releasePeriods as releasePeriodsModule
+} from '../../modules'
+
+function isCuratorVesting(
+  periods: BigInt,
+  startTime: BigInt,
+  endTime: BigInt,
+  revocable: i32,
+): boolean {
+  return periods == BigInt.fromI32(16) &&
+    startTime == BigInt.fromI32(1608224400) &&
+    endTime == BigInt.fromI32(1734454800) &&
+    revocable == 0
+}
 
 export function handleTokenLockCreated(event: TokenLockCreated): void {
   let contractAddress = event.params.contractAddress
@@ -9,82 +24,75 @@ export function handleTokenLockCreated(event: TokenLockCreated): void {
   let managedAmount = event.params.managedAmount
   let startTime = event.params.startTime
   let endTime = event.params.endTime
+  let revocable = event.params.revocable
+  log.warning("!·!·!·!·!·[ revocable is {} ]", [revocable.toString()])
+
+  /*
+    * FIXME: performance issue
+    * The grt entity is loaded at this scope, 
+    * also, the grt entity is loaded and saved inside of createTokenWallet -> createPeriods for contract 
+  */
+  if (
+    event.block.number < BigInt.fromI32(11705024
+      || isCuratorVesting(periods, startTime, endTime, revocable))
+  ) {
+    let grt = grtModule.createOrLoadGrt()
+    grt = grtModule.lockGenesisExchanges(grt, managedAmount)
+  }
+
+
 
   common.createTokenLockWallet(
-    contractAddress, 
-    periods, 
-    managedAmount, 
-    startTime, 
+    contractAddress,
+    periods,
+    managedAmount,
+    startTime,
     endTime,
     lockWalletContracts.constants.FACTORY_CONTRACT_TYPENAME)
 }
 
+
+/*
+1. load pending list
+2. check is sometihing to process
+3. load and process period
+4. load and update contract
+ todo: define and optimize flow
+*/
+
 export function handleBlock(block: ethereum.Block): void {
-  let circulatingSupply = circulatingSupplyModule.createOrLoadGraphCirculatingSupply();
+  let pendingList = periodsLists.pending.getOrCreateList()
 
   // is there something to process?
   if (
-    circulatingSupply.minPeriodToProcessDate < block.timestamp
+    pendingList.nextDateToProcess < block.timestamp
   ) {
-
-    let newMin = BigInt.fromI32(0);
-    let pendingList = periodsLists.pending.getOrCreateList()
+    let grt = grtModule.createOrLoadGrt();
     let processedList = periodsLists.processed.getOrCreateList()
+
+    releasePeriods.releasePeriod(pendingList.nextPeriodToProcess, grt, pendingList, processedList)
+
     let pendingPeriodsKeys = pendingList.keys as Array<string>
     let filteredPendingPeriodKeys = new Array<string>()
+    pendingList.nextDateToProcess = BigInt.fromI32(0)
 
     for (let index = 0; index < pendingPeriodsKeys.length; index++) {
+      let periodKey = releasePeriodsModule.keys.decode(pendingPeriodsKeys[index])
 
-      let periodKey = pendingPeriodsKeys[index];
-      let decodeResult = releasePeriods.keys.decode(periodKey)
-      let periodId = decodeResult[0]
-      let releaseDate = BigInt.fromString(decodeResult[1])
-
-      // if is ready to process
-      if (releaseDate < block.timestamp) {
-
-        // updated processed: Boolean and list: string
-        let period = releasePeriods.safeLoadPeriod(periodId)
-        period = releasePeriods.mutations.setAsProcessed(period)
-
-        let contractId = period.id.split("-")[0]
-        let contract = lockWalletContracts.safeLoadLockWalletContract(contractId)
-
-        contract = lockWalletContracts.mutators.increaseReleaseAmount(contract, period.amount)
-        contract = lockWalletContracts.mutators.increasePassedPeriods(contract)
-        contract = lockWalletContracts.mutators.updateavAilableAmount(contract)
-        contract = lockWalletContracts.mutators.updateavTotalLocked(contract)
-        contract.save()
-
-        circulatingSupply = circulatingSupplyModule.mutations.increaseCirculatingSupply(
-          circulatingSupply, period.amount
-        )
-
-        pendingList = periodsLists.pending.mutations.decreaseAmount(
-          pendingList, period.amount
-        )
-
-        processedList = periodsLists.processed.mutations.increaseAmount(
-          processedList, period.amount
-        )
-
-        // TODO set as processed
-
+      // is this period ready to process
+      if (periodKey.date < block.timestamp) {
+        releasePeriods.releasePeriod(periodKey.id, grt, pendingList, processedList)
       } else {
-        newMin = circulatingSupplyModule.helpers.setNewMinProcessDate(
-          newMin, releaseDate
+        pendingList = periodsLists.pending.mutations.updateNextToProcess(
+          pendingList, periodKey.date, periodKey.id
         )
         // If this periodKey wasn't processed, save it into filteredPendingPeriods list
-        filteredPendingPeriodKeys.push(periodKey)
+        filteredPendingPeriodKeys.push(pendingPeriodsKeys[index])
       }
     }
 
-    circulatingSupply.minPeriodToProcessDate = newMin;
-    circulatingSupply.save();
-
     pendingList.keys = filteredPendingPeriodKeys;
     pendingList.save()
-
     processedList.save()
   }
 }

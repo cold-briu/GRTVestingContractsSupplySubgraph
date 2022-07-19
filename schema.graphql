@@ -28,6 +28,12 @@ type PendingPeriods implements PeriodsList @entity {
   "a list of periods composed keys: ${period.id}@${period.releaseDate}"
   keys: [String!]!
 
+  "next date to initiate a release"
+  nextDateToProcess: BigInt!
+
+  "next period to process"
+  nextPeriodToProcess: String!
+
 }
 
 type ProcessedPeriods implements PeriodsList @entity {
@@ -75,6 +81,7 @@ enum LockWalletTypes {
   FACTORY
   CUSTOM
   EXCHANGE
+  GENESIS
 }
 
 type LockWalletContract @entity {
@@ -112,25 +119,37 @@ type LockWalletContract @entity {
   "grt amount to be released by this contract calculated as the contract does: managedAmount - availableAmount "
   totalLocked: BigInt
 
-  type: LockWalletTypes
-
   "already released grt amount managed by this contract"
   releasedAmount: BigInt
 
   "Released amount calculated as the contract does: periodAmount * passedPeriods "
   availableAmount: BigInt
 
+  type: LockWalletTypes
 
 }
 
-
-type GraphCirculatingSupply @entity {
-
-  "ID is set to 1"
+type Grt @entity {
+  "Singleton entity where ID is set to 1"
   id: ID!
 
-  "Graph Token supply"
+  "GRT totalSupply: total existing tokens == Minted - Burned"
   totalSupply: BigInt!
+
+  "GRT lockedSupply: Sum of all currently locked tokens"
+  lockedSupply: BigInt!
+
+  "GRT Liquid Supply: All of the non locked tokens" 
+  liquidSupply: BigInt!
+
+  "GRT locked in vesting contracts deployed as part of the initial allocations at protocol launch"
+  lockedSupplyGenesis: BigInt!
+
+  "GRT transferredSupplyGenesis: Tokens transferred at protocol launch as part of initial allocations."
+  transferredSupplyGenesis: BigInt!
+
+  "GRT circulating Supply: All of non-genesis-locked tokens" 
+  circulatingSupply: BigInt!
 
   "Graph Token minted amount"
   minted: BigInt!
@@ -138,16 +157,12 @@ type GraphCirculatingSupply @entity {
   "Graph Token burnt amount"
   burned: BigInt!
 
-  "Graph Circulating Supply should be totalSupply minus periodsToProcessTotalAmount plus periodsProcessedTotalAmount" 
-  circulatingSupply: BigInt!
+  "Sum of all currently released Tokens"
+  totalAvailableAmount: BigInt
 
-  "Array containing periods not processed yet"
+  "List of release periods"
   periodsToProcess: PendingPeriods!
 
   "Periods already released"
   periodsProcessed: ProcessedPeriods!
-
-  "This min date saves min release date from periodsToProcess"
-  minPeriodToProcessDate: BigInt!
-  
 }

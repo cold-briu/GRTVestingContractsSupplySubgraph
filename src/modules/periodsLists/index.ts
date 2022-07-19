@@ -29,6 +29,8 @@ export namespace periodsLists {
 			return entity as PendingPeriods
 		}
 
+
+
 		export namespace mutations {
 
 			export function increaseAmount(
@@ -59,6 +61,17 @@ export namespace periodsLists {
 				keys.push(key)
 				list.keys = keys
 				return list
+			}
+
+			export function updateNextToProcess(
+				list: PendingPeriods, periodDate: BigInt, periodId: string
+			): PendingPeriods {
+				let e = list
+				if (e.nextDateToProcess.isZero() || periodDate.lt(e.nextDateToProcess)) {
+					e.nextDateToProcess = periodDate
+					e.nextPeriodToProcess = periodId
+				}
+				return e
 			}
 
 		}
